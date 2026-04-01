@@ -13,8 +13,7 @@ const IMAGES = {
   creation: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=85',
   trust: 'https://images.unsplash.com/photo-1511497584788-876760111969?w=1200&q=85',
   intention: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&q=85',
-  alignment: '/src/assets/alignment.png',
-}
+  alignment: new URL('./assets/alignment.png', import.meta.url).href,}
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -71,7 +70,7 @@ function App() {
           className={`hero-bg ${heroLoaded ? 'hero-bg-loaded' : ''}`}
           style={{ backgroundImage: `url(${IMAGES.hero})` }}
         />
-        <Link to="living" smooth duration={1000} offset={-76} className="scroll-hint">
+<Link to="hero-sub" smooth duration={1000} offset={0} className="scroll-hint">
           <span>Begin</span>
           <svg width="14" height="20" viewBox="0 0 14 20" fill="none">
             <path d="M7 3v14M1 12l6 6 6-6" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
@@ -97,8 +96,8 @@ function App() {
       </section>
 
      {/* LIVING SYSTEM */}
-      <section className="living" id="about">
-        <div className="living-inner">
+<section className="living" id="living">
+          <div className="living-inner">
           <p className="overline">A Living System</p>
           <h2>To return. To remember.<br />To build something worth belonging to.</h2>
           <div className="rule" />
