@@ -230,6 +230,7 @@
   padding: 120px 80px;
   background: var(--white);
   text-align: center;
+  border-bottom: 1px solid rgba(184, 134, 42, 0.1);
 }
 
 .hero-sub-inner {
@@ -1135,6 +1136,9 @@ textarea {
     font-size: 15px;
   }
 
+  .hero-sub-section {
+  padding: 48px 28px;
+}
   .section-header {
     padding: 80px 28px 48px;
   }
