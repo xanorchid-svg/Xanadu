@@ -13,7 +13,7 @@ const IMAGES = {
   creation: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=85',
   trust: 'https://images.unsplash.com/photo-1511497584788-876760111969?w=1200&q=85',
   intention: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&q=85',
-  alignment: 'https://images.unsplash.com/photo-1529693662653-9d480530a697?w=1200&q=85',
+  alignment: '/src/assets/alignment.png',
 }
 
 function App() {
