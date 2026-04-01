@@ -125,6 +125,7 @@
   position: relative;
   width: 100%;
   height: 100vh;
+  min-height: 600px;
   overflow: hidden;
   background: var(--navy);
 }
@@ -133,7 +134,7 @@
   position: absolute;
   inset: 0;
   background-size: cover;
-  background-position: center top;
+  background-position: center center;
   opacity: 0;
   transform: scale(1.03);
   transition: opacity 2.4s ease, transform 14s ease;
@@ -1229,4 +1230,14 @@ textarea {
   .footer {
     padding: 80px 28px 48px;
   }
+
+  .hero {
+  height: 100svh;
+  min-height: 100svh;
+}
+
+.hero-bg {
+  background-position: center center;
+  background-size: cover;
+}
 }
