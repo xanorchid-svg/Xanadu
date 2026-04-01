@@ -16,14 +16,15 @@
   left: 0;
   right: 0;
   z-index: 100;
+  background: linear-gradient(135deg, #6b2d4e, #0d1c2b, #4f5f4a);
   transition: all 0.5s ease;
 }
 
 .nav-scrolled {
-  background: rgba(246, 243, 238, 0.97);
+  background: linear-gradient(135deg, #6b2d4e, #0d1c2b, #4f5f4a);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(184, 134, 42, 0.12);
+  border-bottom: 1px solid rgba(196, 150, 58, 0.15);
 }
 
 .nav-inner {
@@ -56,14 +57,14 @@
   font-size: 11px;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: rgba(13, 28, 43, 0.45);
+  color: rgba(246, 243, 238, 0.55);
   cursor: pointer;
   transition: color 0.3s;
   white-space: nowrap;
 }
 
 .nav-links a:hover {
-  color: var(--gold);
+  color: var(--gold-light);
 }
 
 .nav-cta {
@@ -72,8 +73,8 @@
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--navy);
-  border: 1px solid rgba(13, 28, 43, 0.2);
+  color: rgba(246, 243, 238, 0.6);
+  border: 1px solid rgba(246, 243, 238, 0.25);
   padding: 11px 28px;
   cursor: pointer;
   transition: all 0.35s;
@@ -82,9 +83,8 @@
 }
 
 .nav-cta:hover {
-  background: var(--navy);
   color: var(--white);
-  border-color: var(--navy);
+  border-color: rgba(246, 243, 238, 0.6);
 }
 
 .hamburger {
@@ -102,7 +102,7 @@
   display: block;
   width: 22px;
   height: 1px;
-  background: var(--navy);
+  background: rgba(246, 243, 238, 0.7);
   transition: all 0.35s;
   transform-origin: center;
 }
