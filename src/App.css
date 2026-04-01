@@ -1231,9 +1231,10 @@ textarea {
     padding: 80px 28px 48px;
   }
 
-  .hero {
-  height: 100svh;
-  min-height: 100svh;
+.hero {
+  height: auto;
+  aspect-ratio: 4 / 3;
+  min-height: unset;
 }
 
 .hero-bg {
