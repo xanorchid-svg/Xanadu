@@ -3,6 +3,7 @@ import { Link } from 'react-scroll'
 import logo from './assets/logo.svg'
 import logoSlogan from './assets/logo_slogan.svg'
 import logomark from './assets/logomark.svg'
+import { supabase } from './supabase'
 import './App.css'
 
 const IMAGES = {
@@ -13,7 +14,8 @@ const IMAGES = {
   creation: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=85',
   trust: 'https://images.unsplash.com/photo-1511497584788-876760111969?w=1200&q=85',
   intention: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&q=85',
-  alignment: new URL('./assets/alignment.png', import.meta.url).href,}
+  alignment: new URL('./assets/alignment.png', import.meta.url).href,
+}
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -21,6 +23,8 @@ function App() {
   const [formData, setFormData] = useState({ name: '', email: '', role: '', intention: '' })
   const [submitted, setSubmitted] = useState(false)
   const [heroLoaded, setHeroLoaded] = useState(false)
+  const [formError, setFormError] = useState(null)
+  const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     const img = new Image()
@@ -32,10 +36,30 @@ function App() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!formData.role) return
-    setSubmitted(true)
+
+    setSubmitting(true)
+    setFormError(null)
+
+    const { error } = await supabase
+      .from('waitlist')
+      .insert([{
+        name: formData.name,
+        email: formData.email,
+        role: formData.role,
+        intention: formData.intention,
+      }])
+
+    setSubmitting(false)
+
+    if (error) {
+      setFormError('Something went wrong. Please try again.')
+      console.error(error)
+    } else {
+      setSubmitted(true)
+    }
   }
 
   return (
@@ -70,7 +94,7 @@ function App() {
           className={`hero-bg ${heroLoaded ? 'hero-bg-loaded' : ''}`}
           style={{ backgroundImage: `url(${IMAGES.hero})` }}
         />
-<Link to="hero-sub" smooth duration={1000} offset={0} className="scroll-hint">
+        <Link to="hero-sub" smooth duration={1000} offset={0} className="scroll-hint">
           <span>Begin</span>
           <svg width="14" height="20" viewBox="0 0 14 20" fill="none">
             <path d="M7 3v14M1 12l6 6 6-6" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
@@ -95,9 +119,9 @@ function App() {
         </div>
       </section>
 
-     {/* LIVING SYSTEM */}
-<section className="living" id="living">
-          <div className="living-inner">
+      {/* LIVING SYSTEM */}
+      <section className="living" id="living">
+        <div className="living-inner">
           <p className="overline">A Living System</p>
           <h2>To return. To remember.<br />To build something worth belonging to.</h2>
           <div className="rule" />
@@ -314,8 +338,10 @@ function App() {
                 />
               </div>
 
-              <button type="submit" className="btn-submit">
-                Enter the Network
+              {formError && <p className="form-error">{formError}</p>}
+
+              <button type="submit" className="btn-submit" disabled={submitting}>
+                {submitting ? 'Sending...' : 'Enter the Network'}
               </button>
               {!formData.role && (
                 <p className="form-hint">Select your role to continue.</p>
