@@ -41,6 +41,8 @@
   height: 34px;
   width: auto;
   flex-shrink: 0;
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
 }
 
 .nav-links {
@@ -124,8 +126,8 @@
 .hero {
   position: relative;
   width: 100%;
-  height: 100vh;
-  min-height: 600px;
+  height: calc(100vh - 80px);
+  margin-top: 80px;
   overflow: hidden;
   background: var(--navy);
 }
@@ -143,62 +145,6 @@
 .hero-bg-loaded {
   opacity: 1;
   transform: scale(1.0);
-}
-
-
-.hero-sub {
-  font-family: 'Raleway', sans-serif;
-  font-size: 17px;
-  font-weight: 200;
-  color: var(--text-mid);
-  line-height: 2.1;
-  max-width: 520px;
-  letter-spacing: 0.06em;
-}
-
-.hero-sub em {
-  font-style: italic;
-  color: var(--text-dark);
-  font-weight: 300;
-}
-
-.btn-hero {
-  font-family: 'Raleway', sans-serif;
-  font-weight: 300;
-  font-size: 11px;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--navy);
-  background: transparent;
-  border: 1px solid rgba(13, 28, 43, 0.25);
-  padding: 18px 60px;
-  cursor: pointer;
-  transition: all 0.4s;
-}
-
-.btn-hero:hover {
-  background: var(--navy);
-  color: var(--white);
-  border-color: var(--navy);
-  letter-spacing: 0.32em;
-}
-
-.scroll-hint {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  color: var(--text-ghost);
-  font-family: 'Raleway', sans-serif;
-  font-size: 9px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.scroll-hint:hover {
-  color: var(--gold);
 }
 
 .scroll-hint {
@@ -224,7 +170,9 @@
   color: rgba(246, 243, 238, 0.8);
 }
 
-/* HERO SUB SECTION */
+/* ========================
+   HERO SUB SECTION
+======================== */
 .hero-sub-section {
   width: 100%;
   padding: 120px 80px;
@@ -561,7 +509,7 @@
 .card-veil-plum {
   background: linear-gradient(
     to top,
-    rgba(107, 45, 78, 0.96) 0%,
+    rgba(107, 45, 78, 0.97) 0%,
     rgba(107, 45, 78, 0.55) 45%,
     rgba(107, 45, 78, 0.08) 100%
   );
@@ -672,8 +620,8 @@
   display: block;
   font-family: 'Cinzel', serif;
   font-size: 72px;
-  color: var(--gold);
-  opacity: 0.15;
+  color: var(--navy);
+  opacity: 0.1;
   line-height: 1;
   margin-bottom: 24px;
   letter-spacing: 0.04em;
@@ -1104,12 +1052,11 @@ textarea {
     top: 80px;
     left: 0;
     right: 0;
-    background: rgba(246, 243, 238, 0.99);
-    backdrop-filter: blur(20px);
+    background: linear-gradient(135deg, #6b2d4e, #0d1c2b, #4f5f4a);
     flex-direction: column;
     padding: 40px 28px;
     gap: 32px;
-    border-bottom: 1px solid rgba(184, 134, 42, 0.1);
+    border-bottom: 1px solid rgba(196, 150, 58, 0.1);
   }
 
   .nav-links.open {
@@ -1124,21 +1071,21 @@ textarea {
     display: flex;
   }
 
-  .hero-content {
-    padding: 120px 28px 80px;
-  }
-
-  .hero-logo {
-    width: 320px;
-  }
-
-  .hero-sub {
-    font-size: 15px;
+  .hero {
+    height: auto;
+    aspect-ratio: 4 / 3;
+    min-height: unset;
+    margin-top: 80px;
   }
 
   .hero-sub-section {
-  padding: 48px 28px;
-}
+    padding: 48px 28px;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+  }
+
   .section-header {
     padding: 80px 28px 48px;
   }
@@ -1234,15 +1181,4 @@ textarea {
   .footer {
     padding: 80px 28px 48px;
   }
-
-.hero {
-  height: auto;
-  aspect-ratio: 4 / 3;
-  min-height: unset;
-}
-
-.hero-bg {
-  background-position: center center;
-  background-size: cover;
-}
 }
