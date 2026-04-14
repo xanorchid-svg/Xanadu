@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-scroll'
+import { useNavigate } from 'react-router-dom'
 import logoSlogan from './assets/logo_slogan.svg'
 import logomark from './assets/logomark.svg'
 import { supabase } from './supabase'
@@ -16,6 +17,8 @@ const IMAGES = {
   intention: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&q=85',
   alignment: new URL('./assets/alignment.png', import.meta.url).href,
 }
+
+const SCROLL_KEY = 'xanadu_scroll_pos'
 
 function useReveal() {
   const ref = useRef(null)
@@ -47,6 +50,7 @@ function App() {
   const [submitting, setSubmitting] = useState(false)
   const heroBgRef = useRef(null)
   const livingWordRef = useRef(null)
+  const navigate = useNavigate()
 
   const heroSubRef = useReveal()
   const livingRef = useReveal()
@@ -63,6 +67,21 @@ function App() {
   const card1Ref = useReveal()
   const card2Ref = useReveal()
   const card3Ref = useReveal()
+
+  // Restore scroll position when returning from a sub-page
+  useEffect(() => {
+    const saved = sessionStorage.getItem(SCROLL_KEY)
+    if (saved) {
+      const y = parseInt(saved, 10)
+      sessionStorage.removeItem(SCROLL_KEY)
+      // Small delay so the page has painted before jumping
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: y, behavior: 'instant' })
+        })
+      })
+    }
+  }, [])
 
   useEffect(() => {
     const img = new Image()
@@ -88,6 +107,12 @@ function App() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  // Save scroll position and navigate to a sub-page
+  const goTo = (path) => {
+    sessionStorage.setItem(SCROLL_KEY, String(window.scrollY))
+    navigate(path)
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -145,7 +170,7 @@ function App() {
           className={`hero-bg ${heroLoaded ? 'hero-bg-loaded' : ''}`}
           style={{ backgroundImage: `url(${IMAGES.hero})` }}
         />
-        <p className="hero-whisper">A Network for Awakening Places</p>
+        {/* hero-whisper removed */}
         <Link to="hero-sub" smooth duration={1000} offset={0} className="scroll-hint">
           <span>Begin</span>
           <svg width="14" height="20" viewBox="0 0 14 20" fill="none">
@@ -252,7 +277,7 @@ function App() {
         </div>
         <div className="network-grid">
 
-          <div ref={card1Ref} className="network-card network-card-clickable reveal reveal-left" onClick={() => window.location.href='/container'}>
+          <div ref={card1Ref} className="network-card network-card-clickable reveal reveal-left" onClick={() => goTo('/container')}>
             <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.containers})` }} />
             <div className="card-veil" />
             <div className="card-content">
@@ -262,7 +287,7 @@ function App() {
             </div>
           </div>
 
-          <div ref={card2Ref} className="network-card network-card-center network-card-clickable reveal reveal-delay-2" onClick={() => window.location.href='/seeker'}>
+          <div ref={card2Ref} className="network-card network-card-center network-card-clickable reveal reveal-delay-2" onClick={() => goTo('/seeker')}>
             <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.seeker})` }} />
             <div className="card-veil card-veil-plum" />
             <div className="card-content">
@@ -272,7 +297,7 @@ function App() {
             </div>
           </div>
 
-          <div ref={card3Ref} className="network-card network-card-clickable reveal reveal-right" onClick={() => window.location.href='/facilitator'}>
+          <div ref={card3Ref} className="network-card network-card-clickable reveal reveal-right" onClick={() => goTo('/facilitator')}>
             <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.facilitators})` }} />
             <div className="card-veil" />
             <div className="card-content">
@@ -295,7 +320,7 @@ function App() {
             Xanadu listens beneath the surface and makes the match.<br />
             Not an algorithm. A recognition.
           </p>
-          <a href="/path" className="dive-deeper">Dive Deeper</a>
+          <button className="dive-deeper" onClick={() => goTo('/path')}>Dive Deeper</button>
         </div>
       </section>
 
@@ -322,7 +347,7 @@ function App() {
             A remembering is underway — ancient, not new.<br />
             There is a fabric that holds all things, and you have always been part of it.
           </p>
-          <a href="/creation" className="dive-deeper">Dive Deeper</a>
+          <button className="dive-deeper" onClick={() => goTo('/creation')}>Dive Deeper</button>
         </div>
       </section>
 
@@ -336,7 +361,7 @@ function App() {
             <em>The exposure you seek is not reach. It is resonance.</em>
           </p>
           <div className="ln-actions">
-            <a href="/living-network" className="dive-deeper dive-deeper-light">Dive Deeper</a>
+            <button className="dive-deeper dive-deeper-light" onClick={() => goTo('/living-network')}>Dive Deeper</button>
             <Link to="join" smooth duration={1000} offset={-76}>
               <button className="btn-hero ln-btn"><span>Begin the Journey</span></button>
             </Link>
