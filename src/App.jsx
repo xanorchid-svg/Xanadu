@@ -362,6 +362,39 @@ function App() {
           <h2>The Ancient Future.<br />We Are Here to Steward Its Return.</h2>
           <p className="join-sub">Come as you are. Grow together.</p>
 
+          {/* LIVING NETWORK */}
+          <div className="living-network">
+            <div className="ln-rule" />
+            <p className="overline">The Living Network</p>
+            <h3 className="ln-heading">What grows here,<br />grows together.</h3>
+            <div className="ln-body">
+              <p>
+                This is not a directory. It is not a marketplace.<br />
+                It is a living system — and living systems only thrive<br />
+                when what is inside them is real.
+              </p>
+              <p>
+                When you enter Xanadu, you are seen.<br />
+                Your space. Your work. Your gifts. Your path.<br />
+                Offered to the people who are genuinely ready to receive them.
+              </p>
+              <p>
+                We grow by being known.<br />
+                Not by performing. Not by marketing.<br />
+                By showing up, truthfully, in a place that was built to hold that.
+              </p>
+              <p className="ln-emphasis">
+                <em>The exposure you have been seeking is not reach. It is resonance.</em><br />
+                The right people. The right moment. The right container.
+              </p>
+              <p>
+                That is what the network provides —<br />
+                and it only exists because you are willing to be part of it.
+              </p>
+            </div>
+            <div className="ln-rule" />
+          </div>
+
           {submitted ? (
             <div className="form-success">
               <img src={logomark} alt="" className="success-mark" />
