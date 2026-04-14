@@ -272,17 +272,52 @@ function App() {
             </div>
           </div>
 
+          <div ref={card1Ref} className="network-card reveal reveal-left">
+            <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.containers})` }} />
+            <div className="card-veil" />
+            <div className="card-content">
+              <p className="card-label">Containers</p>
+              <h3>Sacred Spaces</h3>
+              <p>You have prepared the land. The space is ready. The intention is clear. But the right facilitators don't find you — and the seekers who would thrive here don't know you exist. Xanadu closes that gap.</p>
+            </div>
+          </div>
+
+          <div ref={card2Ref} className="network-card network-card-center reveal reveal-delay-2">
+            <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.seeker})` }} />
+            <div className="card-veil card-veil-plum" />
+            <div className="card-content">
+              <p className="card-label">You</p>
+              <h3>The Seeker</h3>
+              <p>You feel the pull toward something — healing, community, service, devotion. You may not have the words for it yet. You don't need them. You need a place that was built to receive exactly where you are.</p>
+            </div>
+          </div>
+
           <div ref={card3Ref} className="network-card reveal reveal-right">
             <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.facilitators})` }} />
             <div className="card-veil" />
             <div className="card-content">
               <p className="card-label">Facilitators</p>
               <h3>Wisdom Keepers</h3>
-              <p>Breathwork guides, somatic practitioners, yoga teachers, ceremonialists — verified guides who have walked the path and are called to walk beside you.</p>
+              <p>You carry real medicine. But finding the spaces worthy of your work — and the seekers ready for it — is its own labour. Xanadu holds that for you, so you can focus on what you came here to do.</p>
             </div>
           </div>
 
         </div>
+
+        {/* TRIANGLE CLOSING */}
+        <div className="triangle-closing reveal" ref={useReveal()}>
+          <div className="triangle-rule" />
+          <p className="triangle-text">
+            Three threads, pulling toward the same centre.<br />
+            The space that needs the guide.<br />
+            The guide that needs the people.<br />
+            The people that need the space.<br /><br />
+            <em>None of them complete without the others.<br />
+            All of them held, here.</em>
+          </p>
+          <div className="triangle-rule" />
+        </div>
+
       </section>
 
       {/* THE PATH — condensed */}
