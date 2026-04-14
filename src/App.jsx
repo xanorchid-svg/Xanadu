@@ -122,7 +122,7 @@ function App() {
           <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
             <Link to="pillars" smooth duration={900} offset={-76} onClick={() => setMenuOpen(false)}>Three Pillars</Link>
             <Link to="network" smooth duration={900} offset={-76} onClick={() => setMenuOpen(false)}>The Network</Link>
-            <Link to="creation" smooth duration={900} offset={-76} onClick={() => setMenuOpen(false)}>The Creation</Link>
+            <Link to="living-network" smooth duration={900} offset={-76} onClick={() => setMenuOpen(false)}>The Vision</Link>
             <Link to="join" smooth duration={900} offset={-76} onClick={() => setMenuOpen(false)}>Join</Link>
           </div>
           <Link to="join" smooth duration={900} offset={-76} className="nav-cta" onClick={() => setMenuOpen(false)}>
@@ -313,30 +313,16 @@ function App() {
         </div>
       </section>
 
-      {/* THE CREATION */}
-      <section className="creation" id="creation" style={{ backgroundImage: `url(${IMAGES.creation})` }}>
-        <div className="creation-veil" />
-        <div ref={creationRef} className="creation-inner reveal">
+      {/* CREATION BRIDGE */}
+      <section className="creation-bridge" id="creation">
+        <div className="creation-bridge-inner reveal" ref={useReveal()}>
           <p className="overline">The Creation</p>
-          <h2>What We Cultivate</h2>
-          <div className="creation-trio">
-            <span>Remembrance.</span>
-            <span>Belonging.</span>
-            <span>Emergence.</span>
-          </div>
-          <p className="creation-body">
-            A remembering is underway. Not new — ancient. Rising at the scale of the whole. To listen to our ancestors. To honour those who carried the flame and passed it forward. Together, we steward what the earth has always known — that life is meant to be full of light, love, healing, laughter, joy, play, abundance.
+          <p className="creation-bridge-text">
+            <em>Remembrance. Belonging. Emergence.</em><br />
+            A remembering is underway — ancient, not new.<br />
+            There is a fabric that holds all things, and you have always been part of it.
           </p>
-          <blockquote className="creation-poem">
-            There is a fabric that holds all things.<br />
-            Ancient. Alive.<br />
-            Humming at a frequency your body already knows.<br />
-            You have always been part of it.<br />
-            The village. The fire. The circle.<br />
-            The eyes across the room that feel like home.
-          </blockquote>
-          <p className="creation-close">We are not building connection here.<br />We are clearing the space for what was always true to be felt again.</p>
-          <a href="/creation" className="dive-deeper dive-deeper-light">Dive Deeper</a>
+          <a href="/creation" className="dive-deeper">Dive Deeper</a>
         </div>
       </section>
 
@@ -345,27 +331,16 @@ function App() {
         <div ref={livingNetworkRef} className="living-network-inner reveal">
           <p className="overline">The Living Network</p>
           <h2 className="ln-heading">What grows here,<br />grows together.</h2>
-          <div className="ln-body">
-            <p>
-              This is not a directory.<br />
-              It is a living system — and it only thrives when what is inside it is real.
-            </p>
-            <p>
-              When you enter Xanadu, you are seen.<br />
-              Your space. Your work. Your gifts. Your path —<br />
-              offered to the people who are genuinely ready to receive them.
-            </p>
-            <p className="ln-emphasis">
-              <em>The exposure you seek is not reach. It is resonance.</em>
-            </p>
-            <p>
-              That is what the network provides.<br />
-              And it only exists because you are willing to be part of it.
-            </p>
+          <p className="ln-teaser">
+            This is not a directory. It is a living system.<br />
+            <em>The exposure you seek is not reach. It is resonance.</em>
+          </p>
+          <div className="ln-actions">
+            <a href="/living-network" className="dive-deeper dive-deeper-light">Dive Deeper</a>
+            <Link to="join" smooth duration={1000} offset={-76}>
+              <button className="btn-hero ln-btn"><span>Begin the Journey</span></button>
+            </Link>
           </div>
-          <Link to="join" smooth duration={1000} offset={-76}>
-            <button className="btn-hero ln-btn"><span>Begin the Journey</span></button>
-          </Link>
         </div>
       </section>
 

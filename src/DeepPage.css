@@ -336,6 +336,112 @@
 .deep-cta-btn-light:hover { color: var(--white); }
 
 /* ========================
+   NAVY DEEP PAGE
+======================== */
+.deep-page-navy {
+  background: var(--navy);
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Concentric circles */
+.ln-deep-circles {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 900px;
+  height: 900px;
+  pointer-events: none;
+  z-index: 0;
+}
+.ln-deep-circles::before,
+.ln-deep-circles::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(184,134,42,0.07);
+}
+.ln-deep-circles::before {
+  inset: 0;
+}
+.ln-deep-circles::after {
+  inset: 160px;
+}
+
+.deep-content-navy {
+  position: relative;
+  z-index: 2;
+}
+
+.deep-page-navy .deep-nav-dark {
+  background: rgba(13,28,43,0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.deep-title-white {
+  color: var(--white) !important;
+}
+
+.deep-subtitle-muted {
+  color: rgba(246,243,238,0.55) !important;
+}
+
+/* Living network body text */
+.deep-body-navy {
+  text-align: center;
+  align-items: center;
+}
+
+.ln-deep-body {
+  font-family: 'Raleway', sans-serif;
+  font-size: 17px;
+  font-weight: 200;
+  color: rgba(246,243,238,0.68);
+  line-height: 2.2;
+  letter-spacing: 0.04em;
+  max-width: 580px;
+  margin: 0 0 32px;
+}
+
+.ln-deep-pull {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 300;
+  color: var(--gold-light);
+  font-style: italic;
+  line-height: 1.6;
+  letter-spacing: 0.06em;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.ln-deep-close {
+  font-family: 'Raleway', sans-serif;
+  font-size: 17px;
+  font-weight: 300;
+  color: var(--white);
+  line-height: 2.1;
+  letter-spacing: 0.04em;
+  text-align: center;
+  margin: 0;
+}
+
+.deep-cta-btn-navy {
+  color: var(--white);
+  border-color: rgba(246,243,238,0.28);
+}
+.deep-cta-btn-navy::before {
+  background: var(--plum);
+}
+.deep-cta-btn-navy:hover {
+  color: var(--white);
+  border-color: rgba(246,243,238,0.7);
+}
+
+/* ========================
    MOBILE
 ======================== */
 @media (max-width: 768px) {
