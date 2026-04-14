@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabase.js'
 import './WaitlistPopup.css'
 
-const SHOWN_KEY = 'xanadu_popup_shown'
-
 export default function WaitlistPopup() {
   const [visible, setVisible] = useState(false)
   const [closing, setClosing] = useState(false)
@@ -19,31 +17,22 @@ export default function WaitlistPopup() {
   const show = () => {
     if (shown.current) return
     shown.current = true
-    sessionStorage.setItem(SHOWN_KEY, 'true')
     setVisible(true)
   }
 
   useEffect(() => {
-    // Don't show again if already seen this session
-    if (sessionStorage.getItem(SHOWN_KEY)) {
-      shown.current = true
-      return
-    }
-
-    // Trigger 1: Show after 4 seconds on page entry
+    // Show 4 seconds after every page load
     const entryTimer = setTimeout(show, 4000)
 
-    // Trigger 2: Exit intent — mouse leaves toward top of browser
-    const onMouseOut = (e) => {
-      if (e.clientY <= 5 && !shown.current) {
-        show()
-      }
+    // Also show on exit intent (mouse leaving toward top of browser)
+    const onMouseLeave = (e) => {
+      if (e.clientY <= 5) show()
     }
-    document.addEventListener('mouseleave', onMouseOut)
+    document.addEventListener('mouseleave', onMouseLeave)
 
     return () => {
       clearTimeout(entryTimer)
-      document.removeEventListener('mouseleave', onMouseOut)
+      document.removeEventListener('mouseleave', onMouseLeave)
     }
   }, [])
 

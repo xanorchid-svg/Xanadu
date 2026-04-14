@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-scroll'
 import { useNavigate } from 'react-router-dom'
-import logoSlogan from './assets/logo_slogan.svg'
+import logoSlogan from './assets/logo_slogan_dark.svg'
 import logomark from './assets/logomark.svg'
 import { supabase } from './supabase'
 import './App.css'
@@ -58,7 +58,6 @@ function App() {
   const theworkRef = useReveal()
   const networkHeaderRef = useReveal()
   const midCtaRef = useReveal()
-  const creationRef = useReveal()
   const livingNetworkRef = useReveal()
   const joinRef = useReveal()
   const pillar1Ref = useReveal()
@@ -68,7 +67,6 @@ function App() {
   const card2Ref = useReveal()
   const card3Ref = useReveal()
 
-  // Restore scroll position when returning from a sub-page
   useEffect(() => {
     const saved = sessionStorage.getItem(SCROLL_KEY)
     if (saved) {
@@ -90,11 +88,9 @@ function App() {
     const onScroll = () => {
       const y = window.scrollY
       setScrolled(y > 60)
-
       if (heroBgRef.current) {
         heroBgRef.current.style.transform = `translateY(${y * 0.28}px)`
       }
-
       if (livingWordRef.current) {
         const rect = livingWordRef.current.getBoundingClientRect()
         if (rect.top < window.innerHeight * 0.85) {
@@ -128,7 +124,6 @@ function App() {
     setSubmitting(false)
     if (error) {
       setFormError('Something went wrong. Please try again.')
-      console.error(error)
     } else {
       setSubmitted(true)
     }
@@ -217,7 +212,6 @@ function App() {
           <h2>What We Stand On</h2>
         </div>
         <div className="pillars-grid">
-
           <div ref={pillar1Ref} className="pillar reveal reveal-left">
             <div className="pillar-bg-inner" style={{ backgroundImage: `url(${IMAGES.trust})` }} />
             <div className="pillar-veil" />
@@ -226,7 +220,6 @@ function App() {
               <p>Every space, every guide, every offering is verified by us before it enters the network. Nothing is here by accident. Everything has been held, considered, and chosen.</p>
             </div>
           </div>
-
           <div ref={pillar2Ref} className="pillar pillar-tall reveal reveal-delay-2">
             <div className="pillar-bg-inner" style={{ backgroundImage: `url(${IMAGES.intention})` }} />
             <div className="pillar-veil" />
@@ -235,7 +228,6 @@ function App() {
               <p>We listen beneath the surface. Not just to what you are seeking — but to why. The match we make is not a recommendation. It is a recognition.</p>
             </div>
           </div>
-
           <div ref={pillar3Ref} className="pillar reveal reveal-right">
             <div className="pillar-bg-inner" style={{ backgroundImage: `url(${IMAGES.alignment})` }} />
             <div className="pillar-veil" />
@@ -244,7 +236,6 @@ function App() {
               <p>For the people. For the land. For the wisdom lineages that have carried this flame forward. What belongs together finds each other here.</p>
             </div>
           </div>
-
         </div>
       </section>
 
@@ -273,7 +264,6 @@ function App() {
           <p className="section-sub">Three threads. One fabric.</p>
         </div>
         <div className="network-grid">
-
           <div ref={card1Ref} className="network-card network-card-clickable reveal reveal-left" onClick={() => goTo('/container')}>
             <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.containers})` }} />
             <div className="card-veil" />
@@ -283,7 +273,6 @@ function App() {
               <p>You have prepared the land. The space is ready. But the right facilitators don't find you — and the seekers who would thrive here don't know you exist. Xanadu closes that gap.</p>
             </div>
           </div>
-
           <div ref={card2Ref} className="network-card network-card-center network-card-clickable reveal reveal-delay-2" onClick={() => goTo('/seeker')}>
             <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.seeker})` }} />
             <div className="card-veil card-veil-plum" />
@@ -293,7 +282,6 @@ function App() {
               <p>You feel the pull toward something — healing, community, service, devotion. You may not have the words for it yet. You don't need them. You need a place built to receive exactly where you are.</p>
             </div>
           </div>
-
           <div ref={card3Ref} className="network-card network-card-clickable reveal reveal-right" onClick={() => goTo('/facilitator')}>
             <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.facilitators})` }} />
             <div className="card-veil" />
@@ -303,11 +291,10 @@ function App() {
               <p>You carry real medicine. But finding the spaces worthy of your work — and the seekers ready for it — is its own labour. Xanadu holds that for you, so you can do what you came here to do.</p>
             </div>
           </div>
-
         </div>
       </section>
 
-      {/* THE PATH — condensed */}
+      {/* THE PATH */}
       <section className="path" id="path">
         <div className="path-inner reveal" ref={useReveal()}>
           <p className="overline">How It Works</p>
@@ -385,26 +372,15 @@ function App() {
               <div className="form-row">
                 <div className="field">
                   <label>Name</label>
-                  <input
-                    type="text"
-                    placeholder="Your full name"
-                    required
-                    value={formData.name}
-                    onChange={e => setFormData({...formData, name: e.target.value})}
-                  />
+                  <input type="text" placeholder="Your full name" required
+                    value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
                 </div>
                 <div className="field">
                   <label>Email</label>
-                  <input
-                    type="email"
-                    placeholder="Your email address"
-                    required
-                    value={formData.email}
-                    onChange={e => setFormData({...formData, email: e.target.value})}
-                  />
+                  <input type="email" placeholder="Your email address" required
+                    value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
                 </div>
               </div>
-
               <div className="field">
                 <label>I am entering as —</label>
                 <div className="role-options">
@@ -413,12 +389,9 @@ function App() {
                     { id: 'Facilitator', icon: '◈', desc: 'A guide, teacher & wisdom keeper' },
                     { id: 'Container', icon: '⬡', desc: 'A sacred space that holds the work' },
                   ].map(({ id, icon, desc }) => (
-                    <button
-                      key={id}
-                      type="button"
+                    <button key={id} type="button"
                       className={`role-btn ${formData.role === id ? 'active' : ''}`}
-                      onClick={() => setFormData({...formData, role: id})}
-                    >
+                      onClick={() => setFormData({...formData, role: id})}>
                       <span className="role-icon">{icon}</span>
                       <span className="role-name">{id}</span>
                       <span className="role-desc">{desc}</span>
@@ -426,25 +399,16 @@ function App() {
                   ))}
                 </div>
               </div>
-
               <div className="field">
                 <label>Your intention <span className="optional">— optional</span></label>
-                <textarea
-                  placeholder="What are you bringing, seeking, or offering?"
-                  rows={3}
-                  value={formData.intention}
-                  onChange={e => setFormData({...formData, intention: e.target.value})}
-                />
+                <textarea placeholder="What are you bringing, seeking, or offering?" rows={3}
+                  value={formData.intention} onChange={e => setFormData({...formData, intention: e.target.value})} />
               </div>
-
               {formError && <p className="form-error">{formError}</p>}
-
               <button type="submit" className="btn-submit" disabled={submitting}>
                 <span>{submitting ? 'Sending...' : 'Come as You Are'}</span>
               </button>
-              {!formData.role && (
-                <p className="form-hint">Select your role to continue.</p>
-              )}
+              {!formData.role && <p className="form-hint">Select your role to continue.</p>}
             </form>
           )}
         </div>
