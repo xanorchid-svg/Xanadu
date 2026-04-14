@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-scroll'
-import logo from './assets/logo.svg'
 import logoSlogan from './assets/logo_slogan.svg'
 import logomark from './assets/logomark.svg'
 import { supabase } from './supabase'
@@ -18,7 +17,6 @@ const IMAGES = {
   alignment: new URL('./assets/alignment.png', import.meta.url).href,
 }
 
-// Reusable hook for scroll reveal
 function useReveal() {
   const ref = useRef(null)
   useEffect(() => {
@@ -31,7 +29,7 @@ function useReveal() {
           observer.unobserve(el)
         }
       },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.1, rootMargin: '0px 0px -30px 0px' }
     )
     observer.observe(el)
     return () => observer.disconnect()
@@ -48,46 +46,37 @@ function App() {
   const [formError, setFormError] = useState(null)
   const [submitting, setSubmitting] = useState(false)
   const heroBgRef = useRef(null)
+  const livingWordRef = useRef(null)
 
-  // Scroll reveal refs — each section
   const heroSubRef = useReveal()
   const livingRef = useReveal()
-  const livingWordRef = useRef(null)
   const pillarsHeaderRef = useReveal()
   const theworkRef = useReveal()
   const networkHeaderRef = useReveal()
-  const pathRef = useReveal()
+  const midCtaRef = useReveal()
   const creationRef = useReveal()
+  const livingNetworkRef = useReveal()
   const joinRef = useReveal()
-
-  // Individual card/step refs for staggered reveals
   const pillar1Ref = useReveal()
   const pillar2Ref = useReveal()
   const pillar3Ref = useReveal()
   const card1Ref = useReveal()
   const card2Ref = useReveal()
   const card3Ref = useReveal()
-  const step1Ref = useReveal()
-  const step2Ref = useReveal()
-  const step3Ref = useReveal()
 
   useEffect(() => {
     const img = new Image()
     img.src = IMAGES.hero
     img.onload = () => setHeroLoaded(true)
 
-    // Scroll: nav state + hero parallax + living word
     const onScroll = () => {
       const y = window.scrollY
       setScrolled(y > 60)
 
-      // Parallax on hero bg
       if (heroBgRef.current) {
-        heroBgRef.current.style.setProperty('--parallax-y', `${y * 0.3}px`)
         heroBgRef.current.style.transform = `translateY(${y * 0.28}px)`
       }
 
-      // Living word reveal on scroll depth
       if (livingWordRef.current) {
         const rect = livingWordRef.current.getBoundingClientRect()
         if (rect.top < window.innerHeight * 0.85) {
@@ -103,10 +92,8 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!formData.role) return
-
     setSubmitting(true)
     setFormError(null)
-
     const { error } = await supabase
       .from('waitlist')
       .insert([{
@@ -115,9 +102,7 @@ function App() {
         role: formData.role,
         intention: formData.intention,
       }])
-
     setSubmitting(false)
-
     if (error) {
       setFormError('Something went wrong. Please try again.')
       console.error(error)
@@ -137,7 +122,7 @@ function App() {
           <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
             <Link to="pillars" smooth duration={900} offset={-76} onClick={() => setMenuOpen(false)}>Three Pillars</Link>
             <Link to="network" smooth duration={900} offset={-76} onClick={() => setMenuOpen(false)}>The Network</Link>
-            <Link to="path" smooth duration={900} offset={-76} onClick={() => setMenuOpen(false)}>The Path</Link>
+            <Link to="creation" smooth duration={900} offset={-76} onClick={() => setMenuOpen(false)}>The Creation</Link>
             <Link to="join" smooth duration={900} offset={-76} onClick={() => setMenuOpen(false)}>Join</Link>
           </div>
           <Link to="join" smooth duration={900} offset={-76} className="nav-cta" onClick={() => setMenuOpen(false)}>
@@ -160,6 +145,7 @@ function App() {
           className={`hero-bg ${heroLoaded ? 'hero-bg-loaded' : ''}`}
           style={{ backgroundImage: `url(${IMAGES.hero})` }}
         />
+        <p className="hero-whisper">A Network for Awakening Places</p>
         <Link to="hero-sub" smooth duration={1000} offset={0} className="scroll-hint">
           <span>Begin</span>
           <svg width="14" height="20" viewBox="0 0 14 20" fill="none">
@@ -177,13 +163,11 @@ function App() {
             <em>Xanadu is not an answer. It is an invitation.</em>
           </p>
           <p className="hero-definition reveal reveal-delay-2" ref={useReveal()}>
-            <em>xa·na·du</em> &nbsp;/ˈzanəˌdo͞o/ &nbsp;—&nbsp; an idealized place of great or idyllic magnificence and beauty.
+            <em>xa·na·du</em>&nbsp; /ˈzanəˌdo͞o/&nbsp; —&nbsp; an idealized place of great or idyllic magnificence and beauty.
           </p>
           <div className="reveal reveal-delay-3" ref={useReveal()}>
             <Link to="join" smooth duration={1000} offset={-76}>
-              <button className="btn-hero">
-                <span>Enter the Network</span>
-              </button>
+              <button className="btn-hero"><span>Enter the Network</span></button>
             </Link>
           </div>
         </div>
@@ -197,7 +181,7 @@ function App() {
             <h2>To return. To remember.<br />To build something worth belonging to.</h2>
             <div className="rule" />
             <p className="body-lg">
-              The spaces we enter shape our experiences. The communities we gather with shape our lives. Yet it has become difficult to know which places truly hold integrity and true intentions. Xanadu exists to restore trust in the environments where transformation happens.
+              The spaces we enter shape our experiences. The communities we gather with shape our lives. Yet it has become difficult to know which places truly hold integrity — and true intention. Xanadu exists to restore trust in the environments where transformation happens.
             </p>
           </div>
           <div ref={livingWordRef} className="living-word">TRUST.</div>
@@ -217,7 +201,7 @@ function App() {
             <div className="pillar-veil" />
             <div className="pillar-content">
               <h3>Trust.</h3>
-              <p>We verify the integrity of every space, every guide, every offering in our network. Nothing is here by chance. Everything is held with purpose.</p>
+              <p>Every space, every guide, every offering is verified by us before it enters the network. Nothing is here by accident. Everything has been held, considered, and chosen.</p>
             </div>
           </div>
 
@@ -226,7 +210,7 @@ function App() {
             <div className="pillar-veil" />
             <div className="pillar-content">
               <h3>Intention.</h3>
-              <p>The path is already yours. We help you see it more clearly — not by changing who you are, but by bringing you closer to what already fits. Heart-led. Grounded. True.</p>
+              <p>We listen beneath the surface. Not just to what you are seeking — but to why. The match we make is not a recommendation. It is a recognition.</p>
             </div>
           </div>
 
@@ -235,7 +219,7 @@ function App() {
             <div className="pillar-veil" />
             <div className="pillar-content">
               <h3>Alignment.</h3>
-              <p>Here for the people. Here for the land. Here for the wisdom. Here for the medicine. Here for the future. Here for you.</p>
+              <p>For the people. For the land. For the wisdom lineages that have carried this flame forward. What belongs together finds each other here.</p>
             </div>
           </div>
 
@@ -274,7 +258,7 @@ function App() {
             <div className="card-content">
               <p className="card-label">Containers</p>
               <h3>Sacred Spaces</h3>
-              <p>Trusted ecovillages, retreat centers, schools, temples, and sanctuaries — physical grounds where transformation is possible because the space itself has been prepared to receive it.</p>
+              <p>Ecovillages, retreat centers, temples, and sanctuaries that have been verified for integrity. Spaces where the land itself has been prepared to hold the work.</p>
             </div>
           </div>
 
@@ -284,7 +268,7 @@ function App() {
             <div className="card-content">
               <p className="card-label">You</p>
               <h3>The Seeker</h3>
-              <p>Arriving exactly as you are — whether seeking deep personal healing, a training that will awaken your gifts, or a way to offer your hands in service. Your path is valid. We help you find it.</p>
+              <p>Arriving exactly as you are. Whether seeking healing, a practice, a community, or a place to offer your gifts — your path is real. We help you find where it leads.</p>
             </div>
           </div>
 
@@ -294,37 +278,24 @@ function App() {
             <div className="card-content">
               <p className="card-label">Facilitators</p>
               <h3>Wisdom Keepers</h3>
-              <p>Breathwork guides, yoga teachers, shamans, somatic practitioners, plant medicine ceremonialists — people who have walked the path and are called to walk beside you.</p>
+              <p>Breathwork guides, somatic practitioners, yoga teachers, ceremonialists — verified guides who have walked the path and are called to walk beside you.</p>
             </div>
           </div>
 
         </div>
       </section>
 
-      {/* THE PATH */}
-      <section className="path" id="path">
-        <div ref={pathRef} className="path-inner reveal">
-          <p className="overline">How It Works</p>
-          <h2>The Path</h2>
-          <div className="path-steps">
-            <div ref={step1Ref} className="step reveal reveal-left">
-              <span className="step-num">01</span>
-              <h3>Share Your Intention</h3>
-              <p>Get clear on what you're seeking. A feeling. A shift. A remembering. You don't need all the answers — just honesty.</p>
-            </div>
-            <div className="step-line" />
-            <div ref={step2Ref} className="step reveal reveal-delay-2">
-              <span className="step-num">02</span>
-              <h3>We Make the Match</h3>
-              <p>Xanadu listens beneath the surface — connecting you with the right people, the right spaces, the right moment.</p>
-            </div>
-            <div className="step-line" />
-            <div ref={step3Ref} className="step reveal reveal-right">
-              <span className="step-num">03</span>
-              <h3>Follow the Path</h3>
-              <p>Step into the experience. Meet what's there. Build, connect, and expand within it.</p>
-            </div>
-          </div>
+      {/* MID-PAGE CTA */}
+      <section className="mid-cta" id="mid-cta">
+        <div ref={midCtaRef} className="mid-cta-inner reveal">
+          <p className="mid-cta-mark">✦</p>
+          <p className="mid-cta-text">
+            The network is forming.<br />
+            <em>Be among the first to enter.</em>
+          </p>
+          <Link to="join" smooth duration={1000} offset={-76}>
+            <button className="btn-hero"><span>Join the Network</span></button>
+          </Link>
         </div>
       </section>
 
@@ -356,7 +327,7 @@ function App() {
 
       {/* LIVING NETWORK */}
       <section className="living-network-section" id="living-network">
-        <div className="living-network-inner reveal" ref={useReveal()}>
+        <div ref={livingNetworkRef} className="living-network-inner reveal">
           <p className="overline">The Living Network</p>
           <h2 className="ln-heading">What grows here,<br />grows together.</h2>
           <div className="ln-body">
@@ -378,7 +349,7 @@ function App() {
             </p>
           </div>
           <Link to="join" smooth duration={1000} offset={-76}>
-            <button className="btn-hero"><span>Enter the Network</span></button>
+            <button className="btn-hero ln-btn"><span>Enter the Network</span></button>
           </Link>
         </div>
       </section>
