@@ -5,6 +5,7 @@ import logoSlogan from './assets/logo_slogan.svg'
 import logomark from './assets/logomark.svg'
 import { supabase } from './supabase'
 import './App.css'
+import WaitlistPopup from './WaitlistPopup'
 
 const IMAGES = {
   hero: new URL('./assets/hero.png', import.meta.url).href,
@@ -127,6 +128,7 @@ function App() {
 
   return (
     <div className="site">
+      <WaitlistPopup />
 
       {/* NAV */}
       <nav className={`nav ${scrolled ? 'nav-scrolled' : ''}`}>
