@@ -5,6 +5,7 @@
   width: 100%;
   min-height: 100vh;
   background: var(--white);
+  overflow-x: hidden;
 }
 
 /* ========================
@@ -354,7 +355,7 @@
 /* ========================
    THREE PILLARS
 ======================== */
-.pillars { width: 100%; background: var(--white); }
+.pillars { width: 100%; background: var(--white); overflow: hidden; }
 
 .pillars-grid {
   display: grid;
@@ -493,7 +494,7 @@
 /* ========================
    THE NETWORK
 ======================== */
-.network { width: 100%; background: var(--white); }
+.network { width: 100%; background: var(--white); overflow: hidden; }
 
 .network-grid {
   display: grid;
