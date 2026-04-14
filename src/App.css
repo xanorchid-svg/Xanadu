@@ -1080,6 +1080,16 @@ textarea { resize: none; line-height: 1.8; }
   max-width: 520px;
 }
 
+.network-card-clickable {
+  cursor: pointer;
+  transition: box-shadow 0.4s cubic-bezier(0.16,1,0.3,1), outline 0.4s;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+}
+.network-card-clickable:hover {
+  outline: 2px solid rgba(184,134,42,0.55);
+}
+
 /* ========================
    TRIANGLE CLOSING
 ======================== */
