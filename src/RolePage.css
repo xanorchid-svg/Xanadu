@@ -1,0 +1,85 @@
+/* ========================
+   ROLE PAGE SHARED
+======================== */
+.role-triangle {
+  margin: 44px auto 40px;
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+  animation: triangleFade 1.2s cubic-bezier(0.16,1,0.3,1) 0.3s forwards;
+}
+
+@keyframes triangleFade {
+  from { opacity: 0; transform: scale(0.92) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.role-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.role-block {
+  padding: 52px 0;
+}
+
+.role-block h2 {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(18px, 2.2vw, 26px);
+  font-weight: 400;
+  color: var(--navy);
+  letter-spacing: 0.06em;
+  margin-bottom: 28px;
+  line-height: 1.3;
+}
+
+.role-block p {
+  font-family: 'Raleway', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--text-mid);
+  line-height: 2.1;
+  letter-spacing: 0.03em;
+  margin-bottom: 20px;
+}
+
+.role-block p:last-child { margin-bottom: 0; }
+
+/* ========================
+   ROLE CTA BUTTONS
+======================== */
+
+/* Seeker — plum */
+.deep-cta-btn-plum {
+  color: var(--navy);
+  border-color: rgba(107,45,78,0.35);
+}
+.deep-cta-btn-plum::before { background: var(--plum); }
+.deep-cta-btn-plum:hover   { color: var(--white); border-color: var(--plum); }
+
+/* Facilitator — gold */
+.deep-cta-btn-gold {
+  color: var(--navy);
+  border-color: rgba(184,134,42,0.35);
+}
+.deep-cta-btn-gold::before { background: var(--navy); }
+.deep-cta-btn-gold:hover   { color: var(--white); border-color: var(--navy); }
+
+/* Container — sage */
+.deep-cta-btn-sage {
+  color: var(--navy);
+  border-color: rgba(79,95,74,0.35);
+}
+.deep-cta-btn-sage::before { background: #4f5f4a; }
+.deep-cta-btn-sage:hover   { color: var(--white); border-color: #4f5f4a; }
+
+/* ========================
+   MOBILE
+======================== */
+@media (max-width: 768px) {
+  .role-block { padding: 36px 0; }
+  .role-block h2 { font-size: 20px; }
+  .role-block p  { font-size: 15px; }
+  .role-triangle { margin: 32px auto; }
+}
