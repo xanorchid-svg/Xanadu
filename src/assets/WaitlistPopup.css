@@ -1,0 +1,199 @@
+/* ─── Overlay ─────────────────────────────────────────────── */
+.xp-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(13, 28, 43, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: xp-fade-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.xp-overlay.xp-closing {
+  animation: xp-fade-out 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ─── Modal ────────────────────────────────────────────────── */
+.xp-modal {
+  position: relative;
+  background: #f6f3ee;
+  width: 100%;
+  max-width: 440px;
+  padding: 52px 48px 48px;
+  text-align: center;
+  animation: xp-rise 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.xp-overlay.xp-closing .xp-modal {
+  animation: xp-sink 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ─── Close button ─────────────────────────────────────────── */
+.xp-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #b5aca3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: color 0.2s;
+}
+.xp-close:hover { color: #3d3530; }
+
+/* ─── Mark ─────────────────────────────────────────────────── */
+.xp-mark {
+  font-size: 18px;
+  color: #b8862a;
+  margin-bottom: 20px;
+  display: block;
+  opacity: 0.7;
+}
+.xp-mark-gold {
+  opacity: 1;
+  font-size: 24px;
+  margin-bottom: 28px;
+}
+
+/* ─── Typography ───────────────────────────────────────────── */
+.xp-overline {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 300;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #b8862a;
+  margin: 0 0 14px;
+}
+.xp-heading {
+  font-family: 'Cinzel', serif;
+  font-weight: 300;
+  font-size: 28px;
+  letter-spacing: 0.06em;
+  color: #0d1c2b;
+  margin: 0 0 16px;
+  line-height: 1.2;
+}
+.xp-sub {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 1.8;
+  color: #8a7e74;
+  margin: 0 0 32px;
+  letter-spacing: 0.02em;
+}
+
+/* ─── Form ─────────────────────────────────────────────────── */
+.xp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.xp-row {
+  display: flex;
+  gap: 10px;
+}
+.xp-row .xp-input { flex: 1; min-width: 0; }
+
+.xp-input {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: #0d1c2b;
+  background: white;
+  border: 1px solid #ddd8d0;
+  border-radius: 0;
+  padding: 13px 16px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.xp-input::placeholder { color: #b5aca3; font-weight: 300; }
+.xp-input:focus { border-color: #b8862a; }
+.xp-textarea { resize: none; line-height: 1.6; }
+
+/* ─── Role selector ────────────────────────────────────────── */
+.xp-roles {
+  display: flex;
+  gap: 8px;
+}
+.xp-role {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 8px;
+  background: white;
+  border: 1px solid #ddd8d0;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.xp-role:hover { border-color: #b8862a; }
+.xp-role-active { border-color: #b8862a; background: #faf7f2; }
+
+.xp-role-symbol { font-size: 16px; color: #b8862a; line-height: 1; }
+.xp-role-name {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3d3530;
+}
+
+/* ─── Submit button ────────────────────────────────────────── */
+.xp-btn {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #f6f3ee;
+  background: #0d1c2b;
+  border: none;
+  padding: 16px 24px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 4px;
+  transition: background 0.2s;
+}
+.xp-btn:hover:not(:disabled) { background: #162638; }
+.xp-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* ─── Error ────────────────────────────────────────────────── */
+.xp-error {
+  font-family: 'Raleway', sans-serif;
+  font-size: 12px;
+  color: #6b2d4e;
+  margin: 0;
+  letter-spacing: 0.03em;
+}
+
+/* ─── Success ──────────────────────────────────────────────── */
+.xp-success { padding: 16px 0 8px; }
+
+/* ─── Animations ───────────────────────────────────────────── */
+@keyframes xp-fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes xp-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes xp-rise  { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes xp-sink  { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(12px); } }
+
+/* ─── Mobile ───────────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .xp-modal { padding: 44px 28px 36px; }
+  .xp-heading { font-size: 24px; }
+  .xp-row { flex-direction: column; }
+}
