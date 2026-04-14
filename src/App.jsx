@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-scroll'
 import { useNavigate } from 'react-router-dom'
-import logoSlogan from './assets/logo_slogan.svg'
+import logo2 from './assets/2.svg'
 import logomark from './assets/logomark.svg'
 import { supabase } from './supabase'
 import './App.css'
@@ -74,7 +74,6 @@ function App() {
     if (saved) {
       const y = parseInt(saved, 10)
       sessionStorage.removeItem(SCROLL_KEY)
-      // Small delay so the page has painted before jumping
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           window.scrollTo({ top: y, behavior: 'instant' })
@@ -108,7 +107,6 @@ function App() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Save scroll position and navigate to a sub-page
   const goTo = (path) => {
     sessionStorage.setItem(SCROLL_KEY, String(window.scrollY))
     navigate(path)
@@ -170,7 +168,6 @@ function App() {
           className={`hero-bg ${heroLoaded ? 'hero-bg-loaded' : ''}`}
           style={{ backgroundImage: `url(${IMAGES.hero})` }}
         />
-        {/* hero-whisper removed */}
         <Link to="hero-sub" smooth duration={1000} offset={0} className="scroll-hint">
           <span>Begin</span>
           <svg width="14" height="20" viewBox="0 0 14 20" fill="none">
@@ -455,7 +452,7 @@ function App() {
 
       {/* FOOTER */}
       <footer className="footer">
-        <img src={logoSlogan} alt="Xanadu" className="footer-logo" />
+        <img src={logo2} alt="Xanadu" className="footer-logo" />
         <div className="footer-links">
           <a href="mailto:dreamxanadu@gmail.com">dreamxanadu@gmail.com</a>
           <span>·</span>
