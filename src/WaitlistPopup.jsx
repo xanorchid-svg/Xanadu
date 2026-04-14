@@ -14,24 +14,37 @@ export default function WaitlistPopup() {
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const triggered = useRef(false)
+  const shown = useRef(false)
+
+  const show = () => {
+    if (shown.current) return
+    shown.current = true
+    sessionStorage.setItem(SHOWN_KEY, 'true')
+    setVisible(true)
+  }
 
   useEffect(() => {
-    if (sessionStorage.getItem(SHOWN_KEY)) return
-
-    const onScroll = () => {
-      if (triggered.current) return
-      // Appears once user scrolls past the hero (1.1× viewport height)
-      if (window.scrollY > window.innerHeight * 1.1) {
-        triggered.current = true
-        window.removeEventListener('scroll', onScroll)
-        sessionStorage.setItem(SHOWN_KEY, 'true')
-        setVisible(true)
-      }
+    // Don't show again if already seen this session
+    if (sessionStorage.getItem(SHOWN_KEY)) {
+      shown.current = true
+      return
     }
 
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    // Trigger 1: Show after 4 seconds on page entry
+    const entryTimer = setTimeout(show, 4000)
+
+    // Trigger 2: Exit intent — mouse leaves toward top of browser
+    const onMouseOut = (e) => {
+      if (e.clientY <= 5 && !shown.current) {
+        show()
+      }
+    }
+    document.addEventListener('mouseleave', onMouseOut)
+
+    return () => {
+      clearTimeout(entryTimer)
+      document.removeEventListener('mouseleave', onMouseOut)
+    }
   }, [])
 
   const close = () => {

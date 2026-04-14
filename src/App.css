@@ -255,7 +255,6 @@
 .btn-hero:hover { border-color: var(--navy); color: var(--white); letter-spacing: 0.34em; }
 .btn-hero:hover::before { transform: translateY(0); }
 
-/* Light version for dark backgrounds */
 .btn-hero.ln-btn {
   color: var(--white);
   border-color: rgba(246,243,238,0.3);
@@ -1018,7 +1017,6 @@ textarea { resize: none; line-height: 1.8; }
   margin-top: 40px;
   transition: color 0.35s, gap 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 .dive-deeper::after {
   content: '—';
   font-size: 11px;
@@ -1027,24 +1025,11 @@ textarea { resize: none; line-height: 1.8; }
   opacity: 0.6;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
 }
+.dive-deeper:hover { color: var(--navy); gap: 18px; }
+.dive-deeper:hover::after { transform: translateX(5px); opacity: 1; }
 
-.dive-deeper:hover {
-  color: var(--navy);
-  gap: 18px;
-}
-
-.dive-deeper:hover::after {
-  transform: translateX(5px);
-  opacity: 1;
-}
-
-.dive-deeper-light {
-  color: rgba(232, 213, 163, 0.55);
-}
-
-.dive-deeper-light:hover {
-  color: rgba(232, 213, 163, 0.95);
-}
+.dive-deeper-light { color: rgba(232, 213, 163, 0.55); }
+.dive-deeper-light:hover { color: rgba(232, 213, 163, 0.95); }
 
 /* ========================
    THE PATH (condensed)
@@ -1104,14 +1089,12 @@ textarea { resize: none; line-height: 1.8; }
   gap: 48px;
   border-top: 1px solid rgba(184,134,42,0.08);
 }
-
 .triangle-rule {
   width: 1px;
   height: 48px;
   background: linear-gradient(to bottom, transparent, rgba(184,134,42,0.3), transparent);
   flex-shrink: 0;
 }
-
 .triangle-text {
   font-family: 'Raleway', sans-serif;
   font-size: 18px;
@@ -1121,7 +1104,6 @@ textarea { resize: none; line-height: 1.8; }
   letter-spacing: 0.05em;
   max-width: 480px;
 }
-
 .triangle-text em {
   font-style: italic;
   color: var(--text-dark);
@@ -1212,12 +1194,12 @@ textarea { resize: none; line-height: 1.8; }
   width: 300px;
   max-width: 65vw;
   height: auto;
-  opacity: 0.55;
+  opacity: 0.85;
   margin-bottom: 28px;
-  filter: brightness(0) invert(1);
   transition: opacity 0.5s;
+  /* No filter — logo renders in its own colours */
 }
-.footer-logo:hover { opacity: 0.8; }
+.footer-logo:hover { opacity: 1; }
 .footer-links {
   display: flex;
   gap: 24px;
@@ -1245,8 +1227,6 @@ textarea { resize: none; line-height: 1.8; }
    MOBILE — full pass
 ======================== */
 @media (max-width: 960px) {
-
-  /* NAV */
   .nav-inner { padding: 0 24px; gap: 16px; }
   .nav-links {
     display: none;
@@ -1263,7 +1243,6 @@ textarea { resize: none; line-height: 1.8; }
   .nav-cta { display: none; }
   .hamburger { display: flex; }
 
-  /* HERO */
   .hero {
     height: auto;
     aspect-ratio: 4 / 3;
@@ -1271,56 +1250,41 @@ textarea { resize: none; line-height: 1.8; }
     margin-top: 80px;
   }
 
-  /* HERO SUB */
   .hero-sub-section { padding: 64px 24px; }
   .hero-sub { font-size: 17px; line-height: 1.9; }
   .hero-definition { font-size: 11px; }
   .btn-hero { padding: 16px 40px; font-size: 10px; letter-spacing: 0.22em; }
 
-  /* LIVING SYSTEM */
   .living { padding: 100px 24px; }
   .living h2 { font-size: clamp(28px, 7vw, 44px); }
   .body-lg { font-size: 15px; margin-bottom: 56px; }
   .living-word { font-size: clamp(44px, 14vw, 80px); letter-spacing: 0.14em; }
 
-  /* SECTION HEADERS */
   .section-header { padding: 80px 24px 48px; }
   .section-header h2 { font-size: clamp(28px, 6vw, 40px); }
 
-  /* PILLARS */
   .pillars-grid { grid-template-columns: 1fr; }
   .pillar, .pillar-tall { min-height: 380px; }
   .pillar-content { padding: 36px 28px; }
   .pillar-content h3 { font-size: 36px; }
 
-  /* THE WORK */
   .thework { padding: 100px 24px; }
   .thework h2 { font-size: clamp(40px, 10vw, 72px); }
   .thework-body { font-size: 16px; }
   .thework-orbit { display: none; }
 
-  /* NETWORK */
   .network-grid { grid-template-columns: 1fr; }
   .network-card { min-height: 400px; }
   .card-content { padding: 36px 28px; }
   .card-content h3 { font-size: 30px; }
   .card-content p { font-size: 14px; }
 
-  /* MID CTA */
   .mid-cta { padding: 80px 24px; }
   .mid-cta-text { font-size: 17px; }
 
-  /* CREATION */
-  .creation {
-    padding: 100px 24px;
-    background-attachment: scroll;
-  }
+  .creation { padding: 100px 24px; background-attachment: scroll; }
   .creation h2 { font-size: clamp(28px, 6vw, 40px); }
-  .creation-trio {
-    flex-direction: column;
-    gap: 0;
-    align-items: center;
-  }
+  .creation-trio { flex-direction: column; gap: 0; align-items: center; }
   .creation-trio span {
     border-right: none;
     padding: 18px 0;
@@ -1331,13 +1295,8 @@ textarea { resize: none; line-height: 1.8; }
   }
   .creation-trio span:last-child { border-bottom: none; }
   .creation-body { font-size: 15px; }
-  .creation-poem {
-    padding-left: 20px;
-    font-size: 14px;
-    line-height: 2.1;
-  }
+  .creation-poem { padding-left: 20px; font-size: 14px; line-height: 2.1; }
 
-  /* LIVING NETWORK */
   .living-network-section { padding: 100px 24px; }
   .living-network-section::before,
   .living-network-section::after { display: none; }
@@ -1345,46 +1304,28 @@ textarea { resize: none; line-height: 1.8; }
   .ln-body p { font-size: 15px; }
   .ln-emphasis { font-size: 16px !important; }
 
-  /* JOIN */
   .join { padding: 100px 24px; }
   .join h2 { font-size: clamp(22px, 5.5vw, 32px); }
   .form-row { grid-template-columns: 1fr; gap: 20px; }
-  .role-options {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-  .role-btn {
-    flex-direction: row;
-    padding: 20px 20px;
-    gap: 16px;
-    text-align: left;
-    align-items: center;
-  }
+  .role-options { grid-template-columns: 1fr; gap: 10px; }
+  .role-btn { flex-direction: row; padding: 20px 20px; gap: 16px; text-align: left; align-items: center; }
   .role-icon { font-size: 20px; flex-shrink: 0; }
   .role-desc { display: none; }
   .role-name { font-size: 11px; }
 
-  /* TRIANGLE */
   .triangle-closing { padding: 72px 24px; gap: 36px; }
   .triangle-text { font-size: 16px; }
 
-  /* CREATION BRIDGE */
   .creation-bridge { padding: 80px 24px; }
   .creation-bridge-text { font-size: 15px; }
   .creation-bridge-text em { font-size: 16px; }
 
-  /* PATH */
   .path { padding: 80px 24px; }
 
-  /* FOOTER */
   .footer { padding: 80px 24px 48px; }
-  .footer-links {
-    flex-direction: column;
-    gap: 12px;
-  }
+  .footer-links { flex-direction: column; gap: 12px; }
   .footer-links span { display: none; }
 
-  /* REVEAL — softer on mobile */
   .reveal { transform: translateY(18px); }
   .reveal.reveal-left, .reveal.reveal-right { transform: translateY(18px); }
 }
