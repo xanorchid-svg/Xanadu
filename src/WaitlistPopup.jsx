@@ -67,7 +67,7 @@ export default function WaitlistPopup() {
           className="popup-cta"
           onClick={dismiss}
         >
-          Enter the Network
+          Step Inside
         </Link>
 
         <button className="popup-skip" onClick={dismiss}>

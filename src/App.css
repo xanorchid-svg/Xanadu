@@ -1016,6 +1016,71 @@ textarea { resize: none; line-height: 1.8; }
 }
 
 /* ========================
+   DIVE DEEPER LINK
+======================== */
+.dive-deeper {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  cursor: pointer;
+  text-decoration: none;
+  transition: gap 0.4s cubic-bezier(0.16,1,0.3,1), color 0.3s;
+  margin-top: 40px;
+}
+.dive-deeper::after {
+  content: '→';
+  font-size: 12px;
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.dive-deeper:hover { color: var(--navy); gap: 16px; }
+.dive-deeper:hover::after { transform: translateX(4px); }
+
+.dive-deeper-light {
+  color: rgba(232,213,163,0.7);
+}
+.dive-deeper-light:hover { color: var(--gold-pale); }
+
+/* ========================
+   THE PATH (condensed)
+======================== */
+.path {
+  width: 100%;
+  background: var(--white-deep);
+  padding: 140px 80px;
+  border-top: 1px solid rgba(184,134,42,0.1);
+  border-bottom: 1px solid rgba(184,134,42,0.1);
+  text-align: center;
+}
+.path-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.path h2 {
+  font-size: clamp(32px, 4.5vw, 52px);
+  color: var(--navy);
+  margin-bottom: 40px;
+  letter-spacing: 0.08em;
+}
+.path-summary {
+  font-family: 'Raleway', sans-serif;
+  font-size: 16px;
+  font-weight: 200;
+  color: var(--text-mid);
+  line-height: 2.1;
+  letter-spacing: 0.03em;
+  max-width: 520px;
+}
+
+/* ========================
    FOOTER
 ======================== */
 .footer {
@@ -1086,7 +1151,7 @@ textarea { resize: none; line-height: 1.8; }
   /* HERO */
   .hero {
     height: auto;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 4 / 3;
     min-height: unset;
     margin-top: 80px;
   }
@@ -1190,6 +1255,9 @@ textarea { resize: none; line-height: 1.8; }
   .role-desc { display: none; }
   .role-name { font-size: 11px; }
 
+  /* PATH */
+  .path { padding: 80px 24px; }
+
   /* FOOTER */
   .footer { padding: 80px 24px 48px; }
   .footer-links {
@@ -1204,7 +1272,6 @@ textarea { resize: none; line-height: 1.8; }
 }
 
 @media (max-width: 480px) {
-  .hero { aspect-ratio: 2 / 3; }
   .hero-sub { font-size: 15px; }
   .pillar-content h3 { font-size: 30px; }
   .thework h2 { font-size: clamp(36px, 12vw, 56px); }

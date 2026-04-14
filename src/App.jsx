@@ -285,6 +285,20 @@ function App() {
         </div>
       </section>
 
+      {/* THE PATH — condensed */}
+      <section className="path" id="path">
+        <div className="path-inner reveal" ref={useReveal()}>
+          <p className="overline">How It Works</p>
+          <h2>The Path</h2>
+          <p className="path-summary">
+            You share your intention — a feeling, a shift, a remembering.<br />
+            Xanadu listens beneath the surface and makes the match.<br />
+            Not an algorithm. A recognition.
+          </p>
+          <a href="/path" className="dive-deeper">Dive Deeper</a>
+        </div>
+      </section>
+
       {/* MID-PAGE CTA */}
       <section className="mid-cta" id="mid-cta">
         <div ref={midCtaRef} className="mid-cta-inner reveal">
@@ -294,7 +308,7 @@ function App() {
             <em>Be among the first to enter.</em>
           </p>
           <Link to="join" smooth duration={1000} offset={-76}>
-            <button className="btn-hero"><span>Join the Network</span></button>
+            <button className="btn-hero"><span>I Am Ready</span></button>
           </Link>
         </div>
       </section>
@@ -322,6 +336,7 @@ function App() {
             The eyes across the room that feel like home.
           </blockquote>
           <p className="creation-close">We are not building connection here.<br />We are clearing the space for what was always true to be felt again.</p>
+          <a href="/creation" className="dive-deeper dive-deeper-light">Dive Deeper</a>
         </div>
       </section>
 
@@ -349,7 +364,7 @@ function App() {
             </p>
           </div>
           <Link to="join" smooth duration={1000} offset={-76}>
-            <button className="btn-hero ln-btn"><span>Enter the Network</span></button>
+            <button className="btn-hero ln-btn"><span>Begin the Journey</span></button>
           </Link>
         </div>
       </section>
@@ -428,7 +443,7 @@ function App() {
               {formError && <p className="form-error">{formError}</p>}
 
               <button type="submit" className="btn-submit" disabled={submitting}>
-                <span>{submitting ? 'Sending...' : 'Enter the Network'}</span>
+                <span>{submitting ? 'Sending...' : 'Come as You Are'}</span>
               </button>
               {!formData.role && (
                 <p className="form-hint">Select your role to continue.</p>

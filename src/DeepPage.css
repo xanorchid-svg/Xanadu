@@ -1,0 +1,378 @@
+/* ========================
+   DEEP PAGE BASE
+======================== */
+.deep-page {
+  min-height: 100vh;
+  background: var(--white);
+  position: relative;
+}
+
+.deep-page-light {
+  background: var(--white);
+}
+
+/* ========================
+   CREATION BG
+======================== */
+.creation-deep-bg {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+.creation-deep-veil {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(236,232,225,0.93) 0%,
+    rgba(246,243,238,0.91) 100%
+  );
+  z-index: 1;
+}
+
+/* ========================
+   NAV
+======================== */
+.deep-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 60px;
+  transition: background 0.5s;
+}
+
+.deep-nav-light {
+  background: rgba(246,243,238,0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(184,134,42,0.1);
+}
+
+.deep-nav-dark {
+  background: transparent;
+}
+
+.deep-nav-return {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s, gap 0.4s cubic-bezier(0.16,1,0.3,1);
+  width: 80px;
+}
+
+.deep-nav-return:hover { color: var(--navy); gap: 14px; }
+
+.deep-nav-return-light {
+  color: rgba(246,243,238,0.65);
+}
+.deep-nav-return-light:hover { color: var(--white); }
+
+.deep-nav-mark {
+  width: 32px; height: 32px;
+  transition: opacity 0.3s;
+}
+
+.deep-nav-mark-dark {
+  filter: none;
+  opacity: 0.25;
+}
+.deep-nav-mark-dark:hover { opacity: 0.5; }
+
+.deep-nav-mark-light {
+  filter: brightness(0) invert(1);
+  opacity: 0.4;
+}
+.deep-nav-mark-light:hover { opacity: 0.7; }
+
+/* ========================
+   CONTENT
+======================== */
+.deep-content {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 160px 60px 120px;
+}
+
+.deep-content-creation {
+  padding-top: 140px;
+}
+
+/* ========================
+   HEADER
+======================== */
+.deep-header {
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.deep-overline {
+  display: block;
+  font-family: 'Raleway', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+}
+
+.deep-overline-gold { color: var(--gold); }
+
+.deep-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 400;
+  color: var(--navy);
+  line-height: 1.15;
+  letter-spacing: 0.06em;
+  margin-bottom: 28px;
+}
+
+.deep-title-light { color: var(--navy); }
+
+.deep-subtitle {
+  font-family: 'Raleway', sans-serif;
+  font-size: 17px;
+  font-weight: 200;
+  font-style: italic;
+  color: var(--text-mid);
+  line-height: 1.9;
+  letter-spacing: 0.04em;
+}
+
+/* Creation trio */
+.creation-deep-trio {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
+}
+.creation-deep-trio span {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--gold);
+  padding: 0 36px;
+  border-right: 1px solid rgba(184,134,42,0.2);
+  line-height: 1;
+  letter-spacing: 0.1em;
+}
+.creation-deep-trio span:last-child { border-right: none; }
+
+/* ========================
+   RULES
+======================== */
+.deep-rule {
+  width: 1px;
+  height: 64px;
+  background: linear-gradient(to bottom, transparent, rgba(13,28,43,0.15), transparent);
+  margin: 56px auto;
+}
+
+.deep-rule-gold {
+  background: linear-gradient(to bottom, transparent, rgba(184,134,42,0.3), transparent);
+}
+
+/* ========================
+   BODY
+======================== */
+.deep-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* PATH — steps */
+.deep-step {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 32px;
+  align-items: start;
+  padding: 48px 0;
+}
+
+.deep-step-num {
+  font-family: 'Cinzel', serif;
+  font-size: 56px;
+  font-weight: 300;
+  color: var(--navy);
+  opacity: 0.07;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  padding-top: 6px;
+}
+
+.deep-step-content h2 {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-weight: 400;
+  color: var(--navy);
+  letter-spacing: 0.06em;
+  margin-bottom: 24px;
+  line-height: 1.2;
+}
+
+.deep-step-content p {
+  font-family: 'Raleway', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--text-mid);
+  line-height: 2.1;
+  letter-spacing: 0.03em;
+  margin-bottom: 20px;
+}
+
+.deep-step-content p:last-child { margin-bottom: 0; }
+
+.deep-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(184,134,42,0.15), transparent);
+}
+
+/* CREATION — body */
+.deep-body-creation {
+  text-align: center;
+  align-items: center;
+}
+
+.creation-deep-body {
+  font-family: 'Raleway', sans-serif;
+  font-size: 17px;
+  font-weight: 200;
+  color: var(--text-mid);
+  line-height: 2.2;
+  letter-spacing: 0.04em;
+  max-width: 600px;
+  margin: 0 0 32px;
+}
+
+.creation-deep-poem {
+  font-family: 'Raleway', sans-serif;
+  font-size: 18px;
+  font-weight: 200;
+  font-style: italic;
+  line-height: 2.4;
+  color: var(--text-dark);
+  text-align: center;
+  margin: 0;
+  letter-spacing: 0.05em;
+  border: none;
+  padding: 0;
+}
+
+.creation-deep-close {
+  font-family: 'Raleway', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--text-mid);
+  line-height: 2.1;
+  letter-spacing: 0.04em;
+  font-style: italic;
+  text-align: center;
+}
+
+/* ========================
+   FOOTER CTA
+======================== */
+.deep-footer-cta {
+  text-align: center;
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.deep-cta-btn {
+  display: inline-block;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 300;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--navy);
+  background: transparent;
+  border: 1px solid rgba(13,28,43,0.3);
+  padding: 18px 60px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
+  position: relative;
+  overflow: hidden;
+}
+.deep-cta-btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--navy);
+  transform: translateY(100%);
+  transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+.deep-cta-btn span { position: relative; z-index: 1; transition: color 0.5s; }
+.deep-cta-btn:hover { color: var(--white); letter-spacing: 0.34em; }
+.deep-cta-btn:hover::before { transform: translateY(0); }
+
+.deep-cta-btn-light {
+  color: var(--navy);
+  border-color: rgba(13,28,43,0.25);
+}
+.deep-cta-btn-light::before { background: var(--plum); }
+.deep-cta-btn-light:hover { color: var(--white); }
+
+/* ========================
+   MOBILE
+======================== */
+@media (max-width: 768px) {
+  .deep-nav { padding: 0 24px; }
+  .deep-nav-return span { display: none; }
+  .deep-content { padding: 120px 24px 80px; }
+  .deep-content-creation { padding-top: 110px; }
+
+  .deep-step {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 36px 0;
+  }
+  .deep-step-num {
+    font-size: 36px;
+    opacity: 0.06;
+  }
+  .deep-step-content h2 { font-size: 22px; }
+  .deep-step-content p { font-size: 15px; }
+
+  .creation-deep-trio {
+    flex-direction: column;
+    gap: 0;
+    align-items: center;
+  }
+  .creation-deep-trio span {
+    border-right: none;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(184,134,42,0.12);
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+  }
+  .creation-deep-trio span:last-child { border-bottom: none; }
+
+  .creation-deep-poem { font-size: 15px; line-height: 2.2; }
+  .creation-deep-body { font-size: 15px; }
+
+  .deep-cta-btn { padding: 16px 40px; }
+}
