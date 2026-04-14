@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-scroll'
 import logo from './assets/logo.svg'
 import logoSlogan from './assets/logo_slogan.svg'
@@ -17,6 +17,27 @@ const IMAGES = {
   alignment: new URL('./assets/alignment.png', import.meta.url).href,
 }
 
+// Reusable hook for scroll reveal
+function useReveal() {
+  const ref = useRef(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add('visible')
+          observer.unobserve(el)
+        }
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+  return ref
+}
+
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -25,14 +46,56 @@ function App() {
   const [heroLoaded, setHeroLoaded] = useState(false)
   const [formError, setFormError] = useState(null)
   const [submitting, setSubmitting] = useState(false)
+  const heroBgRef = useRef(null)
+
+  // Scroll reveal refs — each section
+  const heroSubRef = useReveal()
+  const livingRef = useReveal()
+  const livingWordRef = useRef(null)
+  const pillarsHeaderRef = useReveal()
+  const theworkRef = useReveal()
+  const networkHeaderRef = useReveal()
+  const pathRef = useReveal()
+  const creationRef = useReveal()
+  const joinRef = useReveal()
+
+  // Individual card/step refs for staggered reveals
+  const pillar1Ref = useReveal()
+  const pillar2Ref = useReveal()
+  const pillar3Ref = useReveal()
+  const card1Ref = useReveal()
+  const card2Ref = useReveal()
+  const card3Ref = useReveal()
+  const step1Ref = useReveal()
+  const step2Ref = useReveal()
+  const step3Ref = useReveal()
 
   useEffect(() => {
     const img = new Image()
     img.src = IMAGES.hero
     img.onload = () => setHeroLoaded(true)
 
-    const onScroll = () => setScrolled(window.scrollY > 60)
-    window.addEventListener('scroll', onScroll)
+    // Scroll: nav state + hero parallax + living word
+    const onScroll = () => {
+      const y = window.scrollY
+      setScrolled(y > 60)
+
+      // Parallax on hero bg
+      if (heroBgRef.current) {
+        heroBgRef.current.style.setProperty('--parallax-y', `${y * 0.3}px`)
+        heroBgRef.current.style.transform = `translateY(${y * 0.28}px)`
+      }
+
+      // Living word reveal on scroll depth
+      if (livingWordRef.current) {
+        const rect = livingWordRef.current.getBoundingClientRect()
+        if (rect.top < window.innerHeight * 0.85) {
+          livingWordRef.current.classList.add('visible')
+        }
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
@@ -91,6 +154,7 @@ function App() {
       {/* HERO */}
       <section className="hero" id="hero">
         <div
+          ref={heroBgRef}
           className={`hero-bg ${heroLoaded ? 'hero-bg-loaded' : ''}`}
           style={{ backgroundImage: `url(${IMAGES.hero})` }}
         />
@@ -105,67 +169,81 @@ function App() {
       {/* HERO SUB */}
       <section className="hero-sub-section" id="hero-sub">
         <div className="hero-sub-inner">
-          <p className="hero-sub">
+          <p ref={heroSubRef} className="hero-sub reveal">
             Something has been broken for a long time.<br />
             The trust between people and the spaces that hold them.<br />
             <em>Xanadu is not an answer. It is an invitation.</em>
           </p>
-          <p className="hero-definition">
+          <p className="hero-definition reveal reveal-delay-2" ref={useReveal()}>
             <em>xa·na·du</em> &nbsp;/ˈzanəˌdo͞o/ &nbsp;—&nbsp; an idealized place of great or idyllic magnificence and beauty.
           </p>
-          <Link to="join" smooth duration={1000} offset={-76}>
-            <button className="btn-hero">Enter the Network</button>
-          </Link>
+          <div className="reveal reveal-delay-3" ref={useReveal()}>
+            <Link to="join" smooth duration={1000} offset={-76}>
+              <button className="btn-hero">
+                <span>Enter the Network</span>
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* LIVING SYSTEM */}
       <section className="living" id="living">
         <div className="living-inner">
-          <p className="overline">A Living System</p>
-          <h2>To return. To remember.<br />To build something worth belonging to.</h2>
-          <div className="rule" />
-          <p className="body-lg">
-            The spaces we enter shape our experiences. The communities we gather with shape our lives. Yet it has become difficult to know which places truly hold integrity and true intentions. Xanadu exists to restore trust in the environments where transformation happens.
-          </p>
-          <div className="living-word">TRUST.</div>
+          <div ref={livingRef} className="reveal">
+            <p className="overline">A Living System</p>
+            <h2>To return. To remember.<br />To build something worth belonging to.</h2>
+            <div className="rule" />
+            <p className="body-lg">
+              The spaces we enter shape our experiences. The communities we gather with shape our lives. Yet it has become difficult to know which places truly hold integrity and true intentions. Xanadu exists to restore trust in the environments where transformation happens.
+            </p>
+          </div>
+          <div ref={livingWordRef} className="living-word">TRUST.</div>
         </div>
       </section>
 
       {/* THREE PILLARS */}
       <section className="pillars" id="pillars">
-        <div className="section-header">
+        <div ref={pillarsHeaderRef} className="section-header reveal">
           <p className="overline">Three Pillars</p>
           <h2>What We Stand On</h2>
         </div>
         <div className="pillars-grid">
-          <div className="pillar" style={{ backgroundImage: `url(${IMAGES.trust})` }}>
+
+          <div ref={pillar1Ref} className="pillar reveal reveal-left">
+            <div className="pillar-bg-inner" style={{ backgroundImage: `url(${IMAGES.trust})` }} />
             <div className="pillar-veil" />
             <div className="pillar-content">
               <h3>Trust.</h3>
               <p>We verify the integrity of every space, every guide, every offering in our network. Nothing is here by chance. Everything is held with purpose.</p>
             </div>
           </div>
-          <div className="pillar pillar-tall" style={{ backgroundImage: `url(${IMAGES.intention})` }}>
+
+          <div ref={pillar2Ref} className="pillar pillar-tall reveal reveal-delay-2">
+            <div className="pillar-bg-inner" style={{ backgroundImage: `url(${IMAGES.intention})` }} />
             <div className="pillar-veil" />
             <div className="pillar-content">
               <h3>Intention.</h3>
               <p>The path is already yours. We help you see it more clearly — not by changing who you are, but by bringing you closer to what already fits. Heart-led. Grounded. True.</p>
             </div>
           </div>
-          <div className="pillar" style={{ backgroundImage: `url(${IMAGES.alignment})` }}>
+
+          <div ref={pillar3Ref} className="pillar reveal reveal-right">
+            <div className="pillar-bg-inner" style={{ backgroundImage: `url(${IMAGES.alignment})` }} />
             <div className="pillar-veil" />
             <div className="pillar-content">
               <h3>Alignment.</h3>
               <p>Here for the people. Here for the land. Here for the wisdom. Here for the medicine. Here for the future. Here for you.</p>
             </div>
           </div>
+
         </div>
       </section>
 
       {/* THE WORK */}
       <section className="thework" id="thework">
-        <div className="thework-inner">
+        <div className="thework-orbit" />
+        <div ref={theworkRef} className="thework-inner reveal">
           <p className="overline">The Work</p>
           <h2>Rebuilding<br />the Bridge</h2>
           <div className="rule rule-light" />
@@ -181,13 +259,15 @@ function App() {
 
       {/* THE NETWORK */}
       <section className="network" id="network">
-        <div className="section-header">
+        <div ref={networkHeaderRef} className="section-header reveal">
           <p className="overline">The Network</p>
           <h2>Who We Connect</h2>
           <p className="section-sub">Three threads. One fabric.</p>
         </div>
         <div className="network-grid">
-          <div className="network-card" style={{ backgroundImage: `url(${IMAGES.containers})` }}>
+
+          <div ref={card1Ref} className="network-card reveal reveal-left">
+            <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.containers})` }} />
             <div className="card-veil" />
             <div className="card-content">
               <p className="card-label">Containers</p>
@@ -195,7 +275,9 @@ function App() {
               <p>Trusted ecovillages, retreat centers, schools, temples, and sanctuaries — physical grounds where transformation is possible because the space itself has been prepared to receive it.</p>
             </div>
           </div>
-          <div className="network-card network-card-center" style={{ backgroundImage: `url(${IMAGES.seeker})` }}>
+
+          <div ref={card2Ref} className="network-card network-card-center reveal reveal-delay-2">
+            <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.seeker})` }} />
             <div className="card-veil card-veil-plum" />
             <div className="card-content">
               <p className="card-label">You</p>
@@ -203,7 +285,9 @@ function App() {
               <p>Arriving exactly as you are — whether seeking deep personal healing, a training that will awaken your gifts, or a way to offer your hands in service. Your path is valid. We help you find it.</p>
             </div>
           </div>
-          <div className="network-card" style={{ backgroundImage: `url(${IMAGES.facilitators})` }}>
+
+          <div ref={card3Ref} className="network-card reveal reveal-right">
+            <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.facilitators})` }} />
             <div className="card-veil" />
             <div className="card-content">
               <p className="card-label">Facilitators</p>
@@ -211,28 +295,29 @@ function App() {
               <p>Breathwork guides, yoga teachers, shamans, somatic practitioners, plant medicine ceremonialists — people who have walked the path and are called to walk beside you.</p>
             </div>
           </div>
+
         </div>
       </section>
 
       {/* THE PATH */}
       <section className="path" id="path">
-        <div className="path-inner">
+        <div ref={pathRef} className="path-inner reveal">
           <p className="overline">How It Works</p>
           <h2>The Path</h2>
           <div className="path-steps">
-            <div className="step">
+            <div ref={step1Ref} className="step reveal reveal-left">
               <span className="step-num">01</span>
               <h3>Share Your Intention</h3>
               <p>Get clear on what you're seeking. A feeling. A shift. A remembering. You don't need all the answers — just honesty.</p>
             </div>
             <div className="step-line" />
-            <div className="step">
+            <div ref={step2Ref} className="step reveal reveal-delay-2">
               <span className="step-num">02</span>
               <h3>We Make the Match</h3>
               <p>Xanadu listens beneath the surface — connecting you with the right people, the right spaces, the right moment.</p>
             </div>
             <div className="step-line" />
-            <div className="step">
+            <div ref={step3Ref} className="step reveal reveal-right">
               <span className="step-num">03</span>
               <h3>Follow the Path</h3>
               <p>Step into the experience. Meet what's there. Build, connect, and expand within it.</p>
@@ -244,7 +329,7 @@ function App() {
       {/* THE CREATION */}
       <section className="creation" id="creation" style={{ backgroundImage: `url(${IMAGES.creation})` }}>
         <div className="creation-veil" />
-        <div className="creation-inner">
+        <div ref={creationRef} className="creation-inner reveal">
           <p className="overline">The Creation</p>
           <h2>What We Cultivate</h2>
           <div className="creation-trio">
@@ -269,7 +354,7 @@ function App() {
 
       {/* JOIN */}
       <section className="join" id="join">
-        <div className="join-inner">
+        <div ref={joinRef} className="join-inner reveal">
           <img src={logomark} alt="" className="join-mark" />
           <p className="overline">Join the Network</p>
           <h2>The Ancient Future.<br />We Are Here to Steward Its Return.</h2>
@@ -341,7 +426,7 @@ function App() {
               {formError && <p className="form-error">{formError}</p>}
 
               <button type="submit" className="btn-submit" disabled={submitting}>
-                {submitting ? 'Sending...' : 'Enter the Network'}
+                <span>{submitting ? 'Sending...' : 'Enter the Network'}</span>
               </button>
               {!formData.role && (
                 <p className="form-hint">Select your role to continue.</p>
