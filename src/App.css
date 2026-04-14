@@ -1038,7 +1038,6 @@ textarea { resize: none; line-height: 1.8; }
   opacity: 1;
 }
 
-/* On navy background (living-network section) */
 .dive-deeper-light {
   color: rgba(232, 213, 163, 0.55);
 }
@@ -1213,12 +1212,12 @@ textarea { resize: none; line-height: 1.8; }
   width: 300px;
   max-width: 65vw;
   height: auto;
-  opacity: 0.28;
+  opacity: 0.55;
   margin-bottom: 28px;
   filter: brightness(0) invert(1);
   transition: opacity 0.5s;
 }
-.footer-logo:hover { opacity: 0.5; }
+.footer-logo:hover { opacity: 0.8; }
 .footer-links {
   display: flex;
   gap: 24px;

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-scroll'
 import { useNavigate } from 'react-router-dom'
-import logo2 from './assets/2.svg'
+import logoSlogan from './assets/logo_slogan.svg'
 import logomark from './assets/logomark.svg'
 import { supabase } from './supabase'
 import './App.css'
@@ -452,7 +452,7 @@ function App() {
 
       {/* FOOTER */}
       <footer className="footer">
-        <img src={logo2} alt="Xanadu" className="footer-logo" />
+        <img src={logoSlogan} alt="Xanadu" className="footer-logo" />
         <div className="footer-links">
           <a href="mailto:dreamxanadu@gmail.com">dreamxanadu@gmail.com</a>
           <span>·</span>
