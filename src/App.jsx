@@ -483,8 +483,7 @@ function App() {
                   <div className="field">
                     <label>
                       {formData.role === 'Facilitator' ? 'What is your intention?' : 'Your intention'}
-                      <span className="optional"> — optional</span>
-                    </label>
+                      </label>
                     <textarea
                       placeholder={
                         formData.role === 'Facilitator'

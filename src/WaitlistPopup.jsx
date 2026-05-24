@@ -5,14 +5,17 @@ import './WaitlistPopup.css'
 export default function WaitlistPopup() {
   const [visible, setVisible] = useState(false)
   const [closing, setClosing] = useState(false)
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [role, setRole] = useState('')
-  const [intention, setIntention] = useState('')
+  const [form, setForm] = useState({
+    name: '', email: '', role: '', intention: '',
+    phone: '', instagram: '', city: '', country: '',
+    container_name: '', offerings: '',
+  })
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const shown = useRef(false)
+
+  const set = (field) => (e) => setForm(f => ({ ...f, [field]: e.target.value }))
 
   const show = () => {
     if (shown.current) return
@@ -21,15 +24,9 @@ export default function WaitlistPopup() {
   }
 
   useEffect(() => {
-    // Show 4 seconds after every page load
     const entryTimer = setTimeout(show, 4000)
-
-    // Also show on exit intent (mouse leaving toward top of browser)
-    const onMouseLeave = (e) => {
-      if (e.clientY <= 5) show()
-    }
+    const onMouseLeave = (e) => { if (e.clientY <= 5) show() }
     document.addEventListener('mouseleave', onMouseLeave)
-
     return () => {
       clearTimeout(entryTimer)
       document.removeEventListener('mouseleave', onMouseLeave)
@@ -38,22 +35,51 @@ export default function WaitlistPopup() {
 
   const close = () => {
     setClosing(true)
-    setTimeout(() => {
-      setVisible(false)
-      setClosing(false)
-    }, 400)
+    setTimeout(() => { setVisible(false); setClosing(false) }, 400)
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!name || !email) return
+    if (!form.name || !form.email || !form.role) return
     setLoading(true)
     setError('')
     try {
-      const { error: sbError } = await supabase
-        .from('waitlist')
-        .insert([{ name, email, role: role || 'Seeker', intention }])
-      if (sbError) throw sbError
+      if (form.role === 'Container') {
+        const { error: sbError } = await supabase.from('container_applications').insert([{
+          your_name: form.name,
+          email: form.email,
+          phone: form.phone || null,
+          container_name: form.container_name || null,
+          instagram: form.instagram || null,
+          city: form.city || null,
+          country: form.country || null,
+          offerings: form.offerings || null,
+          lineage: form.intention || null,
+          role: 'container',
+        }])
+        if (sbError) throw sbError
+      } else if (form.role === 'Facilitator') {
+        const { error: sbError } = await supabase.from('facilitator_applications').insert([{
+          your_name: form.name,
+          email: form.email,
+          phone: form.phone || null,
+          instagram: form.instagram || null,
+          city: form.city || null,
+          country: form.country || null,
+          offerings: form.offerings || null,
+          lineage: form.intention || null,
+          role: 'facilitator',
+        }])
+        if (sbError) throw sbError
+      } else {
+        const { error: sbError } = await supabase.from('waitlist').insert([{
+          name: form.name,
+          email: form.email,
+          role: form.role,
+          intention: form.intention,
+        }])
+        if (sbError) throw sbError
+      }
       setSubmitted(true)
     } catch {
       setError('Something went wrong. Please try again.')
@@ -63,6 +89,8 @@ export default function WaitlistPopup() {
   }
 
   if (!visible) return null
+
+  const isFacOrCon = form.role === 'Facilitator' || form.role === 'Container'
 
   return (
     <div className={`xp-overlay ${closing ? 'xp-closing' : ''}`} onClick={close}>
@@ -77,64 +105,85 @@ export default function WaitlistPopup() {
         {!submitted ? (
           <>
             <div className="xp-mark">✦</div>
-            <p className="xp-overline">The Network Is Forming</p>
+            <p className="xp-overline">The Origin — Now Forming</p>
             <h2 className="xp-heading">Step Inside</h2>
-            <p className="xp-sub">
-              Leave your name and intention.<br />
-              We'll reach out when the time is right.
-            </p>
 
             <form className="xp-form" onSubmit={handleSubmit}>
-              <div className="xp-row">
-                <input
-                  className="xp-input"
-                  type="text"
-                  placeholder="Your name"
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                  required
-                />
-                <input
-                  className="xp-input"
-                  type="email"
-                  placeholder="Your email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  required
-                />
-              </div>
 
+              {/* Role selector — first */}
               <div className="xp-roles">
                 {[
                   { id: 'Seeker',      symbol: '◎' },
                   { id: 'Facilitator', symbol: '◈' },
                   { id: 'Container',   symbol: '⬡' },
                 ].map(({ id, symbol }) => (
-                  <button
-                    key={id}
-                    type="button"
-                    className={`xp-role ${role === id ? 'xp-role-active' : ''}`}
-                    onClick={() => setRole(id)}
-                  >
+                  <button key={id} type="button"
+                    className={`xp-role ${form.role === id ? 'xp-role-active' : ''}`}
+                    onClick={() => setForm(f => ({ ...f, role: id }))}>
                     <span className="xp-role-symbol">{symbol}</span>
                     <span className="xp-role-name">{id}</span>
                   </button>
                 ))}
               </div>
 
-              <textarea
-                className="xp-input xp-textarea"
-                placeholder="Your intention — optional"
-                value={intention}
-                onChange={e => setIntention(e.target.value)}
-                rows={2}
-              />
+              {form.role && (
+                <>
+                  {/* Name + Email always show */}
+                  <div className="xp-row">
+                    <input className="xp-input" type="text" placeholder="Your name"
+                      value={form.name} onChange={set('name')} required />
+                    <input className="xp-input" type="email" placeholder="Your email"
+                      value={form.email} onChange={set('email')} required />
+                  </div>
+
+                  {/* Facilitator + Container extras */}
+                  {isFacOrCon && (
+                    <>
+                      <div className="xp-row">
+                        <input className="xp-input" type="tel" placeholder="Phone (optional)"
+                          value={form.phone} onChange={set('phone')} />
+                        <input className="xp-input" type="text" placeholder="Instagram (optional)"
+                          value={form.instagram} onChange={set('instagram')} />
+                      </div>
+                      <div className="xp-row">
+                        <input className="xp-input" type="text" placeholder="City"
+                          value={form.city} onChange={set('city')} />
+                        <input className="xp-input" type="text" placeholder="Country"
+                          value={form.country} onChange={set('country')} />
+                      </div>
+                      {form.role === 'Container' && (
+                        <input className="xp-input" type="text" placeholder="Container name"
+                          value={form.container_name} onChange={set('container_name')} />
+                      )}
+                      <textarea className="xp-input xp-textarea" rows={2}
+                        placeholder={form.role === 'Container'
+                          ? 'What kinds of experiences do you host?'
+                          : 'What do you offer?'}
+                        value={form.offerings} onChange={set('offerings')} />
+                    </>
+                  )}
+
+                  {/* Intention — required, no optional label */}
+                  <textarea className="xp-input xp-textarea" rows={2}
+                    placeholder={
+                      form.role === 'Facilitator'
+                        ? 'Why do you do this work? What called you to it?'
+                        : form.role === 'Container'
+                        ? 'What is the spirit of your space?'
+                        : 'What are you bringing, seeking, or offering?'
+                    }
+                    value={form.intention} onChange={set('intention')} />
+                </>
+              )}
 
               {error && <p className="xp-error">{error}</p>}
 
-              <button className="xp-btn" type="submit" disabled={loading}>
+              <button className="xp-btn" type="submit"
+                disabled={loading || !form.role || !form.name || !form.email}>
                 <span>{loading ? 'Sending…' : 'Come as You Are'}</span>
               </button>
+
+              {!form.role && <p className="xp-hint">Select your role to begin.</p>}
             </form>
           </>
         ) : (
