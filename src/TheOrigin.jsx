@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import flameImg from "./assets/origin-flame.webp";
 import "./TheOrigin.css";
 
 export default function TheOrigin() {
@@ -6,6 +7,11 @@ export default function TheOrigin() {
 
   return (
     <section className="origin-section">
+      {/* Flame background image */}
+      <div className="origin-flame-bg" style={{ backgroundImage: `url(${flameImg})` }} aria-hidden="true" />
+      <div className="origin-overlay" aria-hidden="true" />
+
+      {/* Subtle rings over the image */}
       <div className="origin-bg" aria-hidden="true">
         <div className="origin-ring origin-ring-1" />
         <div className="origin-ring origin-ring-2" />
@@ -51,13 +57,19 @@ export default function TheOrigin() {
         <div className="origin-ctas">
           <button
             className="origin-cta origin-cta-primary"
-            onClick={() => navigate("/apply/container")}
+            onClick={() => {
+              const el = document.getElementById('join');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
           >
             Apply as a Container
           </button>
           <button
             className="origin-cta origin-cta-secondary"
-            onClick={() => navigate("/apply/facilitator")}
+            onClick={() => {
+              const el = document.getElementById('join');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
           >
             Apply as a Facilitator
           </button>
