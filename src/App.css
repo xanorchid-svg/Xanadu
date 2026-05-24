@@ -423,7 +423,7 @@
 ======================== */
 .thework {
   width: 100%;
-  padding: 180px 80px;
+  padding: 100px 80px;
   background: var(--navy);
   text-align: center;
   position: relative;
@@ -494,7 +494,7 @@
 /* ========================
    THE NETWORK
 ======================== */
-.network { width: 100%; background: var(--white); overflow: hidden; }
+.network { width: 100%; background: var(--white); overflow: hidden; padding-top: 60px; }
 
 .network-grid {
   display: grid;
