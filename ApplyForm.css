@@ -1,0 +1,319 @@
+/* ApplyForm.css — matches Xanadu design system */
+
+.apply-page {
+  min-height: 100vh;
+  background: var(--white);
+  font-family: 'Raleway', sans-serif;
+}
+
+/* Nav */
+.apply-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  background: linear-gradient(135deg, #6b2d4e, #0d1c2b, #4f5f4a);
+  z-index: 100;
+}
+
+.apply-nav-logo {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  letter-spacing: 0.25em;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.apply-nav-logo:hover {
+  color: white;
+}
+
+/* Container */
+.apply-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 120px 24px 100px;
+}
+
+/* Header */
+.apply-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.apply-overline {
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+
+.apply-heading {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(28px, 5vw, 42px);
+  font-weight: 400;
+  color: var(--navy);
+  letter-spacing: 0.05em;
+  margin: 0 0 20px;
+  line-height: 1.2;
+}
+
+.apply-subheading {
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--text-mid);
+  line-height: 1.8;
+  max-width: 480px;
+  margin: 0 auto 28px;
+}
+
+.apply-trust-line {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.apply-trust-line span {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: var(--text-light, #8a7e74);
+  position: relative;
+  padding-left: 14px;
+}
+
+.apply-trust-line span::before {
+  content: '✦';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  font-size: 8px;
+  top: 2px;
+}
+
+/* Form */
+.apply-form {
+  background: white;
+  border: 1px solid rgba(13, 28, 43, 0.08);
+  border-radius: 16px;
+  padding: 48px 40px;
+  box-shadow: 0 4px 40px rgba(13, 28, 43, 0.04);
+}
+
+@media (max-width: 640px) {
+  .apply-form {
+    padding: 32px 24px;
+  }
+}
+
+.apply-section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(184, 134, 42, 0.2);
+}
+
+.apply-field {
+  margin-bottom: 20px;
+}
+
+.apply-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+
+.req {
+  color: var(--plum);
+}
+
+.optional {
+  font-weight: 300;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text-light, #8a7e74);
+  font-size: 11px;
+}
+
+.apply-field input,
+.apply-field textarea,
+.apply-field select {
+  width: 100%;
+  font-family: 'Raleway', sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--navy);
+  background: var(--white);
+  border: 1px solid rgba(13, 28, 43, 0.15);
+  border-radius: 8px;
+  padding: 12px 16px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+}
+
+.apply-field input::placeholder,
+.apply-field textarea::placeholder {
+  color: rgba(13, 28, 43, 0.3);
+  font-weight: 300;
+}
+
+.apply-field input:focus,
+.apply-field textarea:focus,
+.apply-field select:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(184, 134, 42, 0.1);
+}
+
+.apply-field textarea {
+  resize: vertical;
+  line-height: 1.7;
+}
+
+.apply-field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230d1c2b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.apply-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 500px) {
+  .apply-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Submit */
+.apply-submit {
+  width: 100%;
+  margin-top: 36px;
+  padding: 18px 32px;
+  background: var(--navy);
+  color: var(--gold-light, #d4a84b);
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.apply-submit:hover:not(:disabled) {
+  background: #162638;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 30px rgba(13, 28, 43, 0.2);
+}
+
+.apply-submit.loading,
+.apply-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.apply-error {
+  font-size: 13px;
+  color: var(--plum);
+  margin-top: 12px;
+  text-align: center;
+}
+
+.apply-footnote {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--text-light, #8a7e74);
+  text-align: center;
+  margin-top: 20px;
+  line-height: 1.7;
+}
+
+/* Success state */
+.apply-success {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+  animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.apply-success-mark {
+  font-size: 32px;
+  color: var(--gold);
+  margin-bottom: 32px;
+  animation: pulse 2s ease infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.apply-success-heading {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 400;
+  color: var(--navy);
+  letter-spacing: 0.05em;
+  margin: 0 0 20px;
+}
+
+.apply-success-body {
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--text-mid);
+  line-height: 1.8;
+  max-width: 420px;
+  margin: 0 auto 36px;
+}
+
+.apply-success-link {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(184, 134, 42, 0.3);
+  padding-bottom: 2px;
+  transition: border-color 0.2s;
+}
+
+.apply-success-link:hover {
+  border-color: var(--gold);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
