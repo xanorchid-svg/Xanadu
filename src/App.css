@@ -307,7 +307,7 @@
 ======================== */
 .living {
   width: 100%;
-  padding: 160px 80px;
+  padding: 100px 80px;
   background: var(--white);
   text-align: center;
   border-top: 1px solid rgba(184,134,42,0.1);
@@ -709,7 +709,7 @@
 ======================== */
 .living-network-section {
   width: 100%;
-  padding: 160px 80px;
+  padding: 100px 80px;
   background: var(--navy);
   text-align: center;
   position: relative;
@@ -785,7 +785,7 @@
 ======================== */
 .join {
   width: 100%;
-  padding: 160px 80px;
+  padding: 100px 80px;
   background: var(--white);
   border-top: 1px solid rgba(184,134,42,0.1);
 }

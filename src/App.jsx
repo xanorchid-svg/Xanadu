@@ -6,6 +6,7 @@ import logomark from './assets/logomark.svg'
 import { supabase } from './supabase'
 import './App.css'
 import WaitlistPopup from './WaitlistPopup'
+import TheOrigin from './TheOrigin'
 
 const IMAGES = {
   hero: new URL('./assets/hero.png', import.meta.url).href,
@@ -294,7 +295,8 @@ function App() {
         </div>
       </section>
 
-      {/* THE PATH */}
+{/* THE ORIGIN */}
+      <TheOrigin />
       <section className="path" id="path">
         <div className="path-inner reveal" ref={useReveal()}>
           <p className="overline">How It Works</p>
