@@ -58,7 +58,6 @@ function App() {
   const pillarsHeaderRef = useReveal()
   const theworkRef = useReveal()
   const networkHeaderRef = useReveal()
-  const midCtaRef = useReveal()
   const livingNetworkRef = useReveal()
   const joinRef = useReveal()
   const pillar1Ref = useReveal()
@@ -345,18 +344,7 @@ function App() {
       </section>
 
       {/* MID-PAGE CTA */}
-      <section className="mid-cta" id="mid-cta">
-        <div ref={midCtaRef} className="mid-cta-inner reveal">
-          <p className="mid-cta-mark">✦</p>
-          <p className="mid-cta-text">
-            The network is forming.<br />
-            <em>Be among the first to enter.</em>
-          </p>
-          <Link to="join" smooth duration={1000} offset={-76}>
-            <button className="btn-hero"><span>I Am Ready</span></button>
-          </Link>
-        </div>
-      </section>
+
 
       {/* CREATION BRIDGE */}
       <section className="creation-bridge" id="creation">
