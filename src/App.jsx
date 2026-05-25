@@ -328,8 +328,7 @@ function App() {
         </div>
       </section>
 
-{/* THE ORIGIN */}
-      <TheOrigin />
+      {/* THE PATH */}
       <section className="path" id="path">
         <div className="path-inner reveal" ref={useReveal()}>
           <p className="overline">How It Works</p>
@@ -343,8 +342,8 @@ function App() {
         </div>
       </section>
 
-      {/* MID-PAGE CTA */}
-
+      {/* THE ORIGIN */}
+      <TheOrigin />
 
       {/* CREATION BRIDGE */}
       <section className="creation-bridge" id="creation">
@@ -483,7 +482,7 @@ function App() {
                   <div className="field">
                     <label>
                       {formData.role === 'Facilitator' ? 'What is your intention?' : 'Your intention'}
-                      </label>
+                    </label>
                     <textarea
                       placeholder={
                         formData.role === 'Facilitator'
