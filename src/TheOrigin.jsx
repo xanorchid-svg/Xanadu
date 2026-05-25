@@ -5,13 +5,16 @@ import "./TheOrigin.css";
 export default function TheOrigin() {
   const navigate = useNavigate();
 
+  const scrollToJoin = () => {
+    const el = document.getElementById('join');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <section className="origin-section">
-      {/* Flame background image */}
       <div className="origin-flame-bg" style={{ backgroundImage: `url(${flameImg})` }} aria-hidden="true" />
       <div className="origin-overlay" aria-hidden="true" />
 
-      {/* Subtle rings over the image */}
       <div className="origin-bg" aria-hidden="true">
         <div className="origin-ring origin-ring-1" />
         <div className="origin-ring origin-ring-2" />
@@ -24,29 +27,19 @@ export default function TheOrigin() {
         <h2 className="origin-heading">The Origin</h2>
 
         <p className="origin-body">
-          We are beginning with people we trust through personal connection — not an algorithm,
-          not an open call. Thirty-three Containers. Sixty-six Facilitators. Chosen carefully.
-          Invited personally. Once the circle is complete, we build the app that opens Xanadu
-          to Seekers.
+          We are beginning with the people and places we already trust.
+          Not through an open call. Not through an algorithm.
+          Through personal connection, discernment, and the slow work of knowing.
+        </p>
+
+        <p className="origin-body">
+          When the circle feels complete, we open Xanadu to Seekers.
+          Not before.
         </p>
 
         <p className="origin-body origin-body-italic">
-          You are witnessed. You are seen. This is trust.
+          Xanadu begins with you.
         </p>
-
-        <div className="origin-numbers">
-          <div className="origin-number-card">
-            <span className="origin-number">33</span>
-            <span className="origin-number-label">Containers</span>
-            <span className="origin-number-sub">Sacred spaces</span>
-          </div>
-          <div className="origin-divider">✦</div>
-          <div className="origin-number-card">
-            <span className="origin-number">66</span>
-            <span className="origin-number-label">Facilitators</span>
-            <span className="origin-number-sub">Guides & practitioners</span>
-          </div>
-        </div>
 
         <p className="origin-invitation">
           This network grows together. Every member is known. Every space is held.
@@ -55,28 +48,16 @@ export default function TheOrigin() {
         </p>
 
         <div className="origin-ctas">
-          <button
-            className="origin-cta origin-cta-primary"
-            onClick={() => {
-              const el = document.getElementById('join');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
+          <button className="origin-cta origin-cta-primary" onClick={scrollToJoin}>
             Apply as a Container
           </button>
-          <button
-            className="origin-cta origin-cta-secondary"
-            onClick={() => {
-              const el = document.getElementById('join');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
+          <button className="origin-cta origin-cta-secondary" onClick={scrollToJoin}>
             Apply as a Facilitator
           </button>
         </div>
 
         <p className="origin-note">
-          Every application is reviewed personally. You will hear back within 48 hours.
+          Every application is reviewed personally.
         </p>
       </div>
     </section>
