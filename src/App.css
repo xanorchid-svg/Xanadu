@@ -337,18 +337,24 @@
   font-weight: 300;
   letter-spacing: 0.03em;
 }
-.living-word {
+
+/* ========================
+   TRUST WATERMARK — opacity reveal
+======================== */
+.trust-word {
   font-family: 'Cinzel', serif;
   font-size: clamp(56px, 12vw, 140px);
   font-weight: 300;
   letter-spacing: 0.22em;
-  color: rgba(13,28,43,0.04);
+  color: rgba(13,28,43,0);
   line-height: 1;
   user-select: none;
-  transition: color 2s ease, letter-spacing 2.4s ease;
+  transition:
+    color 2.4s cubic-bezier(0.16, 1, 0.3, 1),
+    letter-spacing 3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.living-word.visible {
-  color: rgba(13,28,43,0.06);
+.trust-word.trust-visible {
+  color: rgba(13,28,43,0.055);
   letter-spacing: 0.34em;
 }
 
@@ -371,12 +377,14 @@
 }
 .pillar-tall { min-height: 720px; }
 
+/* Parallax — inset extended so edges don't show during shift */
 .pillar-bg-inner {
   position: absolute;
-  inset: 0;
+  inset: -12%;
   background-size: cover;
   background-position: center;
-  transition: transform 0.9s cubic-bezier(0.16,1,0.3,1);
+  will-change: transform;
+  transition: none;
 }
 .pillar:hover .pillar-bg-inner { transform: scale(1.04); }
 
@@ -428,13 +436,14 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
 .thework-inner {
   max-width: 640px;
   margin: 0 auto;
   color: var(--white);
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 .thework .overline { color: var(--gold-light); }
 .thework h2 {
@@ -472,6 +481,7 @@
   width: 600px; height: 600px;
   pointer-events: none;
   opacity: 0.04;
+  z-index: 2;
 }
 .thework-orbit::before,
 .thework-orbit::after {
@@ -508,11 +518,15 @@
   align-items: flex-end;
   overflow: hidden;
 }
+
+/* Parallax — inset extended */
 .network-card-bg {
-  position: absolute; inset: 0;
+  position: absolute;
+  inset: -12%;
   background-size: cover;
   background-position: center;
-  transition: transform 0.9s cubic-bezier(0.16,1,0.3,1);
+  will-change: transform;
+  transition: none;
 }
 .network-card:hover .network-card-bg { transform: scale(1.05); }
 
@@ -714,6 +728,7 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
 .living-network-section::before {
   content: '';
@@ -724,6 +739,7 @@
   border-radius: 50%;
   border: 1px solid rgba(184,134,42,0.06);
   pointer-events: none;
+  z-index: 2;
 }
 .living-network-section::after {
   content: '';
@@ -734,12 +750,13 @@
   border-radius: 50%;
   border: 1px solid rgba(184,134,42,0.06);
   pointer-events: none;
+  z-index: 2;
 }
 .living-network-inner {
   max-width: 640px;
   margin: 0 auto;
   position: relative;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1198,7 +1215,6 @@ textarea { resize: none; line-height: 1.8; }
   opacity: 0.85;
   margin-bottom: 28px;
   transition: opacity 0.5s;
-  /* No filter — logo renders in its own colours */
 }
 .footer-logo:hover { opacity: 1; }
 .footer-links {
@@ -1259,7 +1275,8 @@ textarea { resize: none; line-height: 1.8; }
   .living { padding: 100px 24px; }
   .living h2 { font-size: clamp(28px, 7vw, 44px); }
   .body-lg { font-size: 15px; margin-bottom: 56px; }
-  .living-word { font-size: clamp(44px, 14vw, 80px); letter-spacing: 0.14em; }
+  .trust-word { font-size: clamp(44px, 14vw, 80px); letter-spacing: 0.14em; }
+  .trust-word.trust-visible { letter-spacing: 0.22em; }
 
   .section-header { padding: 80px 24px 48px; }
   .section-header h2 { font-size: clamp(28px, 6vw, 40px); }
@@ -1268,6 +1285,9 @@ textarea { resize: none; line-height: 1.8; }
   .pillar, .pillar-tall { min-height: 380px; }
   .pillar-content { padding: 36px 28px; }
   .pillar-content h3 { font-size: 36px; }
+  /* Disable parallax on mobile — performance */
+  .pillar-bg-inner,
+  .network-card-bg { transition: transform 0.9s cubic-bezier(0.16,1,0.3,1); }
 
   .thework { padding: 100px 24px; }
   .thework h2 { font-size: clamp(40px, 10vw, 72px); }

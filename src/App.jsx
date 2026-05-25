@@ -7,6 +7,7 @@ import { supabase } from './supabase'
 import './App.css'
 import WaitlistPopup from './WaitlistPopup'
 import TheOrigin from './TheOrigin'
+import StarField from './StarField'
 
 const IMAGES = {
   hero: new URL('./assets/hero.png', import.meta.url).href,
@@ -41,6 +42,27 @@ function useReveal() {
   return ref
 }
 
+// TRUST opacity reveal — fades in as section enters viewport
+function useTrustReveal() {
+  const ref = useRef(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add('trust-visible')
+          observer.unobserve(el)
+        }
+      },
+      { threshold: 0.3, rootMargin: '0px 0px -60px 0px' }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+  return ref
+}
+
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -50,8 +72,16 @@ function App() {
   const [formError, setFormError] = useState(null)
   const [submitting, setSubmitting] = useState(false)
   const heroBgRef = useRef(null)
-  const livingWordRef = useRef(null)
   const navigate = useNavigate()
+
+  // Parallax refs for pillar backgrounds
+  const pillarBg1Ref = useRef(null)
+  const pillarBg2Ref = useRef(null)
+  const pillarBg3Ref = useRef(null)
+  // Parallax refs for network card backgrounds
+  const cardBg1Ref = useRef(null)
+  const cardBg2Ref = useRef(null)
+  const cardBg3Ref = useRef(null)
 
   const heroSubRef = useReveal()
   const livingRef = useReveal()
@@ -66,6 +96,9 @@ function App() {
   const card1Ref = useReveal()
   const card2Ref = useReveal()
   const card3Ref = useReveal()
+
+  // TRUST watermark reveal
+  const trustWordRef = useTrustReveal()
 
   useEffect(() => {
     const saved = sessionStorage.getItem(SCROLL_KEY)
@@ -85,18 +118,50 @@ function App() {
     img.src = IMAGES.hero
     img.onload = () => setHeroLoaded(true)
 
+    // Helper: get parallax offset for an element
+    const getParallax = (el, rate = 0.18) => {
+      if (!el) return null
+      const rect = el.closest('.pillar, .network-card')?.getBoundingClientRect()
+      if (!rect) return null
+      const center = rect.top + rect.height / 2
+      const offset = (window.innerHeight / 2 - center) * rate
+      return offset
+    }
+
     const onScroll = () => {
       const y = window.scrollY
       setScrolled(y > 60)
+
+      // Hero parallax
       if (heroBgRef.current) {
         heroBgRef.current.style.transform = `translateY(${y * 0.28}px)`
       }
-      if (livingWordRef.current) {
-        const rect = livingWordRef.current.getBoundingClientRect()
-        if (rect.top < window.innerHeight * 0.85) {
-          livingWordRef.current.classList.add('visible')
-        }
-      }
+
+      // Pillar parallax — backgrounds move at 18% of scroll relative to card center
+      const pillarBgs = [pillarBg1Ref, pillarBg2Ref, pillarBg3Ref]
+      pillarBgs.forEach(ref => {
+        if (!ref.current) return
+        const card = ref.current.closest('.pillar')
+        if (!card) return
+        const rect = card.getBoundingClientRect()
+        if (rect.bottom < 0 || rect.top > window.innerHeight) return
+        const center = rect.top + rect.height / 2
+        const offset = (window.innerHeight / 2 - center) * 0.15
+        ref.current.style.transform = `translateY(${offset}px)`
+      })
+
+      // Network card parallax
+      const cardBgs = [cardBg1Ref, cardBg2Ref, cardBg3Ref]
+      cardBgs.forEach(ref => {
+        if (!ref.current) return
+        const card = ref.current.closest('.network-card')
+        if (!card) return
+        const rect = card.getBoundingClientRect()
+        if (rect.bottom < 0 || rect.top > window.innerHeight) return
+        const center = rect.top + rect.height / 2
+        const offset = (window.innerHeight / 2 - center) * 0.12
+        ref.current.style.transform = `translateY(${offset}px)`
+      })
     }
 
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -235,7 +300,8 @@ function App() {
               The spaces we enter shape our experiences. The communities we gather with shape our lives. Yet it has become difficult to know which places truly hold integrity — and true intention. Xanadu exists to restore trust in the environments where transformation happens.
             </p>
           </div>
-          <div ref={livingWordRef} className="living-word">TRUST.</div>
+          {/* TRUST — opacity reveal on scroll */}
+          <div ref={trustWordRef} className="living-word trust-word">TRUST.</div>
         </div>
       </section>
 
@@ -247,7 +313,7 @@ function App() {
         </div>
         <div className="pillars-grid">
           <div ref={pillar1Ref} className="pillar reveal reveal-left">
-            <div className="pillar-bg-inner" style={{ backgroundImage: `url(${IMAGES.trust})` }} />
+            <div ref={pillarBg1Ref} className="pillar-bg-inner" style={{ backgroundImage: `url(${IMAGES.trust})` }} />
             <div className="pillar-veil" />
             <div className="pillar-content">
               <h3>Trust.</h3>
@@ -255,7 +321,7 @@ function App() {
             </div>
           </div>
           <div ref={pillar2Ref} className="pillar pillar-tall reveal reveal-delay-2">
-            <div className="pillar-bg-inner" style={{ backgroundImage: `url(${IMAGES.intention})` }} />
+            <div ref={pillarBg2Ref} className="pillar-bg-inner" style={{ backgroundImage: `url(${IMAGES.intention})` }} />
             <div className="pillar-veil" />
             <div className="pillar-content">
               <h3>Intention.</h3>
@@ -263,7 +329,7 @@ function App() {
             </div>
           </div>
           <div ref={pillar3Ref} className="pillar reveal reveal-right">
-            <div className="pillar-bg-inner" style={{ backgroundImage: `url(${IMAGES.alignment})` }} />
+            <div ref={pillarBg3Ref} className="pillar-bg-inner" style={{ backgroundImage: `url(${IMAGES.alignment})` }} />
             <div className="pillar-veil" />
             <div className="pillar-content">
               <h3>Alignment.</h3>
@@ -273,8 +339,9 @@ function App() {
         </div>
       </section>
 
-      {/* THE WORK */}
+      {/* THE WORK — StarField added */}
       <section className="thework" id="thework">
+        <StarField count={52} />
         <div className="thework-orbit" />
         <div ref={theworkRef} className="thework-inner reveal">
           <p className="overline">The Work</p>
@@ -299,7 +366,7 @@ function App() {
         </div>
         <div className="network-grid">
           <div ref={card1Ref} className="network-card network-card-clickable reveal reveal-left" onClick={() => goTo('/container')}>
-            <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.containers})` }} />
+            <div ref={cardBg1Ref} className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.containers})` }} />
             <div className="card-veil" />
             <div className="card-content">
               <p className="card-label">Containers</p>
@@ -308,7 +375,7 @@ function App() {
             </div>
           </div>
           <div ref={card2Ref} className="network-card network-card-center network-card-clickable reveal reveal-delay-2" onClick={() => goTo('/seeker')}>
-            <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.seeker})` }} />
+            <div ref={cardBg2Ref} className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.seeker})` }} />
             <div className="card-veil card-veil-plum" />
             <div className="card-content">
               <p className="card-label">You</p>
@@ -317,7 +384,7 @@ function App() {
             </div>
           </div>
           <div ref={card3Ref} className="network-card network-card-clickable reveal reveal-right" onClick={() => goTo('/facilitator')}>
-            <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.facilitators})` }} />
+            <div ref={cardBg3Ref} className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.facilitators})` }} />
             <div className="card-veil" />
             <div className="card-content">
               <p className="card-label">Facilitators</p>
@@ -342,7 +409,7 @@ function App() {
         </div>
       </section>
 
-      {/* THE ORIGIN */}
+      {/* THE ORIGIN — StarField handled inside TheOrigin component */}
       <TheOrigin />
 
       {/* CREATION BRIDGE */}
@@ -358,8 +425,9 @@ function App() {
         </div>
       </section>
 
-      {/* LIVING NETWORK */}
+      {/* LIVING NETWORK — StarField added */}
       <section className="living-network-section" id="living-network">
+        <StarField count={36} />
         <div ref={livingNetworkRef} className="living-network-inner reveal">
           <p className="overline">The Living Network</p>
           <h2 className="ln-heading">What grows here,<br />grows together.</h2>
