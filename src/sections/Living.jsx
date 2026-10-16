@@ -46,7 +46,7 @@ export default function Living() {
         </div>
 
         <Rise as="p" className="body center narrow" delay={0.2}>
-          A weekend or a lifetime. Sound healing, breathwork, trainings, volunteer work and more. Tell us how long, how you'll spend your days and where you feel most alive, and we'll match you to where you belong.
+          A few hours or a lifetime. Sound healing, breathwork, trainings, volunteer work and more. Tell us how long, how you'll spend your days and where you feel most alive, and we'll match you to where you belong.
         </Rise>
       </div>
     </section>

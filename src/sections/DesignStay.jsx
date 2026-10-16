@@ -7,11 +7,13 @@ import { tintSky } from '../lib/sky'
 import { scrollToTarget } from '../lib/scroll'
 
 const LENGTHS = [
-  { label: 'A weekend', size: 18 },
-  { label: 'A week or two', size: 28 },
-  { label: 'A month or more', size: 40 },
+  { label: 'Less than 5 hours', size: 12 },
+  { label: '1 night', size: 18 },
+  { label: 'A weekend', size: 25 },
+  { label: 'A week or two', size: 33 },
+  { label: 'A month or more', size: 43 },
   { label: 'A season', size: 56 },
-  { label: 'Make it home', size: 78 },
+  { label: 'Make it home', size: 74 },
 ]
 
 const WORK = [

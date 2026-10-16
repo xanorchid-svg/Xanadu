@@ -1167,55 +1167,38 @@ html.modal-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .scene img { transform: none !important; } }
 
 
+@media (max-width: 760px) and (max-height: 760px) {
+  .length { padding: 2px 0; gap: 14px; }
+  .length-orb { width: calc(var(--s) * .5); height: calc(var(--s) * .5); margin: 0 calc(30px - var(--s) * .25); }
+  .length-label { font-size: 15px; }
+  .stay-panel { gap: 16px; }
+}
+
+
 /* ============================================================
-   Moments — the rotating gallery
+   Photos behind "A way of living"
    ============================================================ */
-.moments { padding: clamp(60px, 10vh, 120px) 0 clamp(80px, 12vh, 140px); }
-.moments-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px 60px; flex-wrap: wrap; margin-bottom: clamp(26px, 4vh, 44px); }
-.moments-title { margin: 0; max-width: 14ch; }
-.moments-sub { max-width: 380px; color: var(--ivory-dim); font-size: clamp(15px, 1.2vw, 17px); line-height: 1.7; }
-.moments-stage-wrap { max-width: 1440px; }
-.moments-stage {
-  position: relative; width: 100%; aspect-ratio: 16 / 8.4; border-radius: 30px; overflow: hidden; clip-path: inset(0 round 30px);
-  background: var(--navy-deep); isolation: isolate;
-}
-.moment { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity 1.6s var(--ease); }
-.moment.is-on { opacity: 1; z-index: 1; }
-.moment img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.14); transition: transform 7s linear; }
-.moment.drift-r img { transform-origin: 30% 50%; }
-.moment.drift-l img { transform-origin: 70% 50%; }
-.moment.is-on img { transform: scale(1.02); }
-.moments-veil {
-  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+.hero-photos { position: absolute; inset: 0; opacity: 0; pointer-events: none; overflow: hidden; }
+.hp { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s var(--ease); }
+.hp.is-on { opacity: 1; }
+.hp img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.16); transition: transform 5s linear; }
+.hp.drift-r img { transform-origin: 25% 50%; }
+.hp.drift-l img { transform-origin: 75% 50%; }
+.hp.is-on img { transform: scale(1.03); }
+.hp-veil {
+  position: absolute; inset: 0;
   background:
-    linear-gradient(0deg, rgba(12, 21, 34, .78) 0%, rgba(12, 21, 34, .1) 38%, transparent 60%),
-    radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(12, 21, 34, .45) 100%);
+    radial-gradient(70% 55% at 50% 50%, rgba(12, 21, 34, .62), rgba(12, 21, 34, .25) 70%, rgba(12, 21, 34, .55)),
+    linear-gradient(0deg, rgba(12, 21, 34, .8), transparent 30%, transparent 75%, rgba(12, 21, 34, .6));
 }
-.moments-veil::after {
-  /* a breath of iridescence over every photo */
-  content: ''; position: absolute; inset: 0; background: var(--iri); background-size: 300% 300%;
-  mix-blend-mode: soft-light; opacity: .28; animation: hairline 18s linear infinite;
+.hp-veil::after { content: ''; position: absolute; inset: 0; background: var(--iri); background-size: 300% 300%; mix-blend-mode: soft-light; opacity: .3; animation: hairline 18s linear infinite; }
+.hp-cap {
+  position: absolute; left: 0; right: 0; bottom: clamp(28px, 6vh, 56px); text-align: center;
+  font-family: var(--serif); font-style: italic; font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--ivory-dim);
+  animation: cap-in 1.2s var(--ease) both;
 }
-.moments-cap { position: absolute; left: clamp(20px, 3.4vw, 46px); bottom: clamp(64px, 8vw, 96px); z-index: 3; display: flex; flex-direction: column; gap: 8px; animation: cap-in 1.2s var(--ease) both; }
-@keyframes cap-in { from { opacity: 0; transform: translateY(14px); filter: blur(6px); } }
-.moments-tag { font-size: 10.5px; font-weight: 600; letter-spacing: .32em; text-transform: uppercase; color: var(--gold-pale); }
-.moments-line { font-family: var(--serif); font-size: clamp(1.5rem, 3.2vw, 2.8rem); font-weight: 500; line-height: 1.05; color: var(--ivory); text-shadow: 0 2px 30px rgba(0, 0, 0, .45); max-width: 18ch; }
-.moments-nav { position: absolute; left: clamp(20px, 3.4vw, 46px); right: clamp(20px, 3.4vw, 46px); bottom: clamp(20px, 2.8vw, 36px); z-index: 3; display: flex; align-items: center; gap: 16px; }
-.moments-bars { flex: 1; display: flex; gap: 5px; }
-.moments-bars span { flex: 1; height: 2px; border-radius: 2px; background: rgba(246, 241, 232, .22); overflow: hidden; }
-.moments-bars i { display: block; height: 100%; background: var(--ivory); transform-origin: left; transform: scaleX(0); }
-.moments-bars span.done i { transform: scaleX(1); }
-.moments-bars span.now i { animation: bar linear forwards; }
-.moments-arrow {
-  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; font-size: 16px; color: var(--ivory);
-  background: rgba(12, 21, 34, .35); box-shadow: inset 0 0 0 1px rgba(246, 241, 232, .25); backdrop-filter: blur(8px);
-  transition: background .3s, box-shadow .3s;
-}
-.moments-arrow:hover { background: rgba(246, 241, 232, .14); box-shadow: inset 0 0 0 1px var(--ivory); }
-@media (max-width: 760px) {
-  .moments-stage { aspect-ratio: 4 / 5; border-radius: 22px; clip-path: inset(0 round 22px); }
-  .moments-cap { bottom: 72px; }
-  .moments-arrow { width: 34px; height: 34px; }
-}
-@media (prefers-reduced-motion: reduce) { .moment img { transform: none !important; } }
-@media (min-width: 761px) { .moments-stage { aspect-ratio: auto; height: min(78svh, calc((100vw - 2 * var(--gutter)) * 0.525), 760px); } }
+@keyframes cap-in { from { opacity: 0; transform: translateY(10px); filter: blur(6px); } }
+.hero-emerge { z-index: 2; }
+.hero-emerge .emerge-big, .hero-emerge .emerge-small, .hero-emerge .definition-line { text-shadow: 0 2px 40px rgba(12, 21, 34, .7); }
+.hero-emerge .definition-line { color: var(--ivory-dim); }
+@media (prefers-reduced-motion: reduce) { .hp img { transform: none !important; } }

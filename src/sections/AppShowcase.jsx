@@ -21,8 +21,8 @@ function DemoStay() {
       <p className="scr-k">Design your stay</p>
       <p className="scr-title">How long will you <Shimmer>stay</Shimmer>?</p>
       <div className="d-chips">
-        {['A weekend', 'A week or two', 'A month or more', 'A season', 'Make it home'].map((t, i) => (
-          <span key={t} className={`d-chip ${i === 3 ? 'd-pick d-pick-1' : ''}`}>{t}</span>
+        {['Less than 5 hours', '1 night', 'A weekend', 'A week or two', 'A month or more', 'A season', 'Make it home'].map((t, i) => (
+          <span key={t} className={`d-chip ${i === 5 ? 'd-pick d-pick-1' : ''}`}>{t}</span>
         ))}
       </div>
       <p className="scr-title sm">Work, or <Shimmer>just be</Shimmer>?</p>

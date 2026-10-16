@@ -5,6 +5,8 @@ import Emblem from '../components/Emblem'
 import { Shimmer } from '../components/Reveal'
 import { prefersReducedMotion, isTouch } from '../lib/sky'
 import { scrollToTarget } from '../lib/scroll'
+import { MOMENTS } from '../lib/moments'
+import { photoUrl } from '../lib/links'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -24,6 +26,17 @@ export default function Hero() {
   const ringsRef = useRef(null)
   const hintRef = useRef(null)
   const [ready, setReady] = useState(false)
+  const photosRef = useRef(null)
+  const [photo, setPhoto] = useState(0)
+  const [photosOn, setPhotosOn] = useState(false) // true while "A way of living" is on screen
+  const [loadPhotos, setLoadPhotos] = useState(false)
+
+  // the photos turn while they're visible
+  useEffect(() => {
+    if (!photosOn) return
+    const id = setInterval(() => setPhoto((n) => (n + 1) % MOMENTS.length), 3200)
+    return () => clearInterval(id)
+  }, [photosOn])
 
   useEffect(() => {
     const t = setTimeout(() => setReady(true), 60)
@@ -60,10 +73,14 @@ export default function Hero() {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top top',
-          end: '+=180%',
+          end: '+=280%',
           scrub: 1,
           pin: stageRef.current,
           anticipatePin: 1,
+          onUpdate: (st) => {
+            if (st.progress > 0.15) setLoadPhotos(true)
+            setPhotosOn(st.progress > 0.45 && st.progress < 0.999)
+          },
         },
       })
       tl.to(copyRef.current, { opacity: 0, y: -60, filter: 'blur(14px)', duration: 0.18 }, 0)
@@ -76,7 +93,8 @@ export default function Hero() {
         .fromTo(emergeRef.current,
           { opacity: 0, scale: 0.4, filter: 'blur(24px)' },
           { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'power2.out', duration: 0.3 }, 0.68)
-        .to({}, { duration: 0.08 })
+        .fromTo(photosRef.current, { opacity: 0, scale: 1.25 }, { opacity: 1, scale: 1, ease: 'power2.out', duration: 0.35 }, 0.7)
+        .to({}, { duration: 0.75 })
     }, sectionRef)
     return () => ctx.revert()
   }, [])
@@ -106,6 +124,23 @@ export default function Hero() {
             <span className="ht-line">Xanadu begins</span>{' '}
             <span className="ht-line">with <Shimmer>you</Shimmer>.</span>
           </h1>
+        </div>
+
+        <div ref={photosRef} className="hero-photos" aria-hidden="true">
+          {loadPhotos && MOMENTS.map((m, n) => {
+            const near = n === photo || n === (photo + 1) % MOMENTS.length
+            return (
+              <div key={m.id} className={`hp ${n === photo ? 'is-on' : ''} ${n % 2 ? 'drift-l' : 'drift-r'}`}>
+                {(near || n < 2) && (
+                  <img src={photoUrl(m.id, 1800)}
+                    srcSet={`${photoUrl(m.id, 900)} 900w, ${photoUrl(m.id, 1800)} 1800w, ${photoUrl(m.id, 2600)} 2600w`}
+                    sizes="100vw" alt="" decoding="async" />
+                )}
+              </div>
+            )
+          })}
+          <div className="hp-veil" />
+          <p className="hp-cap" key={photo}>{MOMENTS[photo].line}</p>
         </div>
 
         <div ref={emergeRef} className="hero-emerge">
