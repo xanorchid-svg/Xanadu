@@ -97,10 +97,9 @@ const GROWTH = [
   'photo-1458014854819-1a40aa70211c', // a single seedling
   'photo-1583795970261-2d47c971835a', // a fern unfurling
   'photo-1649058799638-e841b3ad7ae1', // rows of sprouts
+  'photo-1777150895644-2ca253ee1c93', // two pairs of hands planting a seedling together
   '/photos/growth-planting-together.jpg', // small hands planting a seedling (Xan's own photo, cropped below the faces)
   'photo-1729583263178-b7ada6f1482a', // the canopy from below
-  'photo-1610558316028-efee14358b76', // a field of sunflowers
-  'photo-1492681290082-e932832941e6', // arms open to the sunrise
 ]
 
 function Growth() {
