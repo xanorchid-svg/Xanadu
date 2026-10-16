@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Button from '../components/Button'
 import { Shimmer } from '../components/Reveal'
-import { LANDSCAPES } from '../lib/links'
+import { LANDSCAPES, photoUrl } from '../lib/links'
 import { useStay, setStay } from '../lib/stay'
 import { tintSky } from '../lib/sky'
 import { scrollToTarget } from '../lib/scroll'
@@ -33,6 +33,7 @@ export default function DesignStay() {
   const [active, setActive] = useState(false)
   const { length, work, where } = useStay()
   const [hover, setHover] = useState(null)
+  const [near, setNear] = useState(false) // start loading the photos just before they're needed
 
   // which step we're on comes from how far through the (tall) section you've scrolled
   useEffect(() => {
@@ -44,6 +45,7 @@ export default function DesignStay() {
       const p = Math.min(1, Math.max(0, -r.top / total))
       setStep(Math.min(2, Math.floor(p * 3)))
       setActive(r.top < window.innerHeight * 0.5 && r.bottom > window.innerHeight * 0.5)
+      if (r.top < window.innerHeight * 2.5) setNear(true)
     }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -71,11 +73,30 @@ export default function DesignStay() {
   const pickWork = (w) => { setStay({ work: w }); setTimeout(() => goStep(2), 450) }
   const toggleWhere = (name) => setStay((s) => ({ where: s.where.includes(name) ? s.where.filter((n) => n !== name) : [...s.where, name] }))
 
+  // the place you're hovering (or the last one you chose) fills the whole screen
+  const shown = active && step === 2 ? (hover || where[where.length - 1]) : null
+  const shownLand = LANDSCAPES.find((l) => l.name === shown)
+
   const summary = [length, work, where.length ? where.join(', ') : null]
   const placeholders = ['how long', 'how you spend it', 'where']
 
   return (
     <section id="stay" ref={sectionRef} className="stay">
+      <div className={`stay-scenes ${shown ? 'is-on' : ''}`} aria-hidden="true">
+        {near && LANDSCAPES.map((l) => (
+          <div key={l.name} className={`scene ${shown === l.name ? 'is-on' : ''}`} style={{ '--c': l.color }}>
+            <img
+              src={photoUrl(l.photo, 1600)}
+              srcSet={`${photoUrl(l.photo, 900)} 900w, ${photoUrl(l.photo, 1600)} 1600w, ${photoUrl(l.photo, 2400)} 2400w`}
+              sizes="100vw" alt="" loading="lazy" decoding="async"
+            />
+          </div>
+        ))}
+        <div className="scene-veil" />
+      </div>
+      <p className={`scene-caption ${shownLand ? 'is-on' : ''}`} aria-live="polite">
+        {shownLand && <><span>Imagine</span> {shownLand.scene}</>}
+      </p>
       <div className="stay-sticky">
         <div className="stay-head">
           <p className="eyebrow">Design your stay</p>

@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { Reveal, Rise, Shimmer } from '../components/Reveal'
-import { LINKS } from '../lib/links'
+import { LINKS, photoUrl } from '../lib/links'
 import { isTouch } from '../lib/sky'
 import { scrollToTarget } from '../lib/scroll'
 import Sigil from '../components/Sigil'
@@ -8,6 +8,7 @@ import Sigil from '../components/Sigil'
 const DOORS = [
   {
     kind: 'seeker',
+    photo: 'photo-1522075782449-e45a34f1ddfb',
     role: 'The Seeker',
     title: 'I am seeking',
     text: 'You feel the pull toward something: healing, community, service, devotion. You may not have the words for it yet. You don\u2019t need them. You need a place built to receive you exactly where you are.',
@@ -17,6 +18,7 @@ const DOORS = [
   },
   {
     kind: 'container',
+    photo: 'photo-1792060052578-9dbe661cadbd',
     role: 'Containers \u00b7 Sacred spaces',
     title: 'I hold a space',
     text: 'You have prepared the land. The space is ready. But the right guides don\u2019t find you, and the seekers who would thrive here don\u2019t know you exist. Xanadu closes that gap.',
@@ -26,6 +28,7 @@ const DOORS = [
   },
   {
     kind: 'facilitator',
+    photo: 'photo-1778694276998-4cfd1f84bfe1',
     role: 'Facilitators \u00b7 Wisdom keepers',
     title: 'I guide',
     text: 'You carry real medicine. But finding the spaces worthy of your work, and the people ready for it, is its own labour. Xanadu holds that for you, so you can do what you came here to do.',
@@ -53,8 +56,10 @@ function Door({ d, i }) {
       <a ref={ref} href={d.href} className="door" onPointerMove={onMove} onPointerLeave={onLeave}
         onClick={d.href.startsWith('#') ? (e) => { e.preventDefault(); scrollToTarget(d.href) } : undefined}
         style={{ '--h1': d.hues[0], '--h2': d.hues[1], '--h3': d.hues[2] }} data-cursor="hover">
+        <span className="door-photo" aria-hidden="true">
+          <img src={photoUrl(d.photo, 900, 1300)} alt="" loading="lazy" decoding="async" />
+        </span>
         <span className="door-frame" aria-hidden="true" />
-        <span className="door-inside" aria-hidden="true"><i /><i /><i /></span>
         <span className="door-light" aria-hidden="true" />
         <span className="door-sigil"><Sigil kind={d.kind} hues={d.hues} /></span>
         <span className="door-body">
