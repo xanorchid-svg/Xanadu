@@ -1128,3 +1128,9 @@ html.modal-open { overflow: hidden; }
 .jm-role-text em { white-space: nowrap; }
 .sigil { width: 64px; height: 64px; }
 @media (max-width: 420px) { .jm-role { padding: 14px; gap: 12px; } .jm-role .sigil { width: 42px; height: 42px; } }
+
+/* door symbols: large, centred in the arch, all at the same height */
+.door-sigil { position: absolute; z-index: 4; left: 0; right: 0; top: 13%; display: flex; justify-content: center; pointer-events: none; }
+.door-sigil .sigil { width: clamp(96px, 9vw, 124px); height: clamp(96px, 9vw, 124px); margin: 0; filter: drop-shadow(0 0 18px rgba(232, 191, 138, .3)); transition: transform .8s var(--ease), filter .6s; }
+.door:hover .door-sigil .sigil { transform: translateY(-6px) scale(1.05); filter: drop-shadow(0 0 26px rgba(232, 191, 138, .55)); }
+@media (max-width: 900px) { .door-sigil { top: 10%; } .door-sigil .sigil { width: 92px; height: 92px; } }

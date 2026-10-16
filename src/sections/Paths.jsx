@@ -56,8 +56,8 @@ function Door({ d, i }) {
         <span className="door-frame" aria-hidden="true" />
         <span className="door-inside" aria-hidden="true"><i /><i /><i /></span>
         <span className="door-light" aria-hidden="true" />
+        <span className="door-sigil"><Sigil kind={d.kind} hues={d.hues} /></span>
         <span className="door-body">
-          <Sigil kind={d.kind} hues={d.hues} />
           <span className="door-role">{d.role}</span>
           <span className="door-title">{d.title}</span>
           <span className="door-text">{d.text}</span>
