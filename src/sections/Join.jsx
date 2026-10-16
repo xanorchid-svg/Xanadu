@@ -62,7 +62,7 @@ export default function Join() {
                 <span>Your stay</span>
                 {stayText ? (
                   <p className="join-stay">
-                    {[stay.length, stay.work, ...stay.where].filter(Boolean).map((t) => <em key={t} className="chip is-set">{t}</em>)}
+                    {[...stay.seeking, stay.length, stay.work, ...stay.where].filter(Boolean).map((t) => <em key={t} className="chip is-set">{t}</em>)}
                   </p>
                 ) : (
                   <button type="button" className="join-design" onClick={() => scrollToTarget('#stay')}>Design your stay ↑</button>

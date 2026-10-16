@@ -6,6 +6,24 @@ import { useStay, setStay } from '../lib/stay'
 import { tintSky } from '../lib/sky'
 import { scrollToTarget } from '../lib/scroll'
 
+// What you're seeking: the app's own words (SEEKER_ALIGN), plus retreats and communal living
+const SEEKING = [
+  { label: 'Yoga', c: '#B58BE0' },
+  { label: 'Breathwork', c: '#6FB7BF' },
+  { label: 'Meditation', c: '#8F9BE6' },
+  { label: 'Sound healing', c: '#E8BF8A' },
+  { label: 'Ecstatic dance', c: '#E09AC4' },
+  { label: 'Kirtan', c: '#D9A67E' },
+  { label: 'Retreats', c: '#9DBB7A' },
+  { label: 'Trainings', c: '#8C95C9' },
+  { label: 'Communal living', c: '#86A06A' },
+  { label: 'Volunteer exchange', c: '#7FB3C2' },
+  { label: 'Permaculture & gardening', c: '#B7B470' },
+  { label: "Women's retreats", c: '#E09AC4' },
+  { label: "Men's retreats", c: '#6E9A7E' },
+  { label: 'Rest & stillness', c: '#E6CDA6' },
+]
+
 const LENGTHS = [
   { label: 'Less than 5 hours', size: 12 },
   { label: '1 night', size: 18 },
@@ -24,16 +42,19 @@ const WORK = [
 ]
 
 const STEPS = [
-  { n: '01', q: <>How <Shimmer>long</Shimmer> will you stay?</>, tint: '#6FB7BF' },
-  { n: '02', q: <>Will you work, or <Shimmer>just be</Shimmer>?</>, tint: '#E09AC4' },
-  { n: '03', q: <>Where do you feel most <Shimmer>alive</Shimmer>?</>, tint: null },
+  { n: '01', q: <>What are you <Shimmer>seeking</Shimmer>?</>, tint: '#B58BE0' },
+  { n: '02', q: <>How <Shimmer>long</Shimmer> will you stay?</>, tint: '#6FB7BF' },
+  { n: '03', q: <>Will you work, or <Shimmer>just be</Shimmer>?</>, tint: '#E09AC4' },
+  { n: '04', q: <>Where do you feel most <Shimmer>alive</Shimmer>?</>, tint: null },
 ]
+const N = STEPS.length
+const WHERE = N - 1
 
 export default function DesignStay() {
   const sectionRef = useRef(null)
   const [step, setStep] = useState(0)
   const [active, setActive] = useState(false)
-  const { length, work, where } = useStay()
+  const { seeking, length, work, where } = useStay()
   const [hover, setHover] = useState(null)
   const [near, setNear] = useState(false) // start loading the photos just before they're needed
 
@@ -45,7 +66,7 @@ export default function DesignStay() {
       const r = el.getBoundingClientRect()
       const total = el.offsetHeight - window.innerHeight
       const p = Math.min(1, Math.max(0, -r.top / total))
-      setStep(Math.min(2, Math.floor(p * 3)))
+      setStep(Math.min(N - 1, Math.floor(p * N)))
       setActive(r.top < window.innerHeight * 0.5 && r.bottom > window.innerHeight * 0.5)
       if (r.top < window.innerHeight * 2.5) setNear(true)
     }
@@ -58,29 +79,32 @@ export default function DesignStay() {
   // the sky takes on the colour of the moment
   useEffect(() => {
     if (!active) { tintSky(null); return }
-    if (step < 2) { tintSky(STEPS[step].tint, 0.35); return }
+    if (step === 0 && seeking.length) { tintSky(SEEKING.find((x) => x.label === seeking[seeking.length - 1]).c, 0.5); return }
+    if (step < WHERE) { tintSky(STEPS[step].tint, 0.35); return }
     const name = hover || where[where.length - 1]
     const land = LANDSCAPES.find((l) => l.name === name)
     tintSky(land ? land.color : '#B58BE0', land ? 0.95 : 0.25)
-  }, [active, step, hover, where])
+  }, [active, step, hover, where, seeking])
 
   const goStep = (i) => {
     const el = sectionRef.current
     const total = el.offsetHeight - window.innerHeight
     const top = el.getBoundingClientRect().top + window.scrollY
-    scrollToTarget(top + total * ((i + 0.5) / 3))
+    scrollToTarget(top + total * ((i + 0.5) / N))
   }
 
-  const pickLength = (l) => { setStay({ length: l }); setTimeout(() => goStep(1), 450) }
-  const pickWork = (w) => { setStay({ work: w }); setTimeout(() => goStep(2), 450) }
+  const toggleSeeking = (label) => setStay((s) => ({ seeking: s.seeking.includes(label) ? s.seeking.filter((n) => n !== label) : [...s.seeking, label] }))
+  const pickLength = (l) => { setStay({ length: l }); setTimeout(() => goStep(2), 450) }
+  const pickWork = (w) => { setStay({ work: w }); setTimeout(() => goStep(3), 450) }
   const toggleWhere = (name) => setStay((s) => ({ where: s.where.includes(name) ? s.where.filter((n) => n !== name) : [...s.where, name] }))
 
   // the place you're hovering (or the last one you chose) fills the whole screen
-  const shown = active && step === 2 ? (hover || where[where.length - 1]) : null
+  const shown = active && step === WHERE ? (hover || where[where.length - 1]) : null
   const shownLand = LANDSCAPES.find((l) => l.name === shown)
 
-  const summary = [length, work, where.length ? where.join(', ') : null]
-  const placeholders = ['how long', 'how you spend it', 'where']
+  const seekingText = seeking.length ? (seeking.length > 2 ? `${seeking.slice(0, 2).join(', ')} +${seeking.length - 2}` : seeking.join(', ')) : null
+  const summary = [seekingText, length, work, where.length ? where.join(', ') : null]
+  const placeholders = ['what you seek', 'how long', 'how you spend it', 'where']
 
   return (
     <section id="stay" ref={sectionRef} className="stay">
@@ -112,13 +136,32 @@ export default function DesignStay() {
         </div>
 
         <div className="stay-panels">
-          {/* 01 — how long */}
+          {/* 01 — what you're seeking (choose any) */}
           <div className={`stay-panel ${step === 0 ? 'is-on' : step > 0 ? 'is-past' : ''}`} aria-hidden={step !== 0}>
-            <h2 className="stay-q">{STEPS[0].q}</h2>
+            <div>
+              <h2 className="stay-q">{STEPS[0].q}</h2>
+              <p className="stay-hint">Choose as many as call to you.</p>
+            </div>
+            <div className="seeks">
+              {SEEKING.map((x, i) => (
+                <button key={x.label} className={`seek ${seeking.includes(x.label) ? 'is-picked' : ''}`} style={{ '--c': x.c, '--i': i }}
+                  onClick={() => toggleSeeking(x.label)} aria-pressed={seeking.includes(x.label)} tabIndex={step === 0 ? 0 : -1}>
+                  <i aria-hidden="true" />{x.label}
+                </button>
+              ))}
+            </div>
+            <button className={`stay-next ${seeking.length ? 'is-ready' : ''}`} onClick={() => goStep(1)} tabIndex={step === 0 ? 0 : -1}>
+              {seeking.length ? 'Continue' : 'Skip for now'} <span aria-hidden="true">→</span>
+            </button>
+          </div>
+
+          {/* 02 — how long */}
+          <div className={`stay-panel ${step === 1 ? 'is-on' : step > 1 ? 'is-past' : ''}`} aria-hidden={step !== 1}>
+            <h2 className="stay-q">{STEPS[1].q}</h2>
             <div className="lengths">
               <div className="lengths-line" aria-hidden="true" />
               {LENGTHS.map((l, i) => (
-                <button key={l.label} className={`length ${length === l.label ? 'is-picked' : ''}`} onClick={() => pickLength(l.label)} tabIndex={step === 0 ? 0 : -1} style={{ '--i': i }}>
+                <button key={l.label} className={`length ${length === l.label ? 'is-picked' : ''}`} onClick={() => pickLength(l.label)} tabIndex={step === 1 ? 0 : -1} style={{ '--i': i }}>
                   <span className="length-orb" style={{ '--s': `${l.size}px` }} />
                   <span className="length-label">{l.label}</span>
                 </button>
@@ -126,12 +169,12 @@ export default function DesignStay() {
             </div>
           </div>
 
-          {/* 02 — work or just be */}
-          <div className={`stay-panel ${step === 1 ? 'is-on' : step > 1 ? 'is-past' : ''}`} aria-hidden={step !== 1}>
-            <h2 className="stay-q">{STEPS[1].q}</h2>
+          {/* 03 — work or just be */}
+          <div className={`stay-panel ${step === 2 ? 'is-on' : step > 2 ? 'is-past' : ''}`} aria-hidden={step !== 2}>
+            <h2 className="stay-q">{STEPS[2].q}</h2>
             <div className="works">
               {WORK.map((w, i) => (
-                <button key={w.label} className={`work iri-border ${work === w.label ? 'is-picked' : ''}`} onClick={() => pickWork(w.label)} tabIndex={step === 1 ? 0 : -1} style={{ '--i': i }}>
+                <button key={w.label} className={`work iri-border ${work === w.label ? 'is-picked' : ''}`} onClick={() => pickWork(w.label)} tabIndex={step === 2 ? 0 : -1} style={{ '--i': i }}>
                   <span className={`glyph glyph-${w.glyph}`} aria-hidden="true"><i /><i /><i /></span>
                   <span className="work-label">{w.label}</span>
                   <span className="work-note">{w.note}</span>
@@ -140,9 +183,9 @@ export default function DesignStay() {
             </div>
           </div>
 
-          {/* 03 — where */}
-          <div className={`stay-panel ${step === 2 ? 'is-on' : ''}`} aria-hidden={step !== 2}>
-            <h2 className="stay-q">{STEPS[2].q}</h2>
+          {/* 04 — where */}
+          <div className={`stay-panel ${step === WHERE ? 'is-on' : ''}`} aria-hidden={step !== WHERE}>
+            <h2 className="stay-q">{STEPS[WHERE].q}</h2>
             <div className="lands" onPointerLeave={() => setHover(null)}>
               {LANDSCAPES.map((l, i) => (
                 <button
@@ -154,7 +197,7 @@ export default function DesignStay() {
                   onBlur={() => setHover(null)}
                   onClick={() => toggleWhere(l.name)}
                   aria-pressed={where.includes(l.name)}
-                  tabIndex={step === 2 ? 0 : -1}
+                  tabIndex={step === WHERE ? 0 : -1}
                 >
                   <span className="land-label">{l.name}</span>
                 </button>
@@ -163,7 +206,7 @@ export default function DesignStay() {
           </div>
         </div>
 
-        <div className={`stay-summary iri-border ${length || work || where.length ? 'has-any' : ''}`}>
+        <div className={`stay-summary iri-border ${seeking.length || length || work || where.length ? 'has-any' : ''}`}>
           <p className="summary-text" aria-live="polite">
             <span className="summary-k">Your stay</span>
             {summary.map((v, i) => (
