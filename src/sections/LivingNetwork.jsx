@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Reveal, Rise, Shimmer } from '../components/Reveal'
-import { IRI } from '../lib/links'
+import { IRI, photoUrl } from '../lib/links'
 import { prefersReducedMotion, isTouch } from '../lib/sky'
 
 /**
@@ -92,9 +92,58 @@ function Web() {
   return <canvas ref={ref} className="web" aria-hidden="true" />
 }
 
+// Growth and expansion, behind "What grows here, grows together". Free Unsplash photos, none used elsewhere on the site.
+const GROWTH = [
+  'photo-1458014854819-1a40aa70211c', // a single seedling
+  'photo-1583795970261-2d47c971835a', // a fern unfurling
+  'photo-1649058799638-e841b3ad7ae1', // rows of sprouts
+  'photo-1623136299195-570a06bdae6b', // a light-filled greenhouse
+  'photo-1729583263178-b7ada6f1482a', // the canopy from below
+  'photo-1610558316028-efee14358b76', // a field of sunflowers
+  'photo-1492681290082-e932832941e6', // arms open to the sunrise
+  'photo-1790488976420-696cd3a12498', // friends at golden hour
+  'photo-1606092195808-3107b7ed4c98', // a circle in the meadow
+  'photo-1524601500432-1e1a4c71d692', // hearts raised in the field
+]
+
+function Growth() {
+  const ref = useRef(null)
+  const [i, setI] = useState(0)
+  const [seen, setSeen] = useState(false)
+  const [on, setOn] = useState(false)
+  useEffect(() => {
+    const io = new IntersectionObserver(([e]) => { setOn(e.isIntersecting); if (e.isIntersecting) setSeen(true) }, { rootMargin: '300px 0px' })
+    io.observe(ref.current)
+    return () => io.disconnect()
+  }, [])
+  useEffect(() => {
+    if (!on || prefersReducedMotion()) return
+    const id = setInterval(() => setI((n) => (n + 1) % GROWTH.length), 4200)
+    return () => clearInterval(id)
+  }, [on])
+  return (
+    <div ref={ref} className="growth" aria-hidden="true">
+      {seen && GROWTH.map((id, n) => {
+        const load = n === i || n === (i + 1) % GROWTH.length
+        return (
+          <div key={id} className={`gp ${n === i ? 'is-on' : ''}`}>
+            {(load || n === 0) && (
+              <img src={photoUrl(id, 1800)}
+                srcSet={`${photoUrl(id, 900)} 900w, ${photoUrl(id, 1800)} 1800w, ${photoUrl(id, 2600)} 2600w`}
+                sizes="100vw" alt="" decoding="async" />
+            )}
+          </div>
+        )
+      })}
+      <div className="gp-veil" />
+    </div>
+  )
+}
+
 export default function LivingNetwork() {
   return (
     <section id="network" className="lnet">
+      <Growth />
       <Web />
       <div className="wrap lnet-inner">
         <p className="eyebrow center">The living network</p>
