@@ -2,8 +2,8 @@ import { useEffect, useRef } from 'react'
 import { Reveal, Rise, Shimmer } from '../components/Reveal'
 import { sky, prefersReducedMotion } from '../lib/sky'
 
-const ROW_A = ['a weekend', 'breathwork', 'the jungle', 'a season', 'sound', 'the ocean', 'to live there', 'ceremony', 'the mountains', 'a month or more']
-const ROW_B = ['just be', 'yoga', 'the desert', 'work remotely', 'the forest', 'retreat', 'volunteer', 'the countryside', 'movement', 'a week or two']
+const ROW_A = ['a weekend', 'breathwork', 'the jungle', 'a season', 'sound healing', 'the ocean', 'make it home', 'ceremony', 'the mountains', 'a month or more']
+const ROW_B = ['just be', 'yoga', 'the desert', 'work remotely', 'the forest', 'training', 'volunteer', 'the countryside', 'movement', 'a week or two']
 
 function Marquee({ words, reverse }) {
   const trackRef = useRef(null)
@@ -43,7 +43,7 @@ export default function Living() {
         <p className="eyebrow center reduced-only">Not a booking.</p>
         <Reveal className="display center reduced-only">A way of <Shimmer>living</Shimmer>.</Reveal>
         <Reveal as="p" className="lede center" stagger={0.025}>
-          Xanadu is a global network that matches people to a way of living. Yoga, breathwork, sound and retreats are all here, but it goes deeper.
+          Xanadu is a global network that matches people to a way of living. Yoga, breathwork, sound healing, trainings, volunteer work and more are all here, but it goes deeper.
         </Reveal>
         <Rise as="p" className="body center narrow" delay={0.3}>
           Tell us how long you want to stay, how you want to spend your days and where you feel most alive. We match you with the places and the guides who fit.

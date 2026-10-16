@@ -3,6 +3,7 @@ const APP = 'https://app.dreamxanadu.com'
 export const LINKS = {
   app: APP,
   seeker: `${APP}/?mode=signup&role=Seeker`,
+  join: '/#join',
   container: `${APP}/?mode=signup&role=Container`,
   facilitator: `${APP}/?mode=signup&role=Facilitator`,
   signIn: `${APP}/`,

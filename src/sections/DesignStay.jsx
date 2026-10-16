@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import Button from '../components/Button'
 import { Shimmer } from '../components/Reveal'
-import { LANDSCAPES, LINKS } from '../lib/links'
+import { LANDSCAPES } from '../lib/links'
+import { useStay, setStay } from '../lib/stay'
 import { tintSky } from '../lib/sky'
 import { scrollToTarget } from '../lib/scroll'
 
@@ -10,12 +11,13 @@ const LENGTHS = [
   { label: 'A week or two', size: 28 },
   { label: 'A month or more', size: 40 },
   { label: 'A season', size: 56 },
-  { label: 'To live there', size: 78 },
+  { label: 'Make it home', size: 78 },
 ]
 
 const WORK = [
   { label: 'Work remotely', note: 'Bring your work with you. Wifi, a desk, a view.', glyph: 'remote' },
   { label: 'Volunteer exchange', note: 'Give your time and skills to a place, and become part of it.', glyph: 'exchange' },
+  { label: 'Training', note: 'Deepen your practice. Study with a guide, earn a certification.', glyph: 'training' },
   { label: 'Just be', note: 'Nothing to do. Nowhere to be. Only rest and presence.', glyph: 'be' },
 ]
 
@@ -29,9 +31,7 @@ export default function DesignStay() {
   const sectionRef = useRef(null)
   const [step, setStep] = useState(0)
   const [active, setActive] = useState(false)
-  const [length, setLength] = useState(null)
-  const [work, setWork] = useState(null)
-  const [where, setWhere] = useState([])
+  const { length, work, where } = useStay()
   const [hover, setHover] = useState(null)
 
   // which step we're on comes from how far through the (tall) section you've scrolled
@@ -67,9 +67,9 @@ export default function DesignStay() {
     scrollToTarget(top + total * ((i + 0.5) / 3))
   }
 
-  const pickLength = (l) => { setLength(l); setTimeout(() => goStep(1), 450) }
-  const pickWork = (w) => { setWork(w); setTimeout(() => goStep(2), 450) }
-  const toggleWhere = (name) => setWhere((cur) => (cur.includes(name) ? cur.filter((n) => n !== name) : [...cur, name]))
+  const pickLength = (l) => { setStay({ length: l }); setTimeout(() => goStep(1), 450) }
+  const pickWork = (w) => { setStay({ work: w }); setTimeout(() => goStep(2), 450) }
+  const toggleWhere = (name) => setStay((s) => ({ where: s.where.includes(name) ? s.where.filter((n) => n !== name) : [...s.where, name] }))
 
   const summary = [length, work, where.length ? where.join(', ') : null]
   const placeholders = ['how long', 'how you spend it', 'where']
@@ -148,7 +148,7 @@ export default function DesignStay() {
               <span key={i} className={`chip ${v ? 'is-set' : ''}`}>{v || placeholders[i]}</span>
             ))}
           </p>
-          <Button href={LINKS.seeker} className="summary-cta">Find my match</Button>
+          <Button href="#join" className="summary-cta" onClick={(e) => { e.preventDefault(); scrollToTarget('#join') }}>Save my stay</Button>
         </div>
       </div>
     </section>

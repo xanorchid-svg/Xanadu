@@ -36,11 +36,11 @@ export function Reveal({ as = 'h2', children, className = '', delay = 0, stagger
 }
 
 /** A block that fades and rises into view. */
-export function Rise({ as = 'div', children, className = '', delay = 0, ...rest }) {
+export function Rise({ as = 'div', children, className = '', delay = 0, style, ...rest }) {
   const Tag = as
   const ref = useInView()
   return (
-    <Tag ref={ref} className={`rise ${className}`} style={{ transitionDelay: `${delay}s` }} {...rest}>
+    <Tag ref={ref} className={`rise ${className}`} style={{ ...style, transitionDelay: `${delay}s` }} {...rest}>
       {children}
     </Tag>
   )
