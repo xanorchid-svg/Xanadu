@@ -17,6 +17,8 @@ const SEEKING = [
   { label: 'Retreats', c: '#9DBB7A' },
   { label: 'Communal living', c: '#86A06A' },
   { label: 'Permaculture & gardening', c: '#B7B470' },
+  { label: 'Schooling', c: '#8C95C9' },
+  { label: 'Festivals', c: '#E8BF8A' },
   { label: "Women's retreats", c: '#E09AC4' },
   { label: "Men's retreats", c: '#6E9A7E' },
   { label: 'Rest & stillness', c: '#E6CDA6' },
