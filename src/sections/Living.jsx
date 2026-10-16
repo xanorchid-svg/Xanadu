@@ -45,6 +45,7 @@ export default function Living() {
       <div className="wrap">
         <p className="eyebrow center reduced-only">Not a booking.</p>
         <Reveal className="display center reduced-only">A way of <Shimmer>living</Shimmer>.</Reveal>
+        <div className="reduced-only center"><p className="definition-line"><span className="def-w">xa·na·du</span> <span className="def-s">/ˈzanəˌdo͞o/</span> an idealized place of great or idyllic magnificence and beauty.</p></div>
         <p className="eyebrow center">What Xanadu is</p>
         <Reveal className="display center living-title" stagger={0.06}>
           Rebuilding the <Shimmer>Bridge</Shimmer>

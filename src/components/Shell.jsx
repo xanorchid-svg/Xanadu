@@ -6,6 +6,7 @@ import Aurora from './Aurora'
 import Cursor from './Cursor'
 import Nav from './Nav'
 import Footer from './Footer'
+import JoinModal from './JoinModal'
 import { sky, prefersReducedMotion } from '../lib/sky'
 import { setLenis } from '../lib/scroll'
 
@@ -69,6 +70,7 @@ export default function Shell({ home = false, children }) {
       <Nav home={home} />
       <main id="main">{children}</main>
       <Footer />
+      <JoinModal auto={home} />
     </>
   )
 }

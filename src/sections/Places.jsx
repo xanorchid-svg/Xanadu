@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { Reveal, Rise, Shimmer } from '../components/Reveal'
-import { PLACES, IRI } from '../lib/links'
+import { IRI } from '../lib/links'
 import { prefersReducedMotion } from '../lib/sky'
 
 const D2R = Math.PI / 180
@@ -11,7 +11,7 @@ const hexRgb = (h) => {
 }
 const IRI_RGB = IRI.map(hexRgb)
 const iriAt = (t) => {
-  t = ((t % 1) + 1) % 1 * IRI_RGB.length
+  t = (((t % 1) + 1) % 1) * IRI_RGB.length
   const a = IRI_RGB[Math.floor(t)], b = IRI_RGB[(Math.floor(t) + 1) % IRI_RGB.length], f = t % 1
   return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f]
 }
@@ -34,8 +34,14 @@ const DOTS = (() => {
   return out
 })()
 
-// the constellation: places joined in a loop
-const ORDER = ['California', 'Colorado', 'Costa Rica', 'Peru', 'Buenos Aires', 'Portugal', 'Bali']
+// Unnamed points of light on every continent: the kinds of places the network reaches for.
+// Coasts, jungles, mountains, deserts, villages and cities. No names, no claims.
+const NODES = [
+  [39.5, -105.8], [36.8, -121.9], [20.7, -105.3], [9.9, -85.6], [18.4, -66.1], [-13.5, -72.0], [-34.6, -58.4], [-22.9, -43.2],
+  [38.7, -9.1], [37.4, -5.9], [43.7, 7.3], [41.9, 12.5], [35.9, 14.5], [64.1, -21.9], [31.6, -8.0], [-1.3, 36.8], [-33.9, 18.4],
+  [12.0, 76.0], [27.7, 85.3], [7.9, 98.3], [-8.4, 115.2], [35.0, 135.8], [-41.3, 174.8], [-28.6, 153.6], [21.3, -157.8], [-17.5, -149.6],
+].map(([lat, lon], i) => ({ v: toVec(lat, lon), ph: i * 0.37 }))
+
 const slerp = (a, b, t) => {
   const d = Math.min(1, Math.max(-1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2]))
   const om = Math.acos(d)
@@ -47,9 +53,6 @@ const slerp = (a, b, t) => {
 
 export default function Places() {
   const canvasRef = useRef(null)
-  const [focus, setFocus] = useState(null)
-  const focusRef = useRef(null)
-  useEffect(() => { focusRef.current = focus }, [focus])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -62,16 +65,13 @@ export default function Places() {
       canvas.width = W * dpr
       canvas.height = W * dpr
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      R = W * 0.36
+      R = W * 0.38
     }
     resize()
     const ro = new ResizeObserver(resize)
     ro.observe(canvas)
 
     const st = { rot: 60 * D2R, vel: reduced ? 0 : 0.0018, tilt: -0.32, dragging: false, lastX: 0, lastY: 0 }
-    const places = PLACES.map((p) => ({ ...p, v: toVec(p.lat, p.lon) }))
-    const byName = Object.fromEntries(places.map((p) => [p.name, p]))
-    const arcs = ORDER.map((n, i) => [byName[n].v, byName[ORDER[(i + 1) % ORDER.length]].v])
 
     const project = (v, lift = 1) => {
       const c = Math.cos(st.rot), s = Math.sin(st.rot)
@@ -81,6 +81,18 @@ export default function Places() {
       const y = v[1] * ct - z0 * sn
       const z = v[1] * sn + z0 * ct
       return [W / 2 + x * R * lift, W / 2 - y * R * lift, z]
+    }
+
+    // connections are born, travel, and fade: a network forming in real time
+    const arcs = []
+    const spawn = (now) => {
+      const a = NODES[Math.floor(Math.random() * NODES.length)]
+      let b = a
+      while (b === a) b = NODES[Math.floor(Math.random() * NODES.length)]
+      arcs.push({ a: a.v, b: b.v, born: now, life: 4200 + Math.random() * 2400, hue: Math.random() })
+    }
+    if (reduced) {
+      for (let i = 0; i < 9; i++) arcs.push({ a: NODES[i * 2].v, b: NODES[(i * 2 + 5) % NODES.length].v, born: -1e9, life: Infinity, hue: i / 9 })
     }
 
     const down = (e) => { st.dragging = true; st.lastX = e.clientX; st.lastY = e.clientY; canvas.setPointerCapture(e.pointerId) }
@@ -98,7 +110,7 @@ export default function Places() {
     canvas.addEventListener('pointerup', up)
     canvas.addEventListener('pointercancel', up)
 
-    let raf, t0 = performance.now(), visible = true
+    let raf, t0 = performance.now(), visible = true, lastSpawn = 0
     const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting })
     io.observe(canvas)
 
@@ -107,25 +119,17 @@ export default function Places() {
       if (!visible) return
       const t = Math.max(0, now - t0) / 1000
 
-      // turn toward a chosen place, otherwise drift
-      const f = focusRef.current && byName[focusRef.current]
-      if (f && !st.dragging) {
-        const target = -f.lon * D2R
-        let d = target - st.rot
-        d = Math.atan2(Math.sin(d), Math.cos(d))
-        st.rot += d * 0.06
-        st.tilt += (-f.lat * D2R * 0.6 - st.tilt) * 0.05
-      } else if (!st.dragging) {
+      if (!st.dragging) {
         const base = reduced ? 0 : 0.0018
         st.vel += (base - st.vel) * 0.02
         st.rot += st.vel
       }
+      if (!reduced && now - lastSpawn > 650 && arcs.length < 14) { spawn(now); lastSpawn = now }
 
       ctx.clearRect(0, 0, W, W)
       const cx = W / 2
 
-      // halo
-      const halo = ctx.createRadialGradient(cx, cx, R * 0.6, cx, cx, R * 1.45)
+      const halo = ctx.createRadialGradient(cx, cx, R * 0.6, cx, cx, R * 1.4)
       halo.addColorStop(0, 'rgba(143,155,230,0.0)')
       halo.addColorStop(0.45, 'rgba(181,139,224,0.16)')
       halo.addColorStop(0.7, 'rgba(111,183,191,0.06)')
@@ -133,14 +137,12 @@ export default function Places() {
       ctx.fillStyle = halo
       ctx.fillRect(0, 0, W, W)
 
-      // body
       const body = ctx.createRadialGradient(cx - R * 0.35, cx - R * 0.4, R * 0.1, cx, cx, R)
       body.addColorStop(0, 'rgba(42,31,57,0.75)')
       body.addColorStop(1, 'rgba(12,21,34,0.92)')
       ctx.fillStyle = body
       ctx.beginPath(); ctx.arc(cx, cx, R, 0, Math.PI * 2); ctx.fill()
 
-      // iridescent rim
       const rim = ctx.createLinearGradient(0, 0, W, W)
       IRI.forEach((c, i) => rim.addColorStop(((i / IRI.length) + t * 0.05) % 1, c))
       ctx.strokeStyle = rim
@@ -149,7 +151,6 @@ export default function Places() {
       ctx.beginPath(); ctx.arc(cx, cx, R, 0, Math.PI * 2); ctx.stroke()
       ctx.globalAlpha = 1
 
-      // star-field dots
       for (const d of DOTS) {
         const [x, y, z] = project(d.v)
         if (z < -0.15) continue
@@ -161,56 +162,52 @@ export default function Places() {
         ctx.fillRect(x - s / 2, y - s / 2, s, s)
       }
 
-      // constellation arcs, lifted off the surface, with a spark travelling each one
-      ctx.lineWidth = 1
-      arcs.forEach(([a, b], ai) => {
-        const N = 40
+      // arcs: draw out, carry a spark, then fade
+      ctx.lineWidth = 1.1
+      for (let i = arcs.length - 1; i >= 0; i--) {
+        const arc = arcs[i]
+        const age = (now - arc.born) / arc.life
+        if (age >= 1) { arcs.splice(i, 1); continue }
+        const grow = reduced ? 1 : Math.min(1, age * 2.6)
+        const fade = reduced ? 0.8 : age < 0.7 ? 1 : 1 - (age - 0.7) / 0.3
+        const N = 36
         let prev = null
-        for (let i = 0; i <= N; i++) {
-          const k = i / N
-          const lift = 1 + 0.16 * Math.sin(Math.PI * k)
-          const p = project(slerp(a, b, k), lift)
+        for (let k = 0; k <= N * grow; k++) {
+          const u = k / N
+          const p = project(slerp(arc.a, arc.b, u), 1 + 0.2 * Math.sin(Math.PI * u))
           if (prev && p[2] > -0.05 && prev[2] > -0.05) {
-            const c = iriAt(ai / arcs.length + k * 0.2)
-            ctx.strokeStyle = `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${0.15 + Math.max(0, p[2]) * 0.45})`
+            const c = iriAt(arc.hue + u * 0.25)
+            ctx.strokeStyle = `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${(0.2 + Math.max(0, p[2]) * 0.6) * fade})`
             ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(p[0], p[1]); ctx.stroke()
           }
           prev = p
         }
-        if (!reduced) {
-          const k = ((t * 0.18 + ai * 0.37) % 1)
-          const p = project(slerp(a, b, k), 1 + 0.16 * Math.sin(Math.PI * k))
+        if (!reduced && grow < 1) {
+          const p = project(slerp(arc.a, arc.b, grow), 1 + 0.2 * Math.sin(Math.PI * grow))
           if (p[2] > 0) {
-            const g = ctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], 7)
-            g.addColorStop(0, 'rgba(255,244,218,0.95)')
+            const g = ctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], 8)
+            g.addColorStop(0, 'rgba(255,246,228,1)')
             g.addColorStop(1, 'rgba(232,191,138,0)')
             ctx.fillStyle = g
-            ctx.beginPath(); ctx.arc(p[0], p[1], 7, 0, Math.PI * 2); ctx.fill()
+            ctx.beginPath(); ctx.arc(p[0], p[1], 8, 0, Math.PI * 2); ctx.fill()
           }
         }
-      })
+      }
 
-      // places
-      ctx.font = `500 ${W < 420 ? 11 : 12.5}px Manrope, sans-serif`
-      ctx.textBaseline = 'middle'
-      for (const p of places) {
-        const [x, y, z] = project(p.v)
+      // the points of light
+      for (const n of NODES) {
+        const [x, y, z] = project(n.v)
         if (z < 0) continue
-        const on = focusRef.current === p.name
-        const pulse = (((t * 0.8 + p.lon / 90) % 1) + 1) % 1
-        ctx.strokeStyle = `rgba(232,191,138,${(1 - pulse) * 0.7 * z})`
+        const pulse = (((t * 0.6 + n.ph) % 1) + 1) % 1
+        ctx.strokeStyle = `rgba(232,191,138,${(1 - pulse) * 0.55 * z})`
         ctx.lineWidth = 1
-        ctx.beginPath(); ctx.arc(x, y, 3 + pulse * (on ? 22 : 14), 0, Math.PI * 2); ctx.stroke()
-        const g = ctx.createRadialGradient(x, y, 0, x, y, on ? 12 : 8)
-        g.addColorStop(0, 'rgba(255,248,230,1)')
-        g.addColorStop(0.35, 'rgba(232,191,138,0.9)')
+        ctx.beginPath(); ctx.arc(x, y, 2 + pulse * 12, 0, Math.PI * 2); ctx.stroke()
+        const g = ctx.createRadialGradient(x, y, 0, x, y, 7)
+        g.addColorStop(0, `rgba(255,248,230,${0.4 + z * 0.6})`)
+        g.addColorStop(0.4, `rgba(232,191,138,${0.3 + z * 0.5})`)
         g.addColorStop(1, 'rgba(232,191,138,0)')
         ctx.fillStyle = g
-        ctx.beginPath(); ctx.arc(x, y, on ? 12 : 8, 0, Math.PI * 2); ctx.fill()
-        ctx.fillStyle = `rgba(246,241,232,${Math.min(1, z * 1.6) * (on ? 1 : 0.82)})`
-        const left = p.side ? p.side === 'right' : x > cx
-        ctx.textAlign = left ? 'left' : 'right'
-        ctx.fillText(p.name, x + (left ? 12 : -12), y - 1)
+        ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI * 2); ctx.fill()
       }
     }
     raf = requestAnimationFrame(draw)
@@ -229,27 +226,17 @@ export default function Places() {
     <section id="places" className="places">
       <div className="wrap places-grid">
         <div className="places-copy">
-          <p className="eyebrow">Where Xanadu is waking up</p>
-          <Reveal className="display">A <Shimmer>constellation</Shimmer> of places.</Reveal>
+          <p className="eyebrow">Across the globe</p>
+          <Reveal className="display">A world of <Shimmer>places</Shimmer>.</Reveal>
           <Rise as="p" className="body">
-            Seven places to begin, from the mountains of Colorado to the jungles of Bali. More are waking up as the network grows.
+            Xanadu connects people with places and communities all over the world. Jungle and coastline, mountain and desert, village and city. Wherever you feel most alive, the network is growing toward it.
           </Rise>
-          <Rise className="place-chips" delay={0.15}>
-            {PLACES.map((p) => (
-              <button key={p.name}
-                className={`place-chip iri-border ${focus === p.name ? 'is-on' : ''}`}
-                onPointerEnter={() => setFocus(p.name)}
-                onPointerLeave={() => setFocus(null)}
-                onFocus={() => setFocus(p.name)}
-                onBlur={() => setFocus(null)}
-                onClick={() => setFocus(focus === p.name ? null : p.name)}>
-                {p.name}
-              </button>
-            ))}
+          <Rise as="p" className="places-note" delay={0.15}>
+            Know a place that belongs here? <a className="text-link" href="mailto:networkxanadu@gmail.com">Tell us</a>
           </Rise>
         </div>
         <div className="globe-wrap">
-          <canvas ref={canvasRef} className="globe" aria-label="A turning globe of stars marking Colorado, California, Costa Rica, Peru, Buenos Aires, Portugal and Bali" role="img" />
+          <canvas ref={canvasRef} className="globe" aria-label="A turning globe of light, with new connections forming between places around the world" role="img" />
           <p className="globe-hint" aria-hidden="true">drag to turn</p>
         </div>
       </div>

@@ -3,9 +3,11 @@ import { Reveal, Rise, Shimmer } from '../components/Reveal'
 import { LINKS } from '../lib/links'
 import { isTouch } from '../lib/sky'
 import { scrollToTarget } from '../lib/scroll'
+import Sigil from '../components/Sigil'
 
 const DOORS = [
   {
+    kind: 'seeker',
     role: 'The Seeker',
     title: 'I am seeking',
     text: 'You feel the pull toward something: healing, community, service, devotion. You may not have the words for it yet. You don\u2019t need them. You need a place built to receive you exactly where you are.',
@@ -14,6 +16,7 @@ const DOORS = [
     hues: ['#B58BE0', '#E09AC4', '#8F9BE6'],
   },
   {
+    kind: 'container',
     role: 'Containers \u00b7 Sacred spaces',
     title: 'I hold a space',
     text: 'You have prepared the land. The space is ready. But the right guides don\u2019t find you, and the seekers who would thrive here don\u2019t know you exist. Xanadu closes that gap.',
@@ -22,6 +25,7 @@ const DOORS = [
     hues: ['#9DBB7A', '#6FB7BF', '#E8BF8A'],
   },
   {
+    kind: 'facilitator',
     role: 'Facilitators \u00b7 Wisdom keepers',
     title: 'I guide',
     text: 'You carry real medicine. But finding the spaces worthy of your work, and the people ready for it, is its own labour. Xanadu holds that for you, so you can do what you came here to do.',
@@ -53,6 +57,7 @@ function Door({ d, i }) {
         <span className="door-inside" aria-hidden="true"><i /><i /><i /></span>
         <span className="door-light" aria-hidden="true" />
         <span className="door-body">
+          <Sigil kind={d.kind} hues={d.hues} />
           <span className="door-role">{d.role}</span>
           <span className="door-title">{d.title}</span>
           <span className="door-text">{d.text}</span>
@@ -70,7 +75,7 @@ export default function Paths() {
         <p className="eyebrow center">Who we connect</p>
         <Reveal className="display center">Which <Shimmer>door</Shimmer> is yours?</Reveal>
         <Rise as="p" className="body center narrow">
-          Three threads. One fabric. Seekers, the places that hold them, and the guides who walk with them. None of them is complete without the others. Xanadu holds the centre.
+          Three threads, one fabric. None is complete without the others.
         </Rise>
         <div className="doors">
           {DOORS.map((d, i) => <Door key={d.role} d={d} i={i} />)}

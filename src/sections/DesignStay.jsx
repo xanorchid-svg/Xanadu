@@ -133,7 +133,6 @@ export default function DesignStay() {
                   aria-pressed={where.includes(l.name)}
                   tabIndex={step === 2 ? 0 : -1}
                 >
-                  <span className="land-orb" aria-hidden="true"><i /></span>
                   <span className="land-label">{l.name}</span>
                 </button>
               ))}

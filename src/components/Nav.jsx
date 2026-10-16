@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import Button from './Button'
 import Emblem from './Emblem'
 import { scrollToTarget } from '../lib/scroll'
+import { openJoin } from '../lib/joinModal'
 
 const ITEMS = [
   { label: 'Why Xanadu', href: '#why' },
@@ -46,7 +47,7 @@ export default function Nav({ home = true }) {
           <a key={it.href} href={link(it.href)} onClick={(e) => go(e, it.href)}>{it.label}</a>
         ))}
       </nav>
-      <Button href={link('#join')} className="nav-cta" onClick={(e) => go(e, '#join')}>Join the waitlist</Button>
+      <Button className="nav-cta" onClick={openJoin} aria-haspopup="dialog">Join Xanadu</Button>
       <div className="nav-progress"><div ref={barRef} className="nav-progress-bar" /></div>
     </header>
   )

@@ -41,10 +41,10 @@ export default function Pillars() {
         </div>
 
         <div className="door-line">
-          <Reveal as="p" className="display center door-line-text" stagger={0.06}>
-            Not a marketplace. A network <Shimmer>with a door</Shimmer>.
+          <Reveal as="p" className="door-line-text" stagger={0.06}>
+            Not a marketplace.<br />A network <Shimmer>with a door</Shimmer>.
           </Reveal>
-          <Rise className="deep-links" delay={0.2}>
+          <Rise className="door-line-links" delay={0.2}>
             <a href="/trust" className="deep-link" data-cursor="hover"><span>How we verify</span><i>→</i></a>
             <a href="/path" className="deep-link" data-cursor="hover"><span>How the match works</span><i>→</i></a>
           </Rise>

@@ -111,6 +111,7 @@ export default function Hero() {
         <div ref={emergeRef} className="hero-emerge">
           <p className="emerge-small">Not a booking.</p>
           <p className="emerge-big">A way of <Shimmer>living</Shimmer>.</p>
+          <p className="definition-line"><span className="def-w">xa·na·du</span> <span className="def-s">/ˈzanəˌdo͞o/</span> an idealized place of great or idyllic magnificence and beauty.</p>
         </div>
 
         <button ref={hintRef} className="hero-hint" onClick={() => scrollToTarget('#living')} data-cursor="hover">
