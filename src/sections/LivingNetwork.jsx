@@ -97,13 +97,9 @@ const GROWTH = [
   'photo-1458014854819-1a40aa70211c', // a single seedling
   'photo-1583795970261-2d47c971835a', // a fern unfurling
   'photo-1649058799638-e841b3ad7ae1', // rows of sprouts
-  'photo-1623136299195-570a06bdae6b', // a light-filled greenhouse
   'photo-1729583263178-b7ada6f1482a', // the canopy from below
   'photo-1610558316028-efee14358b76', // a field of sunflowers
   'photo-1492681290082-e932832941e6', // arms open to the sunrise
-  'photo-1790488976420-696cd3a12498', // friends at golden hour
-  'photo-1606092195808-3107b7ed4c98', // a circle in the meadow
-  'photo-1524601500432-1e1a4c71d692', // hearts raised in the field
 ]
 
 function Growth() {
