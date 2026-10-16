@@ -11,6 +11,8 @@ export default function Footer() {
         <div className="footer-col">
           <a href="/path">How the match works</a>
           <a href="/trust">How we verify</a>
+          <a href="/living-network">The living network</a>
+          <a href="/origin">The Origin</a>
           <a href="/story">Our story</a>
         </div>
         <div className="footer-col">

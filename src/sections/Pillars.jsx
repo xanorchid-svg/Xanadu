@@ -42,7 +42,7 @@ export default function Pillars() {
 
         <div className="door-line">
           <Reveal as="p" className="display center door-line-text" stagger={0.06}>
-            This is not a directory. It is a network <Shimmer>with a door</Shimmer>.
+            Not a marketplace. A network <Shimmer>with a door</Shimmer>.
           </Reveal>
           <Rise className="deep-links" delay={0.2}>
             <a href="/trust" className="deep-link" data-cursor="hover"><span>How we verify</span><i>→</i></a>

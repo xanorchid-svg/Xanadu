@@ -6,7 +6,8 @@ import { scrollToTarget } from '../lib/scroll'
 const ITEMS = [
   { label: 'Why Xanadu', href: '#why' },
   { label: 'Your stay', href: '#stay' },
-  { label: 'Founding circle', href: '#founding' },
+  { label: 'The network', href: '#network' },
+  { label: 'The Origin', href: '#origin' },
   { label: 'The app', href: '#app' },
 ]
 

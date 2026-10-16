@@ -6,13 +6,14 @@ import Pillars from './sections/Pillars'
 import DesignStay from './sections/DesignStay'
 import Paths from './sections/Paths'
 import Founding from './sections/Founding'
+import LivingNetwork from './sections/LivingNetwork'
 import Places from './sections/Places'
 import AppShowcase from './sections/AppShowcase'
 import Join from './sections/Join'
 import Closing from './sections/Closing'
 
 // The story, in order: feel it → what it is → why it exists → what makes it different →
-// try it → who it's for → who we need first → where → what's coming → join → close
+// try it → who it's for → how it grows → where → what's coming → who we need first → join → close
 export default function App() {
   return (
     <Shell home>
@@ -22,9 +23,10 @@ export default function App() {
       <Pillars />
       <DesignStay />
       <Paths />
-      <Founding />
+      <LivingNetwork />
       <Places />
       <AppShowcase />
+      <Founding />
       <Join />
       <Closing />
     </Shell>
