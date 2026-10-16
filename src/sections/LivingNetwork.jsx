@@ -97,6 +97,7 @@ const GROWTH = [
   'photo-1458014854819-1a40aa70211c', // a single seedling
   'photo-1583795970261-2d47c971835a', // a fern unfurling
   'photo-1649058799638-e841b3ad7ae1', // rows of sprouts
+  '/photos/growth-planting-together.jpg', // small hands planting a seedling (Xan's own photo, cropped below the faces)
   'photo-1729583263178-b7ada6f1482a', // the canopy from below
   'photo-1610558316028-efee14358b76', // a field of sunflowers
   'photo-1492681290082-e932832941e6', // arms open to the sunrise
@@ -124,9 +125,13 @@ function Growth() {
         return (
           <div key={id} className={`gp ${n === i ? 'is-on' : ''}`}>
             {(load || n === 0) && (
-              <img src={photoUrl(id, 1800)}
-                srcSet={`${photoUrl(id, 900)} 900w, ${photoUrl(id, 1800)} 1800w, ${photoUrl(id, 2600)} 2600w`}
-                sizes="100vw" alt="" decoding="async" />
+              id.startsWith('/') ? (
+                <img src={id} srcSet={`${id.replace('.jpg', '-1200.jpg')} 1200w, ${id} 2400w`} sizes="100vw" alt="" decoding="async" />
+              ) : (
+                <img src={photoUrl(id, 1800)}
+                  srcSet={`${photoUrl(id, 900)} 900w, ${photoUrl(id, 1800)} 1800w, ${photoUrl(id, 2600)} 2600w`}
+                  sizes="100vw" alt="" decoding="async" />
+              )
             )}
           </div>
         )
