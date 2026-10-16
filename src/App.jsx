@@ -1,526 +1,74 @@
-import { useState, useEffect, useRef } from 'react'
-import { Link } from 'react-scroll'
-import { useNavigate } from 'react-router-dom'
-import logoSlogan from './assets/logo_slogan_dark.svg'
-import logomark from './assets/logomark.svg'
-import { supabase } from './supabase'
-import './App.css'
-import WaitlistPopup from './WaitlistPopup'
-import TheOrigin from './TheOrigin'
+import { useEffect } from 'react'
+import Lenis from 'lenis'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Aurora from './components/Aurora'
+import Cursor from './components/Cursor'
+import Nav from './components/Nav'
+import Hero from './sections/Hero'
+import Living from './sections/Living'
+import DesignStay from './sections/DesignStay'
+import Paths from './sections/Paths'
+import Places from './sections/Places'
+import AppReveal from './sections/AppReveal'
+import Closing from './sections/Closing'
+import { sky, prefersReducedMotion } from './lib/sky'
+import { setLenis } from './lib/scroll'
 
-const IMAGES = {
-  hero: new URL('./assets/hero.png', import.meta.url).href,
-  containers: 'https://images.unsplash.com/photo-1470770903676-69b98201ea1c?w=1200&q=85',
-  seeker: 'https://images.unsplash.com/photo-1508672019048-805c876b67e2?w=1200&q=85',
-  facilitators: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1200&q=85',
-  creation: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=85',
-  trust: 'https://images.unsplash.com/photo-1511497584788-876760111969?w=1200&q=85',
-  intention: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&q=85',
-  alignment: new URL('./assets/alignment.png', import.meta.url).href,
-}
+gsap.registerPlugin(ScrollTrigger)
 
-const SCROLL_KEY = 'xanadu_scroll_pos'
-
-function useReveal() {
-  const ref = useRef(null)
+export default function App() {
   useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add('visible')
-          observer.unobserve(el)
-        }
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -30px 0px' }
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
-  return ref
-}
+    const reduced = prefersReducedMotion()
+    document.documentElement.classList.toggle('reduced', reduced)
 
-function App() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const [formData, setFormData] = useState({ name: '', email: '', role: '', intention: '', phone: '', website: '', instagram: '', city: '', country: '', also_based: '', container_name: '', offerings: '' })
-  const [submitted, setSubmitted] = useState(false)
-  const [heroLoaded, setHeroLoaded] = useState(false)
-  const [formError, setFormError] = useState(null)
-  const [submitting, setSubmitting] = useState(false)
-  const heroBgRef = useRef(null)
-  const livingWordRef = useRef(null)
-  const navigate = useNavigate()
+    // old addresses (/seeker, /path…) land on the new single page
+    if (window.location.pathname !== '/') window.history.replaceState(null, '', '/' + window.location.hash)
 
-  const heroSubRef = useReveal()
-  const livingRef = useReveal()
-  const pillarsHeaderRef = useReveal()
-  const theworkRef = useReveal()
-  const networkHeaderRef = useReveal()
-  const livingNetworkRef = useReveal()
-  const joinRef = useReveal()
-  const pillar1Ref = useReveal()
-  const pillar2Ref = useReveal()
-  const pillar3Ref = useReveal()
-  const card1Ref = useReveal()
-  const card2Ref = useReveal()
-  const card3Ref = useReveal()
-
-  useEffect(() => {
-    const saved = sessionStorage.getItem(SCROLL_KEY)
-    if (saved) {
-      const y = parseInt(saved, 10)
-      sessionStorage.removeItem(SCROLL_KEY)
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          window.scrollTo({ top: y, behavior: 'instant' })
-        })
-      })
-    }
-  }, [])
-
-  useEffect(() => {
-    const img = new Image()
-    img.src = IMAGES.hero
-    img.onload = () => setHeroLoaded(true)
-
-    const onScroll = () => {
+    let lenis = null
+    let lastY = window.scrollY
+    const tick = (time) => {
+      lenis?.raf(time * 1000)
+      // scroll velocity feeds the aurora and the marquees
       const y = window.scrollY
-      setScrolled(y > 60)
-      if (heroBgRef.current) {
-        heroBgRef.current.style.transform = `translateY(${y * 0.28}px)`
-      }
-      if (livingWordRef.current) {
-        const rect = livingWordRef.current.getBoundingClientRect()
-        if (rect.top < window.innerHeight * 0.85) {
-          livingWordRef.current.classList.add('visible')
-        }
-      }
+      const v = Math.abs(y - lastY) / Math.max(window.innerHeight, 1)
+      lastY = y
+      sky.velocity += (Math.min(v * 6, 1) - sky.velocity) * 0.12
     }
 
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    if (!reduced) {
+      lenis = new Lenis({ duration: 1.25, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true })
+      setLenis(lenis)
+      lenis.on('scroll', ScrollTrigger.update)
+    }
+    gsap.ticker.add(tick)
+    gsap.ticker.lagSmoothing(0)
+
+    // fonts change line lengths; re-measure pinned sections once they arrive
+    document.fonts?.ready.then(() => ScrollTrigger.refresh())
+
+    return () => {
+      gsap.ticker.remove(tick)
+      lenis?.destroy()
+      setLenis(null)
+    }
   }, [])
-
-  const goTo = (path) => {
-    sessionStorage.setItem(SCROLL_KEY, String(window.scrollY))
-    navigate(path)
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!formData.role) return
-    setSubmitting(true)
-    setFormError(null)
-    try {
-      if (formData.role === 'Container') {
-        const { error } = await supabase.from('container_applications').insert([{
-          your_name: formData.name,
-          email: formData.email,
-          phone: formData.phone || null,
-          container_name: formData.container_name || null,
-          website: formData.website || null,
-          instagram: formData.instagram || null,
-          city: formData.city || null,
-          country: formData.country || null,
-          also_based: formData.also_based || null,
-          offerings: formData.offerings || null,
-          lineage: formData.intention || null,
-          role: 'container',
-        }])
-        if (error) throw error
-      } else if (formData.role === 'Facilitator') {
-        const { error } = await supabase.from('facilitator_applications').insert([{
-          your_name: formData.name,
-          email: formData.email,
-          phone: formData.phone || null,
-          website: formData.website || null,
-          instagram: formData.instagram || null,
-          city: formData.city || null,
-          country: formData.country || null,
-          also_based: formData.also_based || null,
-          offerings: formData.offerings || null,
-          lineage: formData.intention || null,
-          role: 'facilitator',
-        }])
-        if (error) throw error
-      } else {
-        const { error } = await supabase.from('waitlist').insert([{
-          name: formData.name,
-          email: formData.email,
-          role: formData.role,
-          intention: formData.intention,
-        }])
-        if (error) throw error
-      }
-      setSubmitted(true)
-    } catch (err) {
-      console.error(err)
-      setFormError('Something went wrong. Please try again.')
-    } finally {
-      setSubmitting(false)
-    }
-  }
 
   return (
-    <div className="site">
-      <WaitlistPopup />
-
-      {/* NAV */}
-      <nav className={`nav ${scrolled ? 'nav-scrolled' : ''}`}>
-        <div className="nav-inner">
-          <img src={logomark} alt="Xanadu" className="nav-logo" />
-          <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
-            <Link to="pillars" smooth duration={900} offset={-76} onClick={() => setMenuOpen(false)}>Three Pillars</Link>
-            <Link to="network" smooth duration={900} offset={-76} onClick={() => setMenuOpen(false)}>The Network</Link>
-            <Link to="living-network" smooth duration={900} offset={-76} onClick={() => setMenuOpen(false)}>The Vision</Link>
-            <Link to="join" smooth duration={900} offset={-76} onClick={() => setMenuOpen(false)}>Join</Link>
-          </div>
-          <Link to="join" smooth duration={900} offset={-76} className="nav-cta" onClick={() => setMenuOpen(false)}>
-            Join the Network
-          </Link>
-          <button
-            className={`hamburger ${menuOpen ? 'open' : ''}`}
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
-          >
-            <span /><span /><span />
-          </button>
-        </div>
-      </nav>
-
-      {/* HERO */}
-      <section className="hero" id="hero">
-        <div
-          ref={heroBgRef}
-          className={`hero-bg ${heroLoaded ? 'hero-bg-loaded' : ''}`}
-          style={{ backgroundImage: `url(${IMAGES.hero})` }}
-        />
-        <Link to="hero-sub" smooth duration={1000} offset={0} className="scroll-hint">
-          <span>Begin</span>
-          <svg width="14" height="20" viewBox="0 0 14 20" fill="none">
-            <path d="M7 3v14M1 12l6 6 6-6" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </Link>
-      </section>
-
-      {/* HERO SUB */}
-      <section className="hero-sub-section" id="hero-sub">
-        <div className="hero-sub-inner">
-          <p ref={heroSubRef} className="hero-sub reveal">
-            Something has been broken for a long time.<br />
-            The trust between people and the spaces that hold them.<br />
-            <em>Xanadu is not an answer. It is an invitation.</em>
-          </p>
-          <p className="hero-definition reveal reveal-delay-2" ref={useReveal()}>
-            <em>xa·na·du</em>&nbsp; /ˈzanəˌdo͞o/&nbsp; —&nbsp; an idealized place of great or idyllic magnificence and beauty.
-          </p>
-          <div className="reveal reveal-delay-3" ref={useReveal()}>
-            <Link to="join" smooth duration={1000} offset={-76}>
-              <button className="btn-hero"><span>Enter the Network</span></button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* LIVING SYSTEM */}
-      <section className="living" id="living">
-        <div className="living-inner">
-          <div ref={livingRef} className="reveal">
-            <p className="overline">A Living System</p>
-            <h2>To return. To remember.<br />To build something worth belonging to.</h2>
-            <div className="rule" />
-            <p className="body-lg">
-              The spaces we enter shape our experiences. The communities we gather with shape our lives. Yet it has become difficult to know which places truly hold integrity — and true intention. Xanadu exists to restore trust in the environments where transformation happens.
-            </p>
-          </div>
-          <div ref={livingWordRef} className="living-word">TRUST.</div>
-        </div>
-      </section>
-
-      {/* THREE PILLARS */}
-      <section className="pillars" id="pillars">
-        <div ref={pillarsHeaderRef} className="section-header reveal">
-          <p className="overline">Three Pillars</p>
-          <h2>What We Stand On</h2>
-        </div>
-        <div className="pillars-grid">
-          <div ref={pillar1Ref} className="pillar reveal reveal-left">
-            <div className="pillar-bg-inner" style={{ backgroundImage: `url(${IMAGES.trust})` }} />
-            <div className="pillar-veil" />
-            <div className="pillar-content">
-              <h3>Trust.</h3>
-              <p>Every space, every guide, every offering is verified by us before it enters the network. Nothing is here by accident. Everything has been held, considered, and chosen.</p>
-            </div>
-          </div>
-          <div ref={pillar2Ref} className="pillar pillar-tall reveal reveal-delay-2">
-            <div className="pillar-bg-inner" style={{ backgroundImage: `url(${IMAGES.intention})` }} />
-            <div className="pillar-veil" />
-            <div className="pillar-content">
-              <h3>Intention.</h3>
-              <p>We listen beneath the surface. Not just to what you are seeking — but to why. The match we make is not a recommendation. It is a recognition.</p>
-            </div>
-          </div>
-          <div ref={pillar3Ref} className="pillar reveal reveal-right">
-            <div className="pillar-bg-inner" style={{ backgroundImage: `url(${IMAGES.alignment})` }} />
-            <div className="pillar-veil" />
-            <div className="pillar-content">
-              <h3>Alignment.</h3>
-              <p>For the people. For the land. For the wisdom lineages that have carried this flame forward. What belongs together finds each other here.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* THE WORK */}
-      <section className="thework" id="thework">
-        <div className="thework-orbit" />
-        <div ref={theworkRef} className="thework-inner reveal">
-          <p className="overline">The Work</p>
-          <h2>Rebuilding<br />the Bridge</h2>
-          <div className="rule rule-light" />
-          <p className="thework-body">
-            The bridge was never destroyed.<br />
-            It was forgotten. Overgrown.<br />
-            Buried under noise and the relentless pace<br />
-            of a world that forgot to ask <em>why.</em>
-          </p>
-          <p className="thework-mark">✦</p>
-        </div>
-      </section>
-
-      {/* THE NETWORK */}
-      <section className="network" id="network">
-        <div ref={networkHeaderRef} className="section-header reveal">
-          <p className="overline">The Network</p>
-          <h2>Who We Connect</h2>
-          <p className="section-sub">Three threads. One fabric.</p>
-        </div>
-        <div className="network-grid">
-          <div ref={card1Ref} className="network-card network-card-clickable reveal reveal-left" onClick={() => goTo('/container')}>
-            <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.containers})` }} />
-            <div className="card-veil" />
-            <div className="card-content">
-              <p className="card-label">Containers</p>
-              <h3>Sacred Spaces</h3>
-              <p>You have prepared the land. The space is ready. But the right facilitators don't find you — and the seekers who would thrive here don't know you exist. Xanadu closes that gap.</p>
-            </div>
-          </div>
-          <div ref={card2Ref} className="network-card network-card-center network-card-clickable reveal reveal-delay-2" onClick={() => goTo('/seeker')}>
-            <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.seeker})` }} />
-            <div className="card-veil card-veil-plum" />
-            <div className="card-content">
-              <p className="card-label">You</p>
-              <h3>The Seeker</h3>
-              <p>You feel the pull toward something — healing, community, service, devotion. You may not have the words for it yet. You don't need them. You need a place built to receive exactly where you are.</p>
-            </div>
-          </div>
-          <div ref={card3Ref} className="network-card network-card-clickable reveal reveal-right" onClick={() => goTo('/facilitator')}>
-            <div className="network-card-bg" style={{ backgroundImage: `url(${IMAGES.facilitators})` }} />
-            <div className="card-veil" />
-            <div className="card-content">
-              <p className="card-label">Facilitators</p>
-              <h3>Wisdom Keepers</h3>
-              <p>You carry real medicine. But finding the spaces worthy of your work — and the seekers ready for it — is its own labour. Xanadu holds that for you, so you can do what you came here to do.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* THE PATH */}
-      <section className="path" id="path">
-        <div className="path-inner reveal" ref={useReveal()}>
-          <p className="overline">How It Works</p>
-          <h2>The Path</h2>
-          <p className="path-summary">
-            You share your intention — a feeling, a shift, a remembering.<br />
-            Xanadu listens beneath the surface and makes the match.<br />
-            Not an algorithm. A recognition.
-          </p>
-          <button className="dive-deeper" onClick={() => goTo('/path')}>Dive Deeper</button>
-        </div>
-      </section>
-
-      {/* THE ORIGIN */}
-      <TheOrigin />
-
-      {/* CREATION BRIDGE */}
-      <section className="creation-bridge" id="creation">
-        <div className="creation-bridge-inner reveal" ref={useReveal()}>
-          <p className="overline">The Creation</p>
-          <p className="creation-bridge-text">
-            <em>Remembrance. Belonging. Emergence.</em><br />
-            A remembering is underway — ancient, not new.<br />
-            There is a fabric that holds all things, and you have always been part of it.
-          </p>
-          <button className="dive-deeper" onClick={() => goTo('/creation')}>Dive Deeper</button>
-        </div>
-      </section>
-
-      {/* LIVING NETWORK */}
-      <section className="living-network-section" id="living-network">
-        <div ref={livingNetworkRef} className="living-network-inner reveal">
-          <p className="overline">The Living Network</p>
-          <h2 className="ln-heading">What grows here,<br />grows together.</h2>
-          <p className="ln-teaser">
-            This is not a directory. It is a living system.<br />
-            <em>The exposure you seek is not reach. It is resonance.</em>
-          </p>
-          <div className="ln-actions">
-            <button className="dive-deeper dive-deeper-light" onClick={() => goTo('/living-network')}>Dive Deeper</button>
-            <Link to="join" smooth duration={1000} offset={-76}>
-              <button className="btn-hero ln-btn"><span>Begin the Journey</span></button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* JOIN */}
-      <section className="join" id="join">
-        <div ref={joinRef} className="join-inner reveal">
-          <img src={logomark} alt="" className="join-mark" />
-          <p className="overline">Join the Network</p>
-          <h2>The Ancient Future.<br />We Are Here to Steward Its Return.</h2>
-          <p className="join-sub">Come as you are. Grow together.</p>
-
-          {submitted ? (
-            <div className="form-success">
-              <img src={logomark} alt="" className="success-mark" />
-              <h3>You have been received.</h3>
-              <p>We will be in touch when the time is right.</p>
-            </div>
-          ) : (
-            <form className="join-form" onSubmit={handleSubmit}>
-              <div className="field">
-                <label>I am entering as —</label>
-                <div className="role-options">
-                  {[
-                    { id: 'Seeker',      icon: '◎', desc: 'Seeking healing, growth & belonging' },
-                    { id: 'Facilitator', icon: '◈', desc: 'A guide, teacher & wisdom keeper' },
-                    { id: 'Container',   icon: '⬡', desc: 'A sacred space that holds the work' },
-                  ].map(({ id, icon, desc }) => (
-                    <button key={id} type="button"
-                      className={`role-btn ${formData.role === id ? 'active' : ''}`}
-                      onClick={() => setFormData({...formData, role: id})}>
-                      <span className="role-icon">{icon}</span>
-                      <span className="role-name">{id}</span>
-                      <span className="role-desc">{desc}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {formData.role && (
-                <>
-                  <div className="form-row">
-                    <div className="field">
-                      <label>Name</label>
-                      <input type="text" placeholder="Your full name" required
-                        value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
-                    </div>
-                    <div className="field">
-                      <label>Email</label>
-                      <input type="email" placeholder="Your email address" required
-                        value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
-                    </div>
-                  </div>
-
-                  {(formData.role === 'Facilitator' || formData.role === 'Container') && (
-                    <div className="form-row">
-                      <div className="field">
-                        <label>Phone <span className="optional">— optional</span></label>
-                        <input type="tel" placeholder="+1 555 000 0000"
-                          value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
-                      </div>
-                      <div className="field">
-                        <label>Instagram <span className="optional">— optional</span></label>
-                        <input type="text" placeholder="@yourhandle"
-                          value={formData.instagram} onChange={e => setFormData({...formData, instagram: e.target.value})} />
-                      </div>
-                    </div>
-                  )}
-
-                  {formData.role === 'Container' && (
-                    <div className="field">
-                      <label>Container name</label>
-                      <input type="text" placeholder="The name of your space"
-                        value={formData.container_name} onChange={e => setFormData({...formData, container_name: e.target.value})} />
-                    </div>
-                  )}
-
-                  {(formData.role === 'Facilitator' || formData.role === 'Container') && (
-                    <>
-                      <div className="field">
-                        <label>Website <span className="optional">— optional</span></label>
-                        <input type="url" placeholder="https://"
-                          value={formData.website} onChange={e => setFormData({...formData, website: e.target.value})} />
-                      </div>
-                      <div className="form-row">
-                        <div className="field">
-                          <label>City</label>
-                          <input type="text" placeholder="Nosara"
-                            value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} />
-                        </div>
-                        <div className="field">
-                          <label>Country</label>
-                          <input type="text" placeholder="Costa Rica"
-                            value={formData.country} onChange={e => setFormData({...formData, country: e.target.value})} />
-                        </div>
-                      </div>
-                      <div className="field">
-                        <label>{formData.role === 'Container' ? 'What kinds of experiences do you host or want to host?' : 'What do you offer?'}</label>
-                        <textarea
-                          placeholder={formData.role === 'Container' ? 'Retreats, ceremonies, residencies, workshops...' : 'Breathwork, ceremony, somatic work, yoga, sound healing...'}
-                          rows={3}
-                          value={formData.offerings}
-                          onChange={e => setFormData({...formData, offerings: e.target.value})} />
-                      </div>
-                    </>
-                  )}
-
-                  <div className="field">
-                    <label>
-                      {formData.role === 'Facilitator' ? 'What is your intention?' : 'Your intention'}
-                    </label>
-                    <textarea
-                      placeholder={
-                        formData.role === 'Facilitator'
-                          ? 'Why do you do this work? What called you to it? What do you hold for the people you guide?'
-                          : formData.role === 'Container'
-                          ? 'What is the spirit of your space? What are you seeking through Xanadu?'
-                          : 'What are you bringing, seeking, or offering?'
-                      }
-                      rows={3}
-                      value={formData.intention}
-                      onChange={e => setFormData({...formData, intention: e.target.value})} />
-                  </div>
-                </>
-              )}
-
-              {formError && <p className="form-error">{formError}</p>}
-              <button type="submit" className="btn-submit" disabled={submitting || !formData.role}>
-                <span>{submitting ? 'Sending...' : 'Come as You Are'}</span>
-              </button>
-              {!formData.role && <p className="form-hint">Select your role to begin.</p>}
-            </form>
-          )}
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="footer">
-        <img src={logoSlogan} alt="Xanadu" className="footer-logo" />
-        <div className="footer-links">
-          <a href="mailto:dreamxanadu@gmail.com">dreamxanadu@gmail.com</a>
-          <span>·</span>
-          <a href="tel:+14693603197">+1 (469) 360-3197</a>
-        </div>
-        <p className="footer-copy">© 2026 Xanadu. All rights reserved.</p>
-      </footer>
-
-    </div>
+    <>
+      <a className="skip" href="#living">Skip to content</a>
+      <Aurora />
+      <Cursor />
+      <Nav />
+      <main>
+        <Hero />
+        <Living />
+        <DesignStay />
+        <Paths />
+        <Places />
+        <AppReveal />
+        <Closing />
+      </main>
+    </>
   )
 }
-
-export default App
