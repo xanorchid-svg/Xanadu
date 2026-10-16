@@ -278,15 +278,17 @@ html.has-cursor input, html.has-cursor textarea { cursor: text !important; }
 .text-link:hover { color: var(--ivory); border-color: var(--iri-rose); }
 
 /* ---------- the emblem ---------- */
-.emblem { position: relative; width: 100%; aspect-ratio: 400 / 600; perspective: 1100px; transform-style: preserve-3d; }
-.emblem-layer { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; transform-origin: 50% 50%; }
-.emblem.is-animated .orbit-outer { animation: orbit-outer 16s linear infinite; }
-.emblem.is-animated .orbit-inner { animation: orbit-inner 9s linear infinite; }
-.emblem.is-animated .electrons { animation: electrons 40s linear infinite; }
-.emblem.is-animated .petals { animation: petal-hue 14s ease-in-out infinite alternate; transform-origin: 200px 300px; }
-.emblem.is-animated .nucleus { animation: nucleus 4.5s ease-in-out infinite; transform-origin: 200px 300px; }
-.emblem.is-animated .nucleus-halo { animation: halo 4.5s ease-in-out infinite; transform-origin: 200px 300px; }
-.electron { filter: drop-shadow(0 0 4px currentColor); }
+.emblem { position: relative; width: 100%; aspect-ratio: 376 / 518; perspective: 1000px; }
+.emblem img { position: absolute; inset: 0; display: block; width: 100%; user-select: none; -webkit-user-drag: none; pointer-events: none; }
+.emblem .em-orbit { transform-origin: 49.918% 56.283%; }
+.emblem .em-nucleus { inset: auto; left: 40.343%; top: 47.995%; width: 19.333%; }
+.emblem.is-animated .em-orbit-outer { animation: orbit-outer 12s linear infinite; }
+.emblem.is-animated .em-orbit-inner { animation: orbit-inner 7s linear infinite; }
+.emblem.is-animated .em-nucleus { animation: em-glow 4.5s ease-in-out infinite; }
+@keyframes em-glow {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(232, 191, 138, .3)); }
+  50% { filter: drop-shadow(0 0 14px rgba(232, 191, 138, .95)); }
+}
 @keyframes orbit-outer { from { transform: rotate3d(0.22, 1, 0, 0deg); } to { transform: rotate3d(0.22, 1, 0, 360deg); } }
 @keyframes orbit-inner { from { transform: rotate3d(-0.3, 1, 0, 0deg); } to { transform: rotate3d(-0.3, 1, 0, -360deg); } }
 @keyframes electrons { to { transform: rotate(360deg); } }
@@ -302,19 +304,12 @@ html.has-cursor input, html.has-cursor textarea { cursor: text !important; }
 @keyframes halo { 0%, 100% { transform: scale(.85); opacity: .55; } 50% { transform: scale(1.5); opacity: 1; } }
 
 /* first appearance: the lines draw themselves, the petals bloom, the star ignites */
-.emblem.draw-in .ln { stroke-dasharray: 1; stroke-dashoffset: 1; }
-.emblem.draw-in .petal { opacity: 0; transform: scale(.4); transform-origin: 200px 300px; }
-.emblem.draw-in .nucleus-layer { opacity: 0; transform: scale(0); }
-.emblem.draw-in .electrons { opacity: 0; }
-.is-ready .emblem.draw-in .ln { animation: draw 2.4s var(--ease) forwards; }
-.is-ready .emblem.draw-in .orbit-inner .ln { animation-delay: .35s; }
-.is-ready .emblem.draw-in .petal { animation: bloom 1.8s var(--ease) forwards; }
-.is-ready .emblem.draw-in g:nth-child(1) > .petal { animation-delay: .7s; }
-.is-ready .emblem.draw-in g:nth-child(2) > .petal { animation-delay: .85s; }
-.is-ready .emblem.draw-in g:nth-child(3) > .petal { animation-delay: 1s; }
-.is-ready .emblem.draw-in g:nth-child(4) > .petal { animation-delay: 1.15s; }
-.is-ready .emblem.draw-in .nucleus-layer { animation: ignite 1.6s var(--ease) 1.2s forwards; }
-.is-ready .emblem.draw-in .electrons { animation: fade-in 2s ease 1.8s forwards, electrons 40s linear 1.8s infinite; }
+.emblem.draw-in img { opacity: 0; }
+.is-ready .emblem.draw-in .em-static { animation: em-in 1.8s var(--ease) .1s forwards; }
+.is-ready .emblem.draw-in.is-animated .em-orbit-outer { animation: em-in 2.2s var(--ease) .45s forwards, orbit-outer 12s linear infinite; }
+.is-ready .emblem.draw-in.is-animated .em-orbit-inner { animation: em-in 2.2s var(--ease) .7s forwards, orbit-inner 7s linear infinite; }
+.is-ready .emblem.draw-in.is-animated .em-nucleus { animation: ignite 1.6s var(--ease) 1.1s forwards, em-glow 4.5s ease-in-out 2.7s infinite; }
+@keyframes em-in { from { opacity: 0; filter: blur(10px); } to { opacity: 1; filter: blur(0); } }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 @keyframes bloom { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: scale(1); } }
 @keyframes ignite { 0% { opacity: 0; transform: scale(0) rotate(-90deg); } 60% { opacity: 1; transform: scale(1.35) rotate(10deg); } 100% { opacity: 1; transform: none; } }
@@ -343,10 +338,11 @@ html.has-cursor input, html.has-cursor textarea { cursor: text !important; }
   12% { opacity: .55; }
   100% { transform: scale(3.6) rotate(140deg); opacity: 0; }
 }
-.hero-emblem { position: relative; height: min(56svh, 120vw); aspect-ratio: 400 / 600; margin-top: -2svh; }
-.hero-emblem-scale { position: relative; width: 100%; height: 100%; will-change: transform; transform-origin: 50% 50%; }
+.hero-emblem { position: relative; height: min(56svh, 120vw); aspect-ratio: 376 / 518; margin-top: -2svh; }
+/* zoom into the centre of the star */
+.hero-emblem-scale { position: relative; width: 100%; height: 100%; will-change: transform; transform-origin: 49.918% 56.283%; }
 /* a slow, breathing iridescent halo behind the portal */
-.hero-halo { position: absolute; left: 50%; top: 50%; width: 150%; aspect-ratio: 1; transform: translate(-50%, -50%); pointer-events: none; }
+.hero-halo { position: absolute; left: 49.918%; top: 56.283%; width: 150%; aspect-ratio: 1; transform: translate(-50%, -50%); pointer-events: none; }
 .hero-halo i {
   position: absolute; inset: 0; border-radius: 50%;
   background: conic-gradient(from 0deg, #9DBB7A, #6FB7BF, #8F9BE6, #B58BE0, #E09AC4, #E8BF8A, #9DBB7A);
@@ -725,8 +721,7 @@ html.has-cursor input, html.has-cursor textarea { cursor: text !important; }
 /* ---------- calm mode ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001s !important; animation-iteration-count: 1 !important; transition-duration: .001s !important; }
-  .emblem.draw-in .ln { stroke-dashoffset: 0; }
-  .emblem.draw-in .petal, .emblem.draw-in .nucleus-layer, .emblem.draw-in .electrons, .ht-line, .hero-copy .eyebrow, .hint-in { opacity: 1 !important; transform: none !important; filter: none !important; }
+  .emblem.draw-in img, .ht-line, .hero-copy .eyebrow, .hint-in { opacity: 1 !important; transform: none !important; filter: none !important; }
   .hero-rings { display: none; }
   .btn-pearl::after { display: none; }
 }
