@@ -40,7 +40,7 @@ export const PLACES = [
   { name: 'California', lat: 36.8, lon: -119.4, side: 'left' },
   { name: 'Costa Rica', lat: 9.9, lon: -84.6 },
   { name: 'Peru', lat: -13.5, lon: -72.0 },
-  { name: 'Buenos Aires', lat: -34.6, lon: -58.4 },
+  { name: 'Argentina', lat: -34.6, lon: -58.4 },
   { name: 'Portugal', lat: 39.4, lon: -8.2 },
   { name: 'Bali', lat: -8.4, lon: 115.2 },
 ]
