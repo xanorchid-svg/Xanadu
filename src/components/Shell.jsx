@@ -8,7 +8,7 @@ import Nav from './Nav'
 import Footer from './Footer'
 import JoinModal from './JoinModal'
 import { sky, prefersReducedMotion } from '../lib/sky'
-import { setLenis } from '../lib/scroll'
+import { setLenis, scrollState } from '../lib/scroll'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -19,12 +19,16 @@ export default function Shell({ home = false, children }) {
     document.documentElement.classList.toggle('reduced', reduced)
 
     let lenis = null
-    let lastY = window.scrollY
+    let lastY = scrollState.y
+    // window.innerHeight forces a layout in Chrome, so it is cached, never read per frame
+    let vh = Math.max(window.innerHeight, 1)
+    const onResize = () => { vh = Math.max(window.innerHeight, 1) }
+    window.addEventListener('resize', onResize)
     const tick = (time) => {
       lenis?.raf(time * 1000)
-      // scroll speed feeds the aurora and the marquees
-      const y = window.scrollY
-      const v = Math.abs(y - lastY) / Math.max(window.innerHeight, 1)
+      // scroll speed feeds the aurora and the marquees (cached position: no layout read every frame)
+      const y = scrollState.y
+      const v = Math.abs(y - lastY) / vh
       lastY = y
       sky.velocity += (Math.min(v * 6, 1) - sky.velocity) * 0.12
     }
@@ -32,7 +36,7 @@ export default function Shell({ home = false, children }) {
     if (!reduced) {
       lenis = new Lenis({ duration: 1.25, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true })
       setLenis(lenis)
-      lenis.on('scroll', ScrollTrigger.update)
+      lenis.on('scroll', (l) => { scrollState.y = l.scroll; ScrollTrigger.update() })
     }
     gsap.ticker.add(tick)
     gsap.ticker.lagSmoothing(0)
@@ -57,6 +61,7 @@ export default function Shell({ home = false, children }) {
     return () => {
       clearTimeout(t)
       gsap.ticker.remove(tick)
+      window.removeEventListener('resize', onResize)
       lenis?.destroy()
       setLenis(null)
     }

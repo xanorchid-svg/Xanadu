@@ -58,7 +58,7 @@ export default function Cursor() {
     document.addEventListener('pointerleave', onLeave)
     window.addEventListener('pointerdown', onDown)
 
-    let raf
+    let raf, drawn = false
     const loop = () => {
       const dx = m.x - m.px, dy = m.y - m.py
       const speed = Math.hypot(dx, dy)
@@ -77,7 +77,8 @@ export default function Cursor() {
       }
       m.px = m.x; m.py = m.y
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      if (parts.length || drawn) ctx.clearRect(0, 0, canvas.width, canvas.height)
+      drawn = parts.length > 0
       ctx.globalCompositeOperation = 'lighter'
       for (let i = parts.length - 1; i >= 0; i--) {
         const p = parts[i]

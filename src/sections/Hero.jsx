@@ -52,16 +52,21 @@ export default function Hero() {
       tx = (e.clientX / window.innerWidth - 0.5) * 2
       ty = (e.clientY / window.innerHeight - 0.5) * 2
     }
+    let onScreen = true
+    const io = new IntersectionObserver(([e]) => { onScreen = e.isIntersecting })
+    io.observe(sectionRef.current)
     const loop = () => {
+      raf = requestAnimationFrame(loop)
+      // nothing to do while the hero is off screen or the tilt has settled
+      if (!onScreen || (Math.abs(tx - cx) < 0.0005 && Math.abs(ty - cy) < 0.0005)) return
       cx += (tx - cx) * 0.06
       cy += (ty - cy) * 0.06
       el.style.transform = `rotateY(${cx * 14}deg) rotateX(${-cy * 10}deg) translate3d(${cx * 10}px, ${cy * 8}px, 0)`
       if (ringsRef.current) ringsRef.current.style.transform = `translate(${-cx * 18}px, ${-cy * 14}px)`
-      raf = requestAnimationFrame(loop)
     }
     window.addEventListener('pointermove', onMove, { passive: true })
     raf = requestAnimationFrame(loop)
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('pointermove', onMove) }
+    return () => { cancelAnimationFrame(raf); io.disconnect(); window.removeEventListener('pointermove', onMove) }
   }, [])
 
   // falling through the portal

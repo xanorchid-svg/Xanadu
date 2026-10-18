@@ -1,3 +1,4 @@
+import { onScrollFrame } from '../lib/scroll'
 import { useEffect, useRef } from 'react'
 import { IRI } from '../lib/links'
 import { prefersReducedMotion } from '../lib/sky'
@@ -22,14 +23,10 @@ export default function StarRing({ mode = 'scroll', className = '' }) {
       arc.style.strokeDashoffset = `${1 - p}`
     }
     if (mode === 'spin' || prefersReducedMotion()) { set(1); return }
-    const onScroll = () => {
-      const r = ring.getBoundingClientRect()
-      const p = (window.innerHeight * 0.95 - r.top) / (window.innerHeight * 0.8)
-      set(Math.max(0, Math.min(1, p)))
-    }
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    return onScrollFrame(
+      () => (window.innerHeight * 0.95 - ring.getBoundingClientRect().top) / (window.innerHeight * 0.8),
+      (p) => set(Math.max(0, Math.min(1, p)))
+    )
   }, [mode])
 
   return (

@@ -173,7 +173,7 @@ img, svg, canvas { display: block; }
 }
 @keyframes drift { to { transform: translate(4%, -3%) rotate(8deg) scale(1.1); } }
 /* two layers of stars, twinkling out of step */
-.stars { position: absolute; left: 0; top: 0; width: 1px; height: 1px; border-radius: 50%; background: transparent; animation: twinkle 5s ease-in-out infinite alternate; }
+.stars { position: absolute; left: 0; top: 0; width: 1px; height: 1px; border-radius: 50%; background: transparent; will-change: opacity; animation: twinkle 5s ease-in-out infinite alternate; }
 .stars.s2 { width: 2px; height: 2px; animation-duration: 7s; animation-delay: -3s; }
 @keyframes twinkle { 0% { opacity: .25; } 100% { opacity: 1; } }
 .grain {
@@ -279,9 +279,11 @@ html.has-cursor input, html.has-cursor textarea { cursor: text !important; }
 
 /* ---------- the emblem ---------- */
 .emblem { position: relative; width: 100%; aspect-ratio: 376 / 518; perspective: 1000px; }
-.emblem img { position: absolute; inset: 0; display: block; width: 100%; user-select: none; -webkit-user-drag: none; pointer-events: none; }
+.emblem img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; user-select: none; -webkit-user-drag: none; pointer-events: none; }
 .emblem .em-orbit { transform-origin: 49.918% 56.283%; }
-.emblem .em-nucleus { inset: auto; left: 40.343%; top: 47.995%; width: 19.333%; }
+.emblem .em-nucleus { inset: auto; left: 40.343%; top: 47.995%; width: 19.333%; height: auto; }
+/* the spinning layers get their own compositing layer and are never filtered: Safari misplaces filtered 3D layers */
+.emblem.is-animated .em-orbit { will-change: transform; backface-visibility: visible; }
 .emblem.is-animated .em-orbit-outer { animation: orbit-outer 12s linear infinite; }
 .emblem.is-animated .em-orbit-inner { animation: orbit-inner 7s linear infinite; }
 .emblem.is-animated .em-nucleus { animation: em-glow 4.5s ease-in-out infinite; }
@@ -306,10 +308,11 @@ html.has-cursor input, html.has-cursor textarea { cursor: text !important; }
 /* first appearance: the lines draw themselves, the petals bloom, the star ignites */
 .emblem.draw-in img { opacity: 0; }
 .is-ready .emblem.draw-in .em-static { animation: em-in 1.8s var(--ease) .1s forwards; }
-.is-ready .emblem.draw-in.is-animated .em-orbit-outer { animation: em-in 2.2s var(--ease) .45s forwards, orbit-outer 12s linear infinite; }
-.is-ready .emblem.draw-in.is-animated .em-orbit-inner { animation: em-in 2.2s var(--ease) .7s forwards, orbit-inner 7s linear infinite; }
+.is-ready .emblem.draw-in.is-animated .em-orbit-outer { animation: em-fade 2.2s var(--ease) .45s forwards, orbit-outer 12s linear infinite; }
+.is-ready .emblem.draw-in.is-animated .em-orbit-inner { animation: em-fade 2.2s var(--ease) .7s forwards, orbit-inner 7s linear infinite; }
 .is-ready .emblem.draw-in.is-animated .em-nucleus { animation: ignite 1.6s var(--ease) 1.1s forwards, em-glow 4.5s ease-in-out 2.7s infinite; }
-@keyframes em-in { from { opacity: 0; filter: blur(10px); } to { opacity: 1; filter: blur(0); } }
+@keyframes em-in { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+@keyframes em-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 @keyframes bloom { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: scale(1); } }
 @keyframes ignite { 0% { opacity: 0; transform: scale(0) rotate(-90deg); } 60% { opacity: 1; transform: scale(1.35) rotate(10deg); } 100% { opacity: 1; transform: none; } }
@@ -355,7 +358,7 @@ html.has-cursor input, html.has-cursor textarea { cursor: text !important; }
 @keyframes halo-spin { to { rotate: 360deg; } }
 @keyframes halo-breathe { 50% { scale: 1.12; opacity: .5; } }
 .hero-emblem-tilt { width: 100%; height: 100%; transform-style: preserve-3d; }
-.hero-emblem .emblem { filter: drop-shadow(0 0 40px rgba(181, 139, 224, .25)); }
+.hero-emblem .em-static { filter: drop-shadow(0 0 40px rgba(181, 139, 224, .25)); }
 .hero-copy { position: relative; text-align: center; margin-top: 1svh; padding: 0 20px; }
 .hero-copy .eyebrow { margin-bottom: 14px; opacity: 0; animation: fade-up 1.4s var(--ease) 1.6s forwards; }
 .hero-title {
@@ -1264,3 +1267,6 @@ html.modal-open { overflow: hidden; }
 .lnet-inner { z-index: 2; }
 .lnet .display, .lnet .lede, .lnet-quote { text-shadow: 0 2px 40px rgba(12, 21, 34, .75); }
 @media (prefers-reduced-motion: reduce) { .gp img { transform: none !important; } }
+
+/* hidden from people, filled by bots */
+.hp-trap { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; pointer-events: none; }

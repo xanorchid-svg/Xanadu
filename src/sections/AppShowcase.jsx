@@ -4,7 +4,7 @@ import Emblem from '../components/Emblem'
 import { Reveal, Rise, Shimmer } from '../components/Reveal'
 import { LANDSCAPES } from '../lib/links'
 import { prefersReducedMotion } from '../lib/sky'
-import { scrollToTarget } from '../lib/scroll'
+import { scrollToTarget, onScrollFrame } from '../lib/scroll'
 
 /**
  * A glimpse of the app, before it reaches the stores.
@@ -150,14 +150,10 @@ export default function AppShowcase() {
 
   useEffect(() => {
     if (reduced) return
-    const onScroll = () => {
-      const r = sectionRef.current.getBoundingClientRect()
-      const p = (r.top + r.height / 2 - window.innerHeight / 2) / window.innerHeight
-      phoneRef.current.style.setProperty('--p', Math.max(-1, Math.min(1, p)).toFixed(3))
-    }
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    return onScrollFrame(
+      () => { const r = sectionRef.current.getBoundingClientRect(); return (r.top + r.height / 2 - window.innerHeight / 2) / window.innerHeight },
+      (p) => phoneRef.current.style.setProperty('--p', Math.max(-1, Math.min(1, p)).toFixed(3))
+    )
   }, [reduced])
 
   const pick = (n) => { setI(n); setCycle((c) => c + 1) }

@@ -1,10 +1,10 @@
 /**
  * The Xanadu emblem, built from the same aligned layers as the app and the pitch deck,
- * cut from the original artwork (the "-lit" colouring, made to glow on navy):
- *  - logo-static.png: petals, stars and the vertical needle (never move)
- *  - logo-orbit-outer.png: the outer fine lines (large rings and side curves)
- *  - logo-orbit-inner.png: the inner fine lines (the diamond around the star)
- *  - logo-nucleus.png: the central star, softly glowing
+ * cut from the original artwork (the "-lit" colouring, made to glow on navy), served as WebP:
+ *  - logo-static.webp: petals, stars and the vertical needle (never move)
+ *  - logo-orbit-outer.webp: the outer fine lines (large rings and side curves)
+ *  - logo-orbit-inner.webp: the inner fine lines (the diamond around the star)
+ *  - logo-nucleus.webp: the central star, softly glowing
  * When animated, the two sets of lines turn around the central star at different speeds,
  * in opposite directions and on slightly different tilts, like electrons around a nucleus.
  * Each full turn returns to the exact logo, so the design is unchanged at rest.
@@ -20,10 +20,10 @@ export const NUCLEUS_ORIGIN = '49.918% 56.283%'
 export default function Emblem({ animated = true, electrons, drawIn = false, className = '' }) {
   return (
     <div className={`emblem ${animated ? 'is-animated' : ''} ${drawIn ? 'draw-in' : ''} ${className}`} role="img" aria-label="Xanadu emblem">
-      <img src="/logo-static.png" alt="" draggable={false} className="em-static" />
-      <img src="/logo-orbit-outer.png" alt="" draggable={false} className="em-orbit em-orbit-outer" />
-      <img src="/logo-orbit-inner.png" alt="" draggable={false} className="em-orbit em-orbit-inner" />
-      <img src="/logo-nucleus.png" alt="" draggable={false} className="em-nucleus" />
+      <img src="/logo-static.webp" alt="" draggable={false} className="em-static" />
+      <img src="/logo-orbit-outer.webp" alt="" draggable={false} className="em-orbit em-orbit-outer" />
+      <img src="/logo-orbit-inner.webp" alt="" draggable={false} className="em-orbit em-orbit-inner" />
+      <img src="/logo-nucleus.webp" alt="" draggable={false} className="em-nucleus" />
     </div>
   )
 }

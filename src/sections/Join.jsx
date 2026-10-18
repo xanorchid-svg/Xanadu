@@ -8,7 +8,7 @@ import { scrollToTarget } from '../lib/scroll'
 
 export default function Join() {
   const stay = useStay()
-  const [form, setForm] = useState({ name: '', email: '', seeking: '' })
+  const [form, setForm] = useState({ name: '', email: '', seeking: '', trap: '' })
   const [state, setState] = useState('idle') // idle | sending | done | error
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
 
@@ -20,7 +20,7 @@ export default function Join() {
     setState('sending')
     const intention = [stayText && `Stay: ${stayText}`, form.seeking.trim()].filter(Boolean).join('\n\n')
     try {
-      await joinWaitlist({ name: form.name, email: form.email, intention })
+      await joinWaitlist({ name: form.name, email: form.email, intention, stay, source: 'join-section', trap: form.trap })
       setState('done')
     } catch {
       setState('error')
@@ -50,6 +50,7 @@ export default function Join() {
             </div>
           ) : (
             <form onSubmit={submit} className="join-form">
+              <input className="hp-trap" tabIndex={-1} autoComplete="off" aria-hidden="true" name="website" value={form.trap} onChange={set('trap')} />
               <label className="field">
                 <span>Your name</span>
                 <input required autoComplete="name" value={form.name} onChange={set('name')} placeholder="Full name" />

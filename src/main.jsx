@@ -1,11 +1,13 @@
-import React from 'react'
+/* eslint-disable react-refresh/only-export-components -- entry file, not hot-reloaded */
+import React, { lazy, Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
-import PathPage from './pages/PathPage.jsx'
-import TrustPage from './pages/TrustPage.jsx'
-import StoryPage from './pages/StoryPage.jsx'
-import OriginPage from './pages/OriginPage.jsx'
-import LivingNetworkPage from './pages/LivingNetworkPage.jsx'
+// the deeper pages load only when someone opens them
+const PathPage = lazy(() => import('./pages/PathPage.jsx'))
+const TrustPage = lazy(() => import('./pages/TrustPage.jsx'))
+const StoryPage = lazy(() => import('./pages/StoryPage.jsx'))
+const OriginPage = lazy(() => import('./pages/OriginPage.jsx'))
+const LivingNetworkPage = lazy(() => import('./pages/LivingNetworkPage.jsx'))
 import './styles.css'
 
 // A tiny router: the home page plus the "dive deeper" pages.
@@ -28,6 +30,6 @@ if (titles[path]) document.title = `${titles[path]} — Xanadu`
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Page />
+    <Suspense fallback={null}><Page /></Suspense>
   </React.StrictMode>
 )

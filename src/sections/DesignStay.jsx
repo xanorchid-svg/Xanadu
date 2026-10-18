@@ -4,7 +4,7 @@ import { Shimmer } from '../components/Reveal'
 import { LANDSCAPES, photoUrl } from '../lib/links'
 import { useStay, setStay } from '../lib/stay'
 import { tintSky } from '../lib/sky'
-import { scrollToTarget } from '../lib/scroll'
+import { scrollToTarget, onScrollFrame } from '../lib/scroll'
 
 // What you're seeking: the app's own words (SEEKER_ALIGN), plus retreats and communal living
 const SEEKING = [
@@ -60,20 +60,21 @@ export default function DesignStay() {
 
   // which step we're on comes from how far through the (tall) section you've scrolled
   useEffect(() => {
-    const onScroll = () => {
-      const el = sectionRef.current
-      if (!el) return
-      const r = el.getBoundingClientRect()
-      const total = el.offsetHeight - window.innerHeight
-      const p = Math.min(1, Math.max(0, -r.top / total))
-      setStep(Math.min(N - 1, Math.floor(p * N)))
-      setActive(r.top < window.innerHeight * 0.5 && r.bottom > window.innerHeight * 0.5)
-      if (r.top < window.innerHeight * 2.5) setNear(true)
-    }
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll)
-    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll) }
+    return onScrollFrame(
+      () => {
+        const el = sectionRef.current
+        if (!el) return null
+        const r = el.getBoundingClientRect()
+        return { top: r.top, bottom: r.bottom, total: el.offsetHeight - window.innerHeight, vh: window.innerHeight }
+      },
+      (m) => {
+        if (!m) return
+        const p = Math.min(1, Math.max(0, -m.top / m.total))
+        setStep(Math.min(N - 1, Math.floor(p * N)))
+        setActive(m.top < m.vh * 0.5 && m.bottom > m.vh * 0.5)
+        if (m.top < m.vh * 2.5) setNear(true)
+      }
+    )
   }, [])
 
   // the sky takes on the colour of the moment

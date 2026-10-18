@@ -26,7 +26,7 @@ export default function JoinModal({ auto = false }) {
   const open = useJoinOpen()
   const stay = useStay()
   const [step, setStep] = useState('choose') // choose | seeker | done
-  const [form, setForm] = useState({ name: '', email: '' })
+  const [form, setForm] = useState({ name: '', email: '', trap: '' })
   const [state, setState] = useState('idle')
   const panelRef = useRef(null)
   const lastFocus = useRef(null)
@@ -56,7 +56,7 @@ export default function JoinModal({ auto = false }) {
       lastFocus.current = document.activeElement
       lenis?.stop()
       document.documentElement.classList.add('modal-open')
-      setTimeout(() => panelRef.current?.querySelector('button, a, input')?.focus(), 60)
+      setTimeout(() => panelRef.current?.querySelector('button, a, input:not(.hp-trap)')?.focus(), 60)
     } else {
       lenis?.start()
       document.documentElement.classList.remove('modal-open')
@@ -71,7 +71,7 @@ export default function JoinModal({ auto = false }) {
     const onKey = (e) => {
       if (e.key === 'Escape') closeJoin()
       if (e.key === 'Tab') {
-        const f = [...panelRef.current.querySelectorAll('button, a, input')].filter((el) => !el.disabled)
+        const f = [...panelRef.current.querySelectorAll('button, a, input:not(.hp-trap)')].filter((el) => !el.disabled)
         if (!f.length) return
         const first = f[0], last = f[f.length - 1]
         if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus() }
@@ -88,7 +88,7 @@ export default function JoinModal({ auto = false }) {
     setState('sending')
     const s = describeStay(stay)
     try {
-      await joinWaitlist({ name: form.name, email: form.email, intention: s ? `Stay: ${s}` : null })
+      await joinWaitlist({ name: form.name, email: form.email, intention: s ? `Stay: ${s}` : null, stay, source: 'join-modal', trap: form.trap })
       setStep('done'); setState('idle')
     } catch {
       setState('error')
@@ -132,6 +132,7 @@ export default function JoinModal({ auto = false }) {
           <form className="jm-form" onSubmit={submit}>
             <h2 id="jm-title" className="jm-title">Be first <Shimmer>through the door</Shimmer></h2>
             <p className="jm-sub">Seekers enter when the founding circle is complete. We'll write when the doors open.</p>
+            <input className="hp-trap" tabIndex={-1} autoComplete="off" aria-hidden="true" name="website" value={form.trap} onChange={(e) => setForm({ ...form, trap: e.target.value })} />
             <label className="field">
               <span>Your name</span>
               <input required autoComplete="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Full name" />

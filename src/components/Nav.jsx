@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Button from './Button'
 import Emblem from './Emblem'
-import { scrollToTarget } from '../lib/scroll'
+import { scrollToTarget, onScrollFrame, scrollState } from '../lib/scroll'
 import { openJoin } from '../lib/joinModal'
 
 const ITEMS = [
@@ -17,15 +17,13 @@ export default function Nav({ home = true }) {
   const barRef = useRef(null)
 
   useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY
-      setSolid(!home || y > window.innerHeight * 0.6)
-      const max = document.documentElement.scrollHeight - window.innerHeight
-      if (barRef.current) barRef.current.style.transform = `scaleX(${max > 0 ? y / max : 0})`
-    }
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    return onScrollFrame(
+      () => ({ y: scrollState.y, vh: window.innerHeight, max: document.documentElement.scrollHeight - window.innerHeight }),
+      ({ y, vh, max }) => {
+        setSolid(!home || y > vh * 0.6)
+        if (barRef.current) barRef.current.style.transform = `scaleX(${max > 0 ? y / max : 0})`
+      }
+    )
   }, [home])
 
   // on the home page links glide; on other pages they go home to that section

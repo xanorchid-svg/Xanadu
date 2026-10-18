@@ -1,3 +1,4 @@
+import { onScrollFrame } from '../lib/scroll'
 import { useEffect, useRef } from 'react'
 import { Reveal, Rise } from '../components/Reveal'
 import { prefersReducedMotion } from '../lib/sky'
@@ -23,14 +24,10 @@ export default function Why() {
       }
     }
     if (prefersReducedMotion()) { set(1); return }
-    const onScroll = () => {
-      const r = sectionRef.current.getBoundingClientRect()
-      const p = (window.innerHeight * 0.9 - r.top) / (r.height * 0.9)
-      set(Math.max(0, Math.min(1, p)))
-    }
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    return onScrollFrame(
+      () => { const r = sectionRef.current.getBoundingClientRect(); return (window.innerHeight * 0.9 - r.top) / (r.height * 0.9) },
+      (p) => set(Math.max(0, Math.min(1, p)))
+    )
   }, [])
 
   const crack = 'M-10,120 L140,96 L210,140 L330,88 L420,132 L560,70 L640,118 L770,84 L860,150 L990,98 L1080,128 L1210,80 L1300,110 L1450,92'

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { sky, prefersReducedMotion, isTouch } from '../lib/sky'
+import { scrollState } from '../lib/scroll'
 
 // A living iridescent aurora behind the whole page.
 // Domain-warped noise, coloured with the logo's sheen (sage → teal → periwinkle → violet → rose → gold).
@@ -109,12 +110,31 @@ export default function Aurora() {
   const fallbackRef = useRef(null)
 
   useEffect(() => {
-    const canvas = canvasRef.current
+    let stop = () => {}
+    const idle = window.requestIdleCallback || ((f) => setTimeout(f, 200))
+    const cancelIdle = window.cancelIdleCallback || clearTimeout
+    const id = idle(() => { stop = startAurora(canvasRef.current, fallbackRef.current) }, { timeout: 700 })
+    return () => { cancelIdle(id); stop() }
+  }, [])
+
+  return (
+    <div className="aurora" aria-hidden="true">
+      <canvas ref={canvasRef} className="aurora-canvas" />
+      <div ref={fallbackRef} className="aurora-fallback" />
+      <div className="stars" style={{ boxShadow: STARS1 }} />
+      <div className="stars s2" style={{ boxShadow: STARS2 }} />
+      <div className="grain" />
+    </div>
+  )
+}
+
+function startAurora(canvas, fallback) {
+  {
     const gl = canvas.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power' })
     if (!gl) {
-      fallbackRef.current.style.display = 'block'
+      fallback.style.display = 'block'
       canvas.style.display = 'none'
-      return
+      return () => {}
     }
 
     const compile = (type, src) => {
@@ -165,7 +185,12 @@ export default function Aurora() {
     const cur = { tint: [...sky.tint], amt: 0, mouse: [0.5, 0.5], vel: 0 }
     let raf, start = performance.now(), running = true
 
+    const minGap = isTouch() ? 1000 / 30 - 2 : 0
+    let last = 0
     const frame = (now) => {
+      if (running) raf = requestAnimationFrame(frame)
+      if (now - last < minGap) return
+      last = now
       const k = 0.04
       for (let i = 0; i < 3; i++) cur.tint[i] += (sky.tint[i] - cur.tint[i]) * k
       cur.amt += (sky.tintAmount - cur.amt) * k
@@ -174,13 +199,12 @@ export default function Aurora() {
       cur.vel += (Math.min(sky.velocity, 1) - cur.vel) * 0.08
 
       gl.uniform1f(U.time, reduced ? 40 : (now - start) / 1000)
-      gl.uniform1f(U.scroll, window.scrollY)
+      gl.uniform1f(U.scroll, scrollState.y)
       gl.uniform1f(U.vel, cur.vel)
       gl.uniform2f(U.mouse, cur.mouse[0], cur.mouse[1])
       gl.uniform3f(U.tint, cur.tint[0], cur.tint[1], cur.tint[2])
       gl.uniform1f(U.tintAmt, cur.amt)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
-      if (running) raf = requestAnimationFrame(frame)
     }
     raf = requestAnimationFrame(frame)
 
@@ -197,15 +221,5 @@ export default function Aurora() {
       window.removeEventListener('pointermove', onMove)
       document.removeEventListener('visibilitychange', onVis)
     }
-  }, [])
-
-  return (
-    <div className="aurora" aria-hidden="true">
-      <canvas ref={canvasRef} className="aurora-canvas" />
-      <div ref={fallbackRef} className="aurora-fallback" />
-      <div className="stars" style={{ boxShadow: STARS1 }} />
-      <div className="stars s2" style={{ boxShadow: STARS2 }} />
-      <div className="grain" />
-    </div>
-  )
+  }
 }
