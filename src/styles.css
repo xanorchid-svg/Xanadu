@@ -1144,11 +1144,11 @@ html.modal-open { overflow: hidden; }
 }
 .scene-caption.is-on { opacity: 1; transform: none; }
 .scene-caption span { font-family: var(--sans); font-style: normal; font-size: 10.5px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold-pale); margin-right: 10px; }
-@media (max-width: 760px) { .scene-caption { left: var(--gutter); right: auto; bottom: auto; top: 128px; } .scene-veil { background: linear-gradient(0deg, rgba(12, 21, 34, .9) 0%, rgba(12, 21, 34, .55) 50%, rgba(12, 21, 34, .7) 100%); } }
+@media (max-width: 760px) { .scene-caption.is-seek { display: none; } .scene-caption { left: var(--gutter); right: auto; bottom: auto; top: 128px; } .scene-veil { background: linear-gradient(0deg, rgba(12, 21, 34, .9) 0%, rgba(12, 21, 34, .55) 50%, rgba(12, 21, 34, .7) 100%); } }
 
 /* the words stay readable over any photo */
 .stay-q, .stay-head .eyebrow { text-shadow: 0 2px 30px rgba(12, 21, 34, .6); }
-.land { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); background: rgba(12, 21, 34, .3); }
+.land, .seek:not(.is-picked) { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); background: rgba(12, 21, 34, .3); }
 
 /* a photo inside each door */
 .door-photo { position: absolute; inset: 0; z-index: 0; overflow: hidden; }

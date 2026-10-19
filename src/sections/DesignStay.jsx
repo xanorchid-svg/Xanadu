@@ -6,22 +6,26 @@ import { useStay, setStay } from '../lib/stay'
 import { tintSky } from '../lib/sky'
 import { scrollToTarget, onScrollFrame } from '../lib/scroll'
 
-// What you're seeking: the app's own words (SEEKER_ALIGN), plus retreats and communal living
+// What you're seeking: the app's own words (SEEKER_ALIGN), plus retreats, communal living and more.
+// Each has a free Unsplash photo that fills the screen on hover (to swap one, change its photo id) and a caption.
 const SEEKING = [
-  { label: 'Yoga', c: '#B58BE0' },
-  { label: 'Breathwork', c: '#6FB7BF' },
-  { label: 'Meditation', c: '#8F9BE6' },
-  { label: 'Sound healing', c: '#E8BF8A' },
-  { label: 'Ecstatic dance', c: '#E09AC4' },
-  { label: 'Kirtan', c: '#D9A67E' },
-  { label: 'Retreats', c: '#9DBB7A' },
-  { label: 'Communal living', c: '#86A06A' },
-  { label: 'Permaculture & gardening', c: '#B7B470' },
-  { label: 'Schooling', c: '#8C95C9' },
-  { label: 'Festivals', c: '#E8BF8A' },
-  { label: "Women's retreats", c: '#E09AC4' },
-  { label: "Men's retreats", c: '#6E9A7E' },
-  { label: 'Rest & stillness', c: '#E6CDA6' },
+  { label: 'Yoga', c: '#B58BE0', photo: 'photo-1758797315487-b3b225dff7d8', scene: 'Practice on an open lawn' },
+  { label: 'Breathwork', c: '#6FB7BF', photo: 'photo-1713428856206-d692c1ed42d6', scene: 'Breath, deep in the forest' },
+  { label: 'Meditation', c: '#8F9BE6', photo: 'photo-1559595500-e15296bdbb48', scene: "Stillness at the canyon's edge" },
+  { label: 'Sound healing', c: '#E8BF8A', photo: 'photo-1760691313751-98262affa4f9', scene: 'A gong among the singing bowls' },
+  { label: 'Ecstatic dance', c: '#E09AC4', photo: 'photo-1507539989371-99615e449486', scene: 'Dancing at the shoreline' },
+  { label: 'Kirtan', c: '#D9A67E', photo: 'photo-1643287928605-b8e1190615fa', scene: 'Songs of devotion' },
+  { label: 'Plant medicine', c: '#86A06A', photo: 'photo-1662852744966-143f1dde2634', scene: 'Ceremony by firelight' },
+  { label: 'Retreats', c: '#9DBB7A', photo: 'photo-1758797316165-986ec92e7ad2', scene: 'Slow mornings on the porch' },
+  { label: 'Residencies', c: '#C8A0C4', photo: 'photo-1785423613154-a3f078420790', scene: 'A studio of your own' },
+  { label: 'Communal living', c: '#6E9A7E', photo: 'photo-1758646652296-9273b2422686', scene: 'One long table beneath the tree' },
+  { label: 'Permaculture & gardening', c: '#B7B470', photo: 'photo-1757585267523-f689c297fa2d', scene: 'A garden that feeds everyone' },
+  { label: 'Schooling', c: '#8C95C9', photo: 'photo-1768509197111-1deec3dd559a', scene: 'Learning on the forest floor' },
+  { label: 'Festivals', c: '#E8BF8A', photo: 'photo-1561577862-49a301dda61b', scene: 'Music into the sunset' },
+  { label: "Women's retreats", c: '#E09AC4', photo: 'photo-1495837174058-628aafc7d610', scene: 'Sisters at sundown' },
+  { label: "Men's retreats", c: '#7FB3C2', photo: 'photo-1551632811-561732d1e306', scene: 'Walking into the mountains' },
+  { label: 'Recovery programs', c: '#E6CDA6', photo: 'photo-1612821394773-23f0a7d33ede', scene: 'Light returning through the trees' },
+  { label: 'Rest & stillness', c: '#A58BD6', photo: 'photo-1445307806294-bff7f67ff225', scene: 'A hammock by the river' },
 ]
 
 const LENGTHS = [
@@ -56,6 +60,7 @@ export default function DesignStay() {
   const [active, setActive] = useState(false)
   const { seeking, length, work, where } = useStay()
   const [hover, setHover] = useState(null)
+  const [seekHover, setSeekHover] = useState(null)
   const [near, setNear] = useState(false) // start loading the photos just before they're needed
 
   // which step we're on comes from how far through the (tall) section you've scrolled
@@ -80,12 +85,15 @@ export default function DesignStay() {
   // the sky takes on the colour of the moment
   useEffect(() => {
     if (!active) { tintSky(null); return }
-    if (step === 0 && seeking.length) { tintSky(SEEKING.find((x) => x.label === seeking[seeking.length - 1]).c, 0.5); return }
+    if (step === 0) {
+      const x = SEEKING.find((s) => s.label === (seekHover || seeking[seeking.length - 1]))
+      if (x) { tintSky(x.c, 0.5); return }
+    }
     if (step < WHERE) { tintSky(STEPS[step].tint, 0.35); return }
     const name = hover || where[where.length - 1]
     const land = LANDSCAPES.find((l) => l.name === name)
     tintSky(land ? land.color : '#B58BE0', land ? 0.95 : 0.25)
-  }, [active, step, hover, where, seeking])
+  }, [active, step, hover, where, seeking, seekHover])
 
   const goStep = (i) => {
     const el = sectionRef.current
@@ -102,6 +110,9 @@ export default function DesignStay() {
   // the place you're hovering (or the last one you chose) fills the whole screen
   const shown = active && step === WHERE ? (hover || where[where.length - 1]) : null
   const shownLand = LANDSCAPES.find((l) => l.name === shown)
+  // ...and in step 01, a photo of what you're hovering (or the last thing you chose)
+  const shownSeek = active && step === 0 ? SEEKING.find((x) => x.label === (seekHover || seeking[seeking.length - 1])) : null
+  const caption = shownLand ? shownLand.scene : shownSeek ? shownSeek.scene : null
 
   const seekingText = seeking.length ? (seeking.length > 2 ? `${seeking.slice(0, 2).join(', ')} +${seeking.length - 2}` : seeking.join(', ')) : null
   const summary = [seekingText, length, work, where.length ? where.join(', ') : null]
@@ -109,7 +120,16 @@ export default function DesignStay() {
 
   return (
     <section id="stay" ref={sectionRef} className="stay">
-      <div className={`stay-scenes ${shown ? 'is-on' : ''}`} aria-hidden="true">
+      <div className={`stay-scenes ${shown || shownSeek ? 'is-on' : ''}`} aria-hidden="true">
+        {near && SEEKING.map((x) => (
+          <div key={x.label} className={`scene ${shownSeek === x ? 'is-on' : ''}`} style={{ '--c': x.c }}>
+            <img
+              src={photoUrl(x.photo, 1600)}
+              srcSet={`${photoUrl(x.photo, 900)} 900w, ${photoUrl(x.photo, 1600)} 1600w, ${photoUrl(x.photo, 2400)} 2400w`}
+              sizes="100vw" alt="" loading="lazy" decoding="async"
+            />
+          </div>
+        ))}
         {near && LANDSCAPES.map((l) => (
           <div key={l.name} className={`scene ${shown === l.name ? 'is-on' : ''}`} style={{ '--c': l.color }}>
             <img
@@ -121,8 +141,8 @@ export default function DesignStay() {
         ))}
         <div className="scene-veil" />
       </div>
-      <p className={`scene-caption ${shownLand ? 'is-on' : ''}`} aria-live="polite">
-        {shownLand && <><span>Imagine</span> {shownLand.scene}</>}
+      <p className={`scene-caption ${caption ? 'is-on' : ''} ${shownSeek ? 'is-seek' : ''}`} aria-live="polite">
+        {caption && <><span>Imagine</span> {caption}</>}
       </p>
       <div className="stay-sticky">
         <div className="stay-head">
@@ -143,9 +163,10 @@ export default function DesignStay() {
               <h2 className="stay-q">{STEPS[0].q}</h2>
               <p className="stay-hint">Choose as many as call to you.</p>
             </div>
-            <div className="seeks">
+            <div className="seeks" onPointerLeave={() => setSeekHover(null)}>
               {SEEKING.map((x, i) => (
                 <button key={x.label} className={`seek ${seeking.includes(x.label) ? 'is-picked' : ''}`} style={{ '--c': x.c, '--i': i }}
+                  onPointerEnter={() => setSeekHover(x.label)} onFocus={() => setSeekHover(x.label)} onBlur={() => setSeekHover(null)}
                   onClick={() => toggleSeeking(x.label)} aria-pressed={seeking.includes(x.label)} tabIndex={step === 0 ? 0 : -1}>
                   <i aria-hidden="true" />{x.label}
                 </button>
