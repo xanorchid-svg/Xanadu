@@ -24,9 +24,9 @@ const SEEKING = [
   { label: 'Schooling', c: '#8C95C9', photo: '/photos/seek-schooling.jpg', scene: 'Little hands in the garden' },
   { label: 'Festivals', c: '#E8BF8A', photo: '/photos/seek-festivals.jpg', scene: 'Dancing under the canopy' },
   { label: "Women's retreats", c: '#E09AC4', photo: '/photos/seek-womens.jpg', scene: 'A circle of women in the garden' },
-  { label: "Men's retreats", c: '#7FB3C2', photo: '/photos/seek-mens.jpg', scene: 'Brothers in the cold water' },
+  { label: "Men's retreats", c: '#7FB3C2', photo: '/photos/seek-mens-water.jpg', scene: 'Brothers in the cold water' },
   { label: 'Recovery programs', c: '#E6CDA6', photo: '/photos/seek-recovery.jpg', scene: 'Morning practice, together' },
-  { label: 'Rest & stillness', c: '#A58BD6', photo: '/photos/seek-rest.jpg', scene: 'A warm cup by the water' },
+  { label: 'Rest & stillness', c: '#A58BD6', photo: '/photos/seek-rest-mug.jpg', scene: 'A warm cup by the water' },
 ]
 
 const LENGTHS = [
