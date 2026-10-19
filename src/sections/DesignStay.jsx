@@ -7,25 +7,26 @@ import { tintSky } from '../lib/sky'
 import { scrollToTarget, onScrollFrame } from '../lib/scroll'
 
 // What you're seeking: the app's own words (SEEKER_ALIGN), plus retreats, communal living and more.
-// Each has a free Unsplash photo that fills the screen on hover (to swap one, change its photo id) and a caption.
+// Each has a photo that fills the screen on hover, and a caption. A photo is either an Unsplash id or a file in
+// public/photos (path starting with /, with a -1200 version for phones).
 const SEEKING = [
   { label: 'Yoga', c: '#B58BE0', photo: 'photo-1758797315487-b3b225dff7d8', scene: 'Practice on an open lawn' },
   { label: 'Breathwork', c: '#6FB7BF', photo: 'photo-1600618528240-fb9fc964b853', scene: 'Breath at first light' },
-  { label: 'Meditation', c: '#8F9BE6', photo: 'photo-1559595500-e15296bdbb48', scene: "Stillness at the canyon's edge" },
+  { label: 'Meditation', c: '#8F9BE6', photo: '/photos/seek-meditation.jpg', scene: 'Deep rest, eyes closed' },
   { label: 'Sound healing', c: '#E8BF8A', photo: 'photo-1760691313751-98262affa4f9', scene: 'A gong among the singing bowls' },
   { label: 'Ecstatic dance', c: '#E09AC4', photo: 'photo-1507539989371-99615e449486', scene: 'Dancing at the shoreline' },
-  { label: 'Kirtan', c: '#D9A67E', photo: 'photo-1643287928605-b8e1190615fa', scene: 'Songs of devotion' },
-  { label: 'Plant medicine', c: '#86A06A', photo: 'photo-1662852744966-143f1dde2634', scene: 'Ceremony by firelight' },
-  { label: 'Retreats', c: '#9DBB7A', photo: 'photo-1758797316165-986ec92e7ad2', scene: 'Slow mornings on the porch' },
-  { label: 'Residencies', c: '#C8A0C4', photo: 'photo-1785423613154-a3f078420790', scene: 'A studio of your own' },
+  { label: 'Kirtan', c: '#D9A67E', photo: '/photos/seek-kirtan.jpg', scene: 'Voices rising by candlelight' },
+  { label: 'Plant medicine', c: '#86A06A', photo: '/photos/seek-plant-medicine.jpg', scene: 'A circle held at sunset' },
+  { label: 'Retreats', c: '#9DBB7A', photo: '/photos/seek-retreats.jpg', scene: 'A walk to the waterfall' },
+  { label: 'Residencies', c: '#C8A0C4', photo: '/photos/seek-residencies.jpg', scene: 'Making art in the sun' },
   { label: 'Communal living', c: '#6E9A7E', photo: 'photo-1758646652296-9273b2422686', scene: 'One long table beneath the tree' },
-  { label: 'Permaculture & gardening', c: '#B7B470', photo: 'photo-1757585267523-f689c297fa2d', scene: 'A garden that feeds everyone' },
-  { label: 'Schooling', c: '#8C95C9', photo: 'photo-1768509197111-1deec3dd559a', scene: 'Learning on the forest floor' },
+  { label: 'Permaculture & gardening', c: '#B7B470', photo: '/photos/seek-permaculture.jpg', scene: 'Gardens that feed a village' },
+  { label: 'Schooling', c: '#8C95C9', photo: '/photos/seek-schooling.jpg', scene: 'Little hands in the garden' },
   { label: 'Festivals', c: '#E8BF8A', photo: 'photo-1561577862-49a301dda61b', scene: 'Music into the sunset' },
   { label: "Women's retreats", c: '#E09AC4', photo: 'photo-1495837174058-628aafc7d610', scene: 'Sisters at sundown' },
-  { label: "Men's retreats", c: '#7FB3C2', photo: 'photo-1551632811-561732d1e306', scene: 'Walking into the mountains' },
-  { label: 'Recovery programs', c: '#E6CDA6', photo: 'photo-1596424124545-107062930b7c', scene: 'Light returning along the path' },
-  { label: 'Rest & stillness', c: '#A58BD6', photo: 'photo-1445307806294-bff7f67ff225', scene: 'A hammock by the river' },
+  { label: "Men's retreats", c: '#7FB3C2', photo: '/photos/seek-mens.jpg', scene: 'Brothers, held' },
+  { label: 'Recovery programs', c: '#E6CDA6', photo: '/photos/seek-recovery.jpg', scene: 'Morning practice, together' },
+  { label: 'Rest & stillness', c: '#A58BD6', photo: '/photos/seek-rest.jpg', scene: 'Stillness as the sun rises' },
 ]
 
 const LENGTHS = [
@@ -123,11 +124,19 @@ export default function DesignStay() {
       <div className={`stay-scenes ${shown || shownSeek ? 'is-on' : ''}`} aria-hidden="true">
         {near && SEEKING.map((x) => (
           <div key={x.label} className={`scene ${shownSeek === x ? 'is-on' : ''}`} style={{ '--c': x.c }}>
-            <img
-              src={photoUrl(x.photo, 1600)}
-              srcSet={`${photoUrl(x.photo, 900)} 900w, ${photoUrl(x.photo, 1600)} 1600w, ${photoUrl(x.photo, 2400)} 2400w`}
-              sizes="100vw" alt="" loading="lazy" decoding="async"
-            />
+            {x.photo.startsWith('/') ? (
+              <img
+                src={x.photo}
+                srcSet={`${x.photo.replace('.jpg', '-1200.jpg')} 1200w, ${x.photo} 2400w`}
+                sizes="100vw" alt="" loading="lazy" decoding="async"
+              />
+            ) : (
+              <img
+                src={photoUrl(x.photo, 1600)}
+                srcSet={`${photoUrl(x.photo, 900)} 900w, ${photoUrl(x.photo, 1600)} 1600w, ${photoUrl(x.photo, 2400)} 2400w`}
+                sizes="100vw" alt="" loading="lazy" decoding="async"
+              />
+            )}
           </div>
         ))}
         {near && LANDSCAPES.map((l) => (
