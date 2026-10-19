@@ -10,7 +10,7 @@ import { scrollToTarget, onScrollFrame } from '../lib/scroll'
 // Each has a free Unsplash photo that fills the screen on hover (to swap one, change its photo id) and a caption.
 const SEEKING = [
   { label: 'Yoga', c: '#B58BE0', photo: 'photo-1758797315487-b3b225dff7d8', scene: 'Practice on an open lawn' },
-  { label: 'Breathwork', c: '#6FB7BF', photo: 'photo-1713428856206-d692c1ed42d6', scene: 'Breath, deep in the forest' },
+  { label: 'Breathwork', c: '#6FB7BF', photo: 'photo-1600618528240-fb9fc964b853', scene: 'Breath at first light' },
   { label: 'Meditation', c: '#8F9BE6', photo: 'photo-1559595500-e15296bdbb48', scene: "Stillness at the canyon's edge" },
   { label: 'Sound healing', c: '#E8BF8A', photo: 'photo-1760691313751-98262affa4f9', scene: 'A gong among the singing bowls' },
   { label: 'Ecstatic dance', c: '#E09AC4', photo: 'photo-1507539989371-99615e449486', scene: 'Dancing at the shoreline' },
@@ -24,7 +24,7 @@ const SEEKING = [
   { label: 'Festivals', c: '#E8BF8A', photo: 'photo-1561577862-49a301dda61b', scene: 'Music into the sunset' },
   { label: "Women's retreats", c: '#E09AC4', photo: 'photo-1495837174058-628aafc7d610', scene: 'Sisters at sundown' },
   { label: "Men's retreats", c: '#7FB3C2', photo: 'photo-1551632811-561732d1e306', scene: 'Walking into the mountains' },
-  { label: 'Recovery programs', c: '#E6CDA6', photo: 'photo-1612821394773-23f0a7d33ede', scene: 'Light returning through the trees' },
+  { label: 'Recovery programs', c: '#E6CDA6', photo: 'photo-1596424124545-107062930b7c', scene: 'Light returning along the path' },
   { label: 'Rest & stillness', c: '#A58BD6', photo: 'photo-1445307806294-bff7f67ff225', scene: 'A hammock by the river' },
 ]
 
