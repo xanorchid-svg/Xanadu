@@ -40,10 +40,10 @@ const LENGTHS = [
 ]
 
 const WORK = [
-  { label: 'Work remotely', note: 'Bring your work with you. Wifi, a desk, a view.', glyph: 'remote' },
-  { label: 'Volunteer exchange', note: 'Give your time and skills to a place, and become part of it.', glyph: 'exchange' },
-  { label: 'Training', note: 'Deepen your practice. Study with a guide, earn a certification.', glyph: 'training' },
-  { label: 'Just be', note: 'Nothing to do. Nowhere to be. Only rest and presence.', glyph: 'be' },
+  { label: 'Work remotely', note: 'Bring your work with you. Wifi, a desk, a view.', glyph: 'remote', c: '#6FB7BF', photo: '/photos/work-remote.jpg', scene: 'Your desk, above the bay' },
+  { label: 'Volunteer exchange', note: 'Give your time and skills to a place, and become part of it.', glyph: 'exchange', c: '#9DBB7A', photo: '/photos/work-volunteer.jpg', scene: 'Planting trees together' },
+  { label: 'Training', note: 'Deepen your practice. Study with a guide, earn a certification.', glyph: 'training', c: '#B58BE0', photo: '/photos/work-training.jpg', scene: 'Practice in the open hall' },
+  { label: 'Just be', note: 'Nothing to do. Nowhere to be. Only rest and presence.', glyph: 'be', c: '#E09AC4', photo: '/photos/work-just-be.jpg', scene: 'Nothing but the sea and sky' },
 ]
 
 const STEPS = [
@@ -62,6 +62,7 @@ export default function DesignStay() {
   const { seeking, length, work, where } = useStay()
   const [hover, setHover] = useState(null)
   const [seekHover, setSeekHover] = useState(null)
+  const [workHover, setWorkHover] = useState(null)
   const [near, setNear] = useState(false) // start loading the photos just before they're needed
 
   // which step we're on comes from how far through the (tall) section you've scrolled
@@ -113,7 +114,9 @@ export default function DesignStay() {
   const shownLand = LANDSCAPES.find((l) => l.name === shown)
   // ...and in step 01, a photo of what you're hovering (or the last thing you chose)
   const shownSeek = active && step === 0 ? SEEKING.find((x) => x.label === (seekHover || seeking[seeking.length - 1])) : null
-  const caption = shownLand ? shownLand.scene : shownSeek ? shownSeek.scene : null
+  // ...and in step 03, a photo of the way you'd spend your days
+  const shownWork = active && step === 2 ? WORK.find((w) => w.label === (workHover || work)) : null
+  const caption = shownLand ? shownLand.scene : shownSeek ? shownSeek.scene : shownWork ? shownWork.scene : null
 
   const seekingText = seeking.length ? (seeking.length > 2 ? `${seeking.slice(0, 2).join(', ')} +${seeking.length - 2}` : seeking.join(', ')) : null
   const summary = [seekingText, length, work, where.length ? where.join(', ') : null]
@@ -121,7 +124,12 @@ export default function DesignStay() {
 
   return (
     <section id="stay" ref={sectionRef} className="stay">
-      <div className={`stay-scenes ${shown || shownSeek ? 'is-on' : ''}`} aria-hidden="true">
+      <div className={`stay-scenes ${shown || shownSeek || shownWork ? 'is-on' : ''}`} aria-hidden="true">
+        {near && WORK.map((w) => (
+          <div key={w.label} className={`scene ${shownWork === w ? 'is-on' : ''}`} style={{ '--c': w.c }}>
+            <img src={w.photo} srcSet={`${w.photo.replace('.jpg', '-1200.jpg')} 1200w, ${w.photo} 2400w`} sizes="100vw" alt="" loading="lazy" decoding="async" />
+          </div>
+        ))}
         {near && SEEKING.map((x) => (
           <div key={x.label} className={`scene ${shownSeek === x ? 'is-on' : ''}`} style={{ '--c': x.c }}>
             {x.photo.startsWith('/') ? (
@@ -150,7 +158,7 @@ export default function DesignStay() {
         ))}
         <div className="scene-veil" />
       </div>
-      <p className={`scene-caption ${caption ? 'is-on' : ''} ${shownSeek ? 'is-seek' : ''}`} aria-live="polite">
+      <p className={`scene-caption ${caption ? 'is-on' : ''} ${shownSeek || shownWork ? 'is-seek' : ''}`} aria-live="polite">
         {caption && <><span>Imagine</span> {caption}</>}
       </p>
       <div className="stay-sticky">
@@ -203,9 +211,10 @@ export default function DesignStay() {
           {/* 03 — work or just be */}
           <div className={`stay-panel ${step === 2 ? 'is-on' : step > 2 ? 'is-past' : ''}`} aria-hidden={step !== 2}>
             <h2 className="stay-q">{STEPS[2].q}</h2>
-            <div className="works">
+            <div className="works" onPointerLeave={() => setWorkHover(null)}>
               {WORK.map((w, i) => (
-                <button key={w.label} className={`work iri-border ${work === w.label ? 'is-picked' : ''}`} onClick={() => pickWork(w.label)} tabIndex={step === 2 ? 0 : -1} style={{ '--i': i }}>
+                <button key={w.label} className={`work iri-border ${work === w.label ? 'is-picked' : ''}`} onPointerEnter={() => setWorkHover(w.label)} onFocus={() => setWorkHover(w.label)} onBlur={() => setWorkHover(null)}
+                  onClick={() => pickWork(w.label)} tabIndex={step === 2 ? 0 : -1} style={{ '--i': i }}>
                   <span className={`glyph glyph-${w.glyph}`} aria-hidden="true"><i /><i /><i /></span>
                   <span className="work-label">{w.label}</span>
                   <span className="work-note">{w.note}</span>

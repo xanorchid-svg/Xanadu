@@ -1148,7 +1148,7 @@ html.modal-open { overflow: hidden; }
 
 /* the words stay readable over any photo */
 .stay-q, .stay-head .eyebrow { text-shadow: 0 2px 30px rgba(12, 21, 34, .6); }
-.land, .seek:not(.is-picked) { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); background: rgba(12, 21, 34, .3); }
+.land, .seek:not(.is-picked), .work { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); background: rgba(12, 21, 34, .3); }
 
 /* a photo inside each door */
 .door-photo { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
