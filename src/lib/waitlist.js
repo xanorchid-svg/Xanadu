@@ -1,8 +1,9 @@
-// Saves a Seeker to the waitlist in Supabase, through the join_waitlist function.
-// The anon key is public by design: the public can only call that function, nobody can read the list from the site.
+// Saves a Seeker to the waitlist in the Xanadu app's database (Supabase project "xanadu app"), through join_waitlist.
+// Same database as app.dreamxanadu.com and the team console, so every sign-up shows in Console → Waitlist.
+// The publishable key is public by design: the public can only call that function, nobody can read the list from the site.
 // The same email signing up again updates their existing row instead of adding a duplicate.
-const RPC = 'https://nmstrfmxflwgbgkiyeyq.supabase.co/rest/v1/rpc/join_waitlist'
-const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tc3RyZm14Zmx3Z2Jna2l5ZXlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjU2MTYsImV4cCI6MjA5MDkwMTYxNn0.kaMOwTCuRNlya7sQOzocq5wNC8-bq9ygq-Rf3Gq9Y2s'
+const RPC = 'https://gutqzqxybcnnpwfbkjsq.supabase.co/rest/v1/rpc/join_waitlist'
+const KEY = 'sb_publishable_7jInxBTTLrcqSP_OgCZApA_NlZG8Mpg'
 
 const list = (a) => (Array.isArray(a) && a.length ? a : null)
 
@@ -33,7 +34,7 @@ export async function joinWaitlist({ name, email, intention, stay, source, trap 
     try {
       const res = await fetch(RPC, {
         method: 'POST',
-        headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json' },
+        headers: { apikey: KEY, 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       })
       if (res.ok) return
