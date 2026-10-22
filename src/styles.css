@@ -1270,3 +1270,14 @@ html.modal-open { overflow: hidden; }
 
 /* hidden from people, filled by bots */
 .hp-trap { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+/* Seeker accounts: Continue with Google, then email */
+.btn-google {
+  display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+  min-height: 52px; border-radius: 999px; font: inherit; font-size: 15px; font-weight: 600; color: #1F2633;
+  background: var(--ivory); box-shadow: 0 10px 30px -12px rgba(0, 0, 0, .5); transition: transform .3s var(--ease), box-shadow .3s;
+}
+.btn-google:hover { transform: translateY(-1px); box-shadow: 0 14px 36px -12px rgba(232, 191, 138, .55); }
+.btn-google:disabled { opacity: .7; }
+.join-or { display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--ivory-faint); }
+.join-or::before, .join-or::after { content: ''; flex: 1; height: 1px; background: rgba(246, 241, 232, .14); }

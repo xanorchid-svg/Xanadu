@@ -5,7 +5,8 @@ import { Shimmer } from './Reveal'
 import { LINKS } from '../lib/links'
 import { useJoinOpen, openJoin, closeJoin } from '../lib/joinModal'
 import { useStay, describeStay } from '../lib/stay'
-import { joinWaitlist } from '../lib/waitlist'
+import { createSeeker, finishJoin } from '../lib/account'
+import GoogleJoin from './GoogleJoin'
 import { getLenis } from '../lib/scroll'
 
 const ROLES = [
@@ -25,9 +26,17 @@ const markSeen = () => { try { localStorage.setItem(SEEN, String(Date.now())) } 
 export default function JoinModal({ auto = false }) {
   const open = useJoinOpen()
   const stay = useStay()
-  const [step, setStep] = useState('choose') // choose | seeker | done
-  const [form, setForm] = useState({ name: '', email: '', trap: '' })
+  const [step, setStep] = useState('choose') // choose | seeker | check-email | done
+  const [form, setForm] = useState({ name: '', email: '', password: '', trap: '' })
   const [state, setState] = useState('idle')
+  const [error, setError] = useState('')
+
+  // back from Google, or from the confirmation email: open with a welcome
+  useEffect(() => {
+    finishJoin()
+      .then((r) => { if (r) { setStep('done'); openJoin() } })
+      .catch((e) => { setError(e.message); setStep('seeker'); openJoin() })
+  }, [])
   const panelRef = useRef(null)
   const lastFocus = useRef(null)
 
@@ -61,7 +70,7 @@ export default function JoinModal({ auto = false }) {
       lenis?.start()
       document.documentElement.classList.remove('modal-open')
       lastFocus.current?.focus?.()
-      const t = setTimeout(() => { setStep('choose'); setState('idle') }, 500)
+      const t = setTimeout(() => { setStep('choose'); setState('idle'); setError('') }, 500)
       return () => clearTimeout(t)
     }
   }, [open])
@@ -82,16 +91,18 @@ export default function JoinModal({ auto = false }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
 
+  const intention = () => { const s = describeStay(stay); return s ? `Stay: ${s}` : null }
+
   const submit = async (e) => {
     e.preventDefault()
     if (state === 'sending') return
-    setState('sending')
-    const s = describeStay(stay)
+    if (form.trap) { setStep('done'); return } // quietly drop bots
+    setState('sending'); setError('')
     try {
-      await joinWaitlist({ name: form.name, email: form.email, intention: s ? `Stay: ${s}` : null, stay, source: 'join-modal', trap: form.trap })
-      setStep('done'); setState('idle')
-    } catch {
-      setState('error')
+      const r = await createSeeker({ name: form.name, email: form.email, password: form.password, intention: intention(), stay, source: 'join-modal' })
+      setStep(r); setState('idle')
+    } catch (err) {
+      setError(err.message); setState('idle')
     }
   }
 
@@ -131,8 +142,9 @@ export default function JoinModal({ auto = false }) {
         {step === 'seeker' && (
           <form className="jm-form" onSubmit={submit}>
             <h2 id="jm-title" className="jm-title">Be first <Shimmer>through the door</Shimmer></h2>
-            <p className="jm-sub">Seekers enter when the founding circle is complete. We'll write when the doors open.</p>
+            <p className="jm-sub">Create your Xanadu account. Seekers enter when the founding circle is complete, and the same account opens the app.</p>
             <input className="hp-trap" tabIndex={-1} autoComplete="off" aria-hidden="true" name="website" value={form.trap} onChange={(e) => setForm({ ...form, trap: e.target.value })} />
+            <GoogleJoin intention={intention} stay={stay} source="join-modal" onError={setError} />
             <label className="field">
               <span>Your name</span>
               <input required autoComplete="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Full name" />
@@ -141,19 +153,32 @@ export default function JoinModal({ auto = false }) {
               <span>Your email</span>
               <input required type="email" autoComplete="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="you@example.com" />
             </label>
+            <label className="field">
+              <span>Create a password</span>
+              <input required type="password" minLength={8} autoComplete="new-password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="At least 8 characters" />
+            </label>
             {describeStay(stay) && <p className="jm-stay">Your stay: {describeStay(stay)}</p>}
             <button type="submit" className="btn btn-pearl jm-submit" disabled={state === 'sending'}>
               <span className="btn-label">{state === 'sending' ? 'Sending…' : 'Join the waitlist'}</span>
             </button>
-            {state === 'error' && <p className="join-error" role="alert">Something went wrong. Please try again, or write to networkxanadu@gmail.com.</p>}
+            {error && <p className="join-error" role="alert">{error}</p>}
+            <p className="join-fine">By joining you agree to the <a href={LINKS.terms}>Terms</a> and <a href={LINKS.privacy}>Privacy</a>.</p>
             <button type="button" className="jm-back" onClick={() => setStep('choose')}>← Back</button>
           </form>
+        )}
+
+        {step === 'check-email' && (
+          <div className="jm-done" role="status">
+            <h2 id="jm-title" className="jm-title">One last <Shimmer>step</Shimmer></h2>
+            <p className="jm-sub">We sent a link to {form.email.trim()}. Tap it to confirm your account, and your place on the waitlist is held.</p>
+            <button className="btn btn-ghost" onClick={closeJoin}><span className="btn-label">Return to Xanadu</span></button>
+          </div>
         )}
 
         {step === 'done' && (
           <div className="jm-done" role="status">
             <h2 id="jm-title" className="jm-title">You have been <Shimmer>received</Shimmer>.</h2>
-            <p className="jm-sub">We will be in touch when the doors open. Come as you are.</p>
+            <p className="jm-sub">Your Xanadu account is ready, and you're on the waitlist. We will be in touch when the doors open. Come as you are.</p>
             <button className="btn btn-ghost" onClick={closeJoin}><span className="btn-label">Return to Xanadu</span></button>
           </div>
         )}
