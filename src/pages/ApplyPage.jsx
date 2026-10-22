@@ -314,7 +314,7 @@ export default function ApplyPage({ role }) {
                     <Field label="Your space’s name"><input value={f.space_name} onChange={set('space_name')} placeholder="e.g. Casa Luna" /></Field>
                     <div className="apply-row">
                       <Field label="Country"><input value={f.country} onChange={set('country')} autoComplete="country-name" placeholder="e.g. Costa Rica" /></Field>
-                      <Field label="State, province or island" optional><input value={f.region} onChange={set('region')} placeholder="e.g. Guanacaste" /></Field>
+                      <Field label="State or region" optional><input value={f.region} onChange={set('region')} placeholder="e.g. Guanacaste" /></Field>
                     </div>
                     <Field label="Town"><input value={f.town} onChange={set('town')} placeholder="e.g. Nosara" /></Field>
                     <Field label="Phone, for your intro call" optional><input type="tel" value={f.phone} onChange={set('phone')} autoComplete="tel" placeholder="Private to the Xanadu team" /></Field>
