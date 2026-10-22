@@ -90,88 +90,88 @@ export async function finishJoin() {
 }
 
 /* ---------------- Container and Facilitator applications ---------------- */
+// Applicants make their account first (Google or email), stay signed in on this device while they fill in the
+// application (so Xanadu's AI can read their website for them), and are signed out once it's sent.
 
-const APPLY_PENDING = 'xanadu_pending_apply'
 const applyPath = (role) => `/apply/${role}`
 
-/**
- * New account by email: the application travels with the sign-up and the database files it at once
- * (Console → Applications), even before they confirm their email.
- * Returns 'check-email' (confirmation link sent) or 'done'.
- */
-export async function applyWithEmail({ role, email, password, app }) {
+/** The signed-in applicant on this device, if any: { email, name }. */
+export async function currentApplicant() {
+  const { data } = await supabase.auth.getSession()
+  const u = data.session?.user
+  if (!u) return null
+  const m = u.user_metadata || {}
+  return { email: u.email, name: m.full_name || m.name || '' }
+}
+
+/** Continue with Google, then come straight back to the application. */
+export async function applicantGoogle(role) {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: back('google', applyPath(role)), queryParams: { prompt: 'select_account' } },
+  })
+  if (error) throw new Error(friendly(error.message))
+}
+
+/** New account with email. Returns 'ready' (signed in) or 'check-email' (confirm first, the link brings them back). */
+export async function applicantEmail({ role, email, password }) {
   if (password.length < 8) throw new Error('Please choose a password of at least 8 characters.')
   const { data, error } = await supabase.auth.signUp({
     email: email.trim().toLowerCase(),
     password,
-    options: {
-      data: { role, full_name: app.name?.trim() || '', name: app.name?.trim() || '', application: { ...app, agreed: true } },
-      emailRedirectTo: back('applied', applyPath(role)),
-    },
+    options: { data: { role }, emailRedirectTo: back('confirmed', applyPath(role)) },
   })
   if (error) throw new Error(friendly(error.message))
   // Supabase hides whether an email is taken: a "new" user with no sign-in methods means the account already exists
   if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
-    const e = new Error('You already have a Xanadu account with this email. Choose “I already have an account” below to send your application with it.')
+    const e = new Error('You already have a Xanadu account with this email. Sign in with it below.')
     e.code = 'exists'
     throw e
   }
-  if (data.session) await supabase.auth.signOut({ scope: 'local' })
-  return data.session ? 'done' : 'check-email'
+  return data.session ? 'ready' : 'check-email'
 }
 
-/** Existing account (for example a Seeker on the waitlist): sign in and send the application with it. */
-export async function applyWithSignIn({ role, email, password, app }) {
+/** An existing Xanadu account (for example someone on the waitlist). */
+export async function applicantSignIn({ email, password }) {
   const { error } = await supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password })
-  if (error) throw new Error(/invalid/i.test(error.message) ? 'That email and password don’t match. Try again, or continue with Google if that’s how you joined.' : friendly(error.message))
-  try {
-    const { error: e2 } = await supabase.rpc('submit_application', { p_role: role, p_app: { ...app, agreed: true } })
-    if (e2) throw new Error(e2.message || friendly(''))
-  } finally {
-    await supabase.auth.signOut({ scope: 'local' })
-  }
-  return 'done'
+  if (error) throw new Error(/invalid/i.test(error.message) ? 'That email and password don\u2019t match. Try again, or continue with Google if that\u2019s how you joined.' : friendly(error.message))
+  return 'ready'
 }
 
-/** Continue with Google: keep the application on this device, go to Google, and send it when they come back. */
-export async function applyWithGoogle({ role, app }) {
-  try { localStorage.setItem(APPLY_PENDING, JSON.stringify({ role, app: { ...app, agreed: true }, at: Date.now() })) } catch { /* private mode */ }
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: back('google-apply', applyPath(role)), queryParams: { prompt: 'select_account' } },
-  })
-  if (error) throw new Error(friendly(error.message))
-}
+export const applicantSignOut = () => supabase.auth.signOut({ scope: 'local' })
 
-/**
- * On the application page: finish a Google application, or welcome someone back from their confirmation email.
- * Resolves to 'done' when their application is in, otherwise null.
- */
-export async function finishApply() {
+/** Back from Google or the confirmation email: tidy the address bar, and surface a link error if there was one. */
+export async function finishApplicantReturn() {
   const params = new URLSearchParams(window.location.search)
-  const tag = params.get('joined')
   const hashError = new URLSearchParams(window.location.hash.slice(1)).get('error_description')
-  if (!tag && !hashError) return null
-  window.history.replaceState(null, '', window.location.pathname)
+  if (params.get('joined') || hashError) window.history.replaceState(null, '', window.location.pathname)
   if (hashError) throw new Error(hashError)
-  const { data } = await supabase.auth.getSession()
-  if (tag === 'applied') { if (data.session) await supabase.auth.signOut({ scope: 'local' }); return 'done' } // already filed at sign-up
-  if (tag !== 'google-apply') return null
-  let pending = null
-  try { pending = JSON.parse(localStorage.getItem(APPLY_PENDING) || 'null') } catch { /* ignore */ }
-  if (!data.session) throw new Error('Google sign-in didn’t finish. Please try again.')
-  if (!pending?.app) { await supabase.auth.signOut({ scope: 'local' }); throw new Error('We couldn’t find your answers on this device. Please fill in the application again.') }
-  try {
-    const { error } = await supabase.rpc('submit_application', { p_role: pending.role, p_app: pending.app })
-    if (error) throw new Error(error.message || friendly(''))
-    try { localStorage.removeItem(APPLY_PENDING) } catch { /* ignore */ }
-    return 'done'
-  } finally {
-    await supabase.auth.signOut({ scope: 'local' })
-  }
+  return currentApplicant()
 }
 
-/** The answers kept on this device while someone went to Google (so a failed return can refill the form). */
-export function pendingApplication(role) {
-  try { const p = JSON.parse(localStorage.getItem(APPLY_PENDING) || 'null'); return p?.role === role ? p.app : null } catch { return null }
+/** Xanadu's AI reads their website and returns the fields it found ({ fields, photos, notes }). */
+export async function readWebsite(kind, url) {
+  const { data, error } = await supabase.functions.invoke('import-listing', { body: { kind, url: url.trim() } })
+  if (error) {
+    let msg = ''
+    try { msg = (await error.context?.json())?.error } catch { /* not json */ }
+    throw new Error(msg || 'We couldn\u2019t read that website just now. Please fill this in by hand.')
+  }
+  return data
+}
+
+/** Send the application, keep the photos they chose (Containers), then sign out on this device. */
+export async function sendApplication(role, app, photos = []) {
+  const { data } = await supabase.auth.getSession()
+  if (!data.session) { const e = new Error('Please sign in again to send your application.'); e.code = 'signed-out'; throw e }
+  const { error } = await supabase.rpc('submit_application', { p_role: role, p_app: { ...app, agreed: true } })
+  if (error) throw new Error(error.message || friendly(''))
+  if (role === 'container' && photos.length) {
+    // their application exists now, so the photos can be copied into their own folder and added to their space
+    try {
+      const { data: copied } = await supabase.functions.invoke('import-listing', { body: { action: 'photos', urls: photos } })
+      if (copied?.photos?.length) await supabase.from('spaces').update({ photos: copied.photos }).eq('owner_id', data.session.user.id)
+    } catch { /* the application is in; photos can be added later */ }
+  }
+  await applicantSignOut()
 }
