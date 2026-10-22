@@ -28,6 +28,8 @@ function friendly(msg = '') {
   if (m.includes('already registered') || m.includes('already exists')) return 'You already have a Xanadu account with this email, so you\u2019re all set.'
   if (m.includes('email') && m.includes('invalid')) return 'That email doesn’t look right. Please check it.'
   if (m.includes('rate') || m.includes('too many')) return 'Too many tries just now. Please wait a minute and try again.'
+  if (m.includes('for security purposes') || m.includes('seconds')) return 'Please wait a few seconds, then try again.'
+  if (m.includes('not confirmed')) return 'Please confirm your email first: tap the link in the email we sent you (check Promotions and Spam too), then sign in.'
   return 'Something went wrong. Please try again, or write to networkxanadu@gmail.com.'
 }
 
