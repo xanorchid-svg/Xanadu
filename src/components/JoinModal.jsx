@@ -142,7 +142,7 @@ export default function JoinModal({ auto = false }) {
         {step === 'seeker' && (
           <form className="jm-form" onSubmit={submit}>
             <h2 id="jm-title" className="jm-title">Be first <Shimmer>through the door</Shimmer></h2>
-            <p className="jm-sub">Create your Xanadu account. Seekers enter when the founding circle is complete, and the same account opens the app.</p>
+            <p className="jm-sub">Create your Xanadu account. Seekers enter when the founding circle is complete, and we'll write when the doors open.</p>
             <input className="hp-trap" tabIndex={-1} autoComplete="off" aria-hidden="true" name="website" value={form.trap} onChange={(e) => setForm({ ...form, trap: e.target.value })} />
             <GoogleJoin intention={intention} stay={stay} source="join-modal" onError={setError} />
             <label className="field">

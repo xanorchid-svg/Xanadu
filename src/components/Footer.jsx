@@ -21,7 +21,8 @@ export default function Footer() {
           <a href={LINKS.facebook} rel="noopener" target="_blank">Facebook @dreamxanadu</a>
         </div>
         <div className="footer-col">
-          <a href={LINKS.signIn}>Member sign in</a>
+          <a href={LINKS.container}>Apply as a Container</a>
+          <a href={LINKS.facilitator}>Apply as a Facilitator</a>
           <a href={LINKS.privacy}>Privacy</a>
           <a href={LINKS.terms}>Terms</a>
         </div>

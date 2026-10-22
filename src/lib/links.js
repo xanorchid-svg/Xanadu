@@ -1,14 +1,10 @@
-const APP = 'https://app.dreamxanadu.com'
-
+// Nothing on the website links to the app until Xan opens it: everyone joins and applies here.
 export const LINKS = {
-  app: APP,
-  seeker: `${APP}/?mode=signup&role=Seeker`,
   join: '/#join',
-  container: `${APP}/?mode=signup&role=Container`,
-  facilitator: `${APP}/?mode=signup&role=Facilitator`,
-  signIn: `${APP}/`,
-  privacy: `${APP}/privacy`,
-  terms: `${APP}/terms`,
+  container: '/apply/container',
+  facilitator: '/apply/facilitator',
+  privacy: '/privacy',
+  terms: '/terms',
   email: 'mailto:networkxanadu@gmail.com',
   instagram: 'https://instagram.com/dreamxanadu',
   facebook: 'https://facebook.com/dreamxanadu',

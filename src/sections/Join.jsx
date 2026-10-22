@@ -37,7 +37,7 @@ export default function Join() {
           <p className="eyebrow">The waitlist</p>
           <Reveal className="display">Be first through <Shimmer>the door</Shimmer>.</Reveal>
           <Rise as="p" className="body">
-            Seekers enter when the founding circle is complete. Create your Xanadu account now with the stay you dream of, and we'll write to you when the doors open. The same account opens the app.
+            Seekers enter when the founding circle is complete. Create your Xanadu account now with the stay you dream of, and we'll write to you when the doors open.
           </Rise>
           <Rise as="p" className="join-hosts" delay={0.15}>
             Hold a space or guide others? <a className="text-link" href={LINKS.container}>Apply as a Container</a> or <a className="text-link" href={LINKS.facilitator}>a Facilitator</a>.
@@ -94,7 +94,7 @@ export default function Join() {
                 <span className="btn-label">{state === 'sending' ? 'Sending…' : 'Join the waitlist'}</span>
               </button>
               {error && <p className="join-error" role="alert">{error}</p>}
-              <p className="join-fine">One account for the website and the app. We'll only write when it matters. <a href={LINKS.terms}>Terms</a> · <a href={LINKS.privacy}>Privacy</a></p>
+              <p className="join-fine">We'll only write when it matters. <a href={LINKS.terms}>Terms</a> · <a href={LINKS.privacy}>Privacy</a></p>
             </form>
           )}
         </Rise>

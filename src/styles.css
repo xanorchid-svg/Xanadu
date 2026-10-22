@@ -1281,3 +1281,50 @@ html.modal-open { overflow: hidden; }
 .btn-google:disabled { opacity: .7; }
 .join-or { display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--ivory-faint); }
 .join-or::before, .join-or::after { content: ''; flex: 1; height: 1px; background: rgba(246, 241, 232, .14); }
+
+/* ============================================================
+   Apply as a Container or Facilitator, on the website
+   ============================================================ */
+.apply-hero { padding-bottom: clamp(30px, 6vh, 60px); }
+.apply-wrap { max-width: 720px; padding-bottom: clamp(80px, 14vh, 150px); }
+.apply-card { padding: clamp(22px, 4vw, 44px); }
+.apply-progress { display: grid; grid-auto-flow: column; gap: 6px; }
+.apply-progress i { height: 3px; border-radius: 3px; background: rgba(246, 241, 232, .14); transition: background .6s var(--ease); }
+.apply-progress i.is-on { background: var(--iri-pearl, linear-gradient(90deg, #9DBB7A, #6FB7BF, #B58BE0, #E09AC4)); }
+.apply-step { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--ivory-faint); margin-top: -6px; }
+.apply-sub { font-size: 14px; line-height: 1.6; color: var(--ivory-dim); }
+.field .apply-sub { margin-top: -2px; }
+.apply-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.apply-row-year { grid-template-columns: 1fr 110px; }
+.apply-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.apply-chip {
+  padding: 9px 15px; border-radius: 999px; font-size: 14px; color: var(--ivory-dim);
+  box-shadow: inset 0 0 0 1px rgba(246, 241, 232, .18); transition: color .3s, background .3s, box-shadow .3s;
+}
+.apply-chip:hover { color: var(--ivory); box-shadow: inset 0 0 0 1px rgba(246, 241, 232, .4); }
+.apply-chip.is-on { color: var(--navy); background: var(--iri-pearl, #E6CDA6); box-shadow: none; font-weight: 600; }
+.apply-check { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 14px; background: rgba(246, 241, 232, .04); font-size: 14px; line-height: 1.6; color: var(--ivory-dim); cursor: pointer; }
+.apply-check input { width: 18px; height: 18px; margin-top: 3px; flex: none; accent-color: #B89567; }
+.apply-note { font-size: 12.5px; color: var(--ivory-faint); }
+.apply-box { display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 18px; box-shadow: inset 0 0 0 1px rgba(246, 241, 232, .12); }
+.apply-box-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--ivory-faint); }
+.apply-box-head button { font-size: 13px; color: var(--ivory-faint); text-decoration: underline; text-underline-offset: 3px; }
+.apply-add { min-height: 48px; border-radius: 14px; font-size: 14px; color: var(--gold-pale); box-shadow: inset 0 0 0 1px rgba(232, 191, 138, .35); border: 0; background: none; }
+.apply-switch { align-self: center; font-size: 13.5px; color: var(--gold-pale); text-decoration: underline; text-underline-offset: 3px; padding: 4px 8px; }
+.apply-nav { display: flex; gap: 12px; margin-top: 6px; }
+.apply-nav .btn { flex: 1; }
+.apply-nav .btn:disabled { opacity: .7; }
+.apply-home { margin-top: 18px; }
+@media (max-width: 560px) { .apply-row { grid-template-columns: 1fr; } .apply-row-year { grid-template-columns: 1fr 96px; } }
+
+/* Privacy and Terms */
+.legal-hero { padding-bottom: clamp(20px, 4vh, 40px); }
+.legal-date { font-size: 13px; color: var(--ivory-faint); margin-top: 10px; }
+.legal-body { max-width: 760px; padding-bottom: clamp(80px, 12vh, 140px); display: flex; flex-direction: column; gap: 16px; font-size: 16px; line-height: 1.75; color: var(--ivory-dim); }
+.legal-body h2 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.5rem, 2.6vw, 2rem); color: var(--ivory); margin-top: 18px; }
+.legal-body ul { display: flex; flex-direction: column; gap: 8px; padding-left: 22px; list-style: disc; }
+.legal-body b { color: var(--ivory); font-weight: 600; }
+.legal-body a { text-decoration: underline; text-underline-offset: 3px; }
+.legal-q { margin-top: 18px; font-size: 14px; color: var(--ivory-faint); }
+.apply-row > * { min-width: 0; }
+.apply-card .field input, .apply-card .field textarea { width: 100%; min-width: 0; }
