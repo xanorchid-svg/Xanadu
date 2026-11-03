@@ -25,7 +25,8 @@ const take = () => {
 /** Plain-language versions of Supabase's sign-up errors. */
 function friendly(msg = '') {
   const m = msg.toLowerCase()
-  if (m.includes('password') && (m.includes('6') || m.includes('short') || m.includes('weak'))) return 'Please choose a password of at least 8 characters.'
+  if (m.includes('known to be weak') || m.includes('easy to guess') || m.includes('pwned')) return 'That password has shown up in a data leak elsewhere, so it isn\u2019t safe. Please choose a different one.'
+  if (m.includes('password') && (m.includes('6') || m.includes('8') || m.includes('short') || m.includes('weak'))) return 'Please choose a password of at least 8 characters.'
   if (m.includes('already registered') || m.includes('already exists')) return 'You already have a Xanadu account with this email, so you\u2019re all set.'
   if (m.includes('email') && m.includes('invalid')) return 'That email doesn’t look right. Please check it.'
   if (m.includes('rate') || m.includes('too many')) return 'Too many tries just now. Please wait a minute and try again.'
