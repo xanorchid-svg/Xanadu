@@ -5,7 +5,8 @@
 import { createClient } from '@supabase/supabase-js'
 import { joinWaitlist } from './waitlist'
 
-const URL = 'https://gutqzqxybcnnpwfbkjsq.supabase.co'
+// Custom domain (Nov 2026): Google's sign-in screen shows dreamxanadu.com instead of supabase.co
+const URL = 'https://auth.dreamxanadu.com'
 const KEY = 'sb_publishable_7jInxBTTLrcqSP_OgCZApA_NlZG8Mpg'
 
 export const supabase = createClient(URL, KEY, {

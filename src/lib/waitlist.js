@@ -2,7 +2,7 @@
 // Same database as app.dreamxanadu.com and the team console, so every sign-up shows in Console → Waitlist.
 // The publishable key is public by design: the public can only call that function, nobody can read the list from the site.
 // The same email signing up again updates their existing row instead of adding a duplicate.
-const RPC = 'https://gutqzqxybcnnpwfbkjsq.supabase.co/rest/v1/rpc/join_waitlist'
+const RPC = 'https://auth.dreamxanadu.com/rest/v1/rpc/join_waitlist'
 const KEY = 'sb_publishable_7jInxBTTLrcqSP_OgCZApA_NlZG8Mpg'
 
 const list = (a) => (Array.isArray(a) && a.length ? a : null)
