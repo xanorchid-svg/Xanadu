@@ -16,6 +16,7 @@ const SEEKING = [
   { label: 'Sound healing', c: '#E8BF8A', photo: 'photo-1760691313751-98262affa4f9', scene: 'A gong among the singing bowls' },
   { label: 'Ecstatic dance', c: '#E09AC4', photo: '/photos/seek-ecstatic-dance.jpg', scene: 'Barefoot at golden hour' },
   { label: 'Kirtan', c: '#D9A67E', photo: '/photos/seek-kirtan.jpg', scene: 'Voices rising by candlelight' },
+  { label: 'Bodywork & therapy', c: '#6FB7BF', photo: 'photo-1600334129128-685c5582fd35', scene: 'Warm stones, unhurried hands' },
   { label: 'Plant medicine', c: '#86A06A', photo: '/photos/seek-plant-medicine.jpg', scene: 'A circle held at sunset' },
   { label: 'Retreats', c: '#9DBB7A', photo: '/photos/seek-retreats.jpg', scene: 'A walk to the waterfall' },
   { label: 'Residencies', c: '#C8A0C4', photo: '/photos/seek-residencies.jpg', scene: 'Making art in the sun' },
