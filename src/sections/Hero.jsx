@@ -6,7 +6,9 @@ import { Shimmer } from '../components/Reveal'
 import { prefersReducedMotion, isTouch } from '../lib/sky'
 import { scrollToTarget } from '../lib/scroll'
 import { MOMENTS } from '../lib/moments'
-import { photoUrl } from '../lib/links'
+
+// behind a dark veil, so lighter files look the same and arrive much sooner on slow connections
+const momentUrl = (id, w) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=55`
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -38,10 +40,11 @@ export default function Hero() {
   const markLoaded = (n) => setLoaded((cur) => (cur.has(n) ? cur : new Set(cur).add(n)))
 
   // the next photo to fetch: the first one after the current that hasn't loaded yet
-  let nextToLoad = -1
-  for (let k = 0; k < MOMENTS.length; k++) {
+  // the next two photos to fetch: the first ones after the current that haven't loaded yet
+  const toLoad = []
+  for (let k = 0; k < MOMENTS.length && toLoad.length < 2; k++) {
     const i = (photo + k) % MOMENTS.length
-    if (!loaded.has(i)) { nextToLoad = i; break }
+    if (!loaded.has(i)) toLoad.push(i)
   }
 
   // the photos turn while they're visible, only ever onto a photo that has already loaded
@@ -64,7 +67,7 @@ export default function Hero() {
 
   // start fetching the photos shortly after the page settles, so the first ones are ready by the time you fall through
   useEffect(() => {
-    const t = setTimeout(() => setLoadPhotos(true), 2500)
+    const t = setTimeout(() => setLoadPhotos(true), 800)
     return () => clearTimeout(t)
   }, [])
 
@@ -160,13 +163,13 @@ export default function Hero() {
           {loadPhotos && MOMENTS.map((m, n) => {
             // photos load one at a time, in order (on slow connections the next one arrives sooner
             // than if they all shared the bandwidth); once a photo has loaded it stays in the page
-            const keep = loaded.has(n) || n === photo || n === nextToLoad
+            const keep = loaded.has(n) || n === photo || toLoad.includes(n)
             return (
               <div key={m.id} className={`hp ${n === photo && loaded.has(n) ? 'is-on' : ''} ${n % 2 ? 'drift-l' : 'drift-r'}`}>
                 {keep && (
-                  <img src={photoUrl(m.id, 1500)}
-                    srcSet={`${photoUrl(m.id, 900)} 900w, ${photoUrl(m.id, 1500)} 1500w, ${photoUrl(m.id, 2000)} 2000w`}
-                    sizes="100vw" alt="" decoding="async" fetchPriority={n === photo ? 'high' : 'low'}
+                  <img src={momentUrl(m.id, 1280)}
+                    srcSet={`${momentUrl(m.id, 800)} 800w, ${momentUrl(m.id, 1280)} 1280w, ${momentUrl(m.id, 1700)} 1700w`}
+                    sizes="(min-width: 1280px) 1280px, 100vw" alt="" decoding="async" fetchPriority={n === photo ? 'high' : 'low'}
                     onLoad={() => markLoaded(n)} ref={(el) => { if (el && el.complete && el.naturalWidth) markLoaded(n) }} />
                 )}
               </div>
