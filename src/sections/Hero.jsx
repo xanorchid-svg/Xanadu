@@ -31,10 +31,22 @@ export default function Hero() {
   const [photosOn, setPhotosOn] = useState(false) // true while "A way of living" is on screen
   const [loadPhotos, setLoadPhotos] = useState(false)
 
-  // the photos turn while they're visible
+  // which photos have finished loading (they stay mounted once loaded, so they never blink out)
+  const [loaded, setLoaded] = useState(() => new Set())
+  const loadedRef = useRef(loaded)
+  loadedRef.current = loaded
+  const markLoaded = (n) => setLoaded((cur) => (cur.has(n) ? cur : new Set(cur).add(n)))
+
+  // the photos turn while they're visible, only ever onto a photo that has already loaded
   useEffect(() => {
     if (!photosOn) return
-    const id = setInterval(() => setPhoto((n) => (n + 1) % MOMENTS.length), 3200)
+    const id = setInterval(() => setPhoto((n) => {
+      for (let k = 1; k < MOMENTS.length; k++) {
+        const next = (n + k) % MOMENTS.length
+        if (loadedRef.current.has(next)) return next
+      }
+      return n
+    }), 3200)
     return () => clearInterval(id)
   }, [photosOn])
 
@@ -133,13 +145,16 @@ export default function Hero() {
 
         <div ref={photosRef} className="hero-photos" aria-hidden="true">
           {loadPhotos && MOMENTS.map((m, n) => {
-            const near = n === photo || n === (photo + 1) % MOMENTS.length
+            // load a few ahead of the one showing; once a photo has loaded it stays in the page
+            const ahead = (n - photo + MOMENTS.length) % MOMENTS.length
+            const keep = loaded.has(n) || ahead <= 3 || n < 3
             return (
-              <div key={m.id} className={`hp ${n === photo ? 'is-on' : ''} ${n % 2 ? 'drift-l' : 'drift-r'}`}>
-                {(near || n < 2) && (
-                  <img src={photoUrl(m.id, 1800)}
-                    srcSet={`${photoUrl(m.id, 900)} 900w, ${photoUrl(m.id, 1800)} 1800w, ${photoUrl(m.id, 2600)} 2600w`}
-                    sizes="100vw" alt="" decoding="async" />
+              <div key={m.id} className={`hp ${n === photo && loaded.has(n) ? 'is-on' : ''} ${n % 2 ? 'drift-l' : 'drift-r'}`}>
+                {keep && (
+                  <img src={photoUrl(m.id, 1600)}
+                    srcSet={`${photoUrl(m.id, 900)} 900w, ${photoUrl(m.id, 1400)} 1400w, ${photoUrl(m.id, 1900)} 1900w`}
+                    sizes="100vw" alt="" decoding="async" fetchPriority={n === photo ? 'high' : 'low'}
+                    onLoad={() => markLoaded(n)} ref={(el) => { if (el && el.complete && el.naturalWidth) markLoaded(n) }} />
                 )}
               </div>
             )
