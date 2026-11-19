@@ -6,29 +6,58 @@ import { useStay, setStay } from '../lib/stay'
 import { tintSky } from '../lib/sky'
 import { scrollToTarget, onScrollFrame } from '../lib/scroll'
 
-// What you're seeking: the app's own words (SEEKER_ALIGN), plus retreats, communal living and more.
-// Each has a photo that fills the screen on hover, and a caption. A photo is either an Unsplash id or a file in
-// public/photos (path starting with /, with a -1200 version for phones).
-const SEEKING = [
-  { label: 'Yoga', c: '#B58BE0', photo: 'photo-1758797315487-b3b225dff7d8', scene: 'Practice on an open lawn' },
-  { label: 'Breathwork', c: '#6FB7BF', photo: 'photo-1600618528240-fb9fc964b853', scene: 'Breath at first light' },
-  { label: 'Meditation', c: '#8F9BE6', photo: '/photos/seek-meditation.jpg', scene: 'Deep rest, eyes closed' },
-  { label: 'Sound healing', c: '#E8BF8A', photo: 'photo-1760691313751-98262affa4f9', scene: 'A gong among the singing bowls' },
-  { label: 'Ecstatic dance', c: '#E09AC4', photo: '/photos/seek-ecstatic-dance.jpg', scene: 'Barefoot at golden hour' },
-  { label: 'Kirtan', c: '#D9A67E', photo: '/photos/seek-kirtan.jpg', scene: 'Voices rising by candlelight' },
-  { label: 'Bodywork & therapy', c: '#6FB7BF', photo: 'photo-1600334129128-685c5582fd35', scene: 'Warm stones, unhurried hands' },
-  { label: 'Plant medicine', c: '#86A06A', photo: '/photos/seek-plant-medicine.jpg', scene: 'A circle held at sunset' },
-  { label: 'Retreats', c: '#9DBB7A', photo: '/photos/seek-retreats.jpg', scene: 'A walk to the waterfall' },
-  { label: 'Residencies', c: '#C8A0C4', photo: '/photos/seek-residencies.jpg', scene: 'Making art in the sun' },
-  { label: 'Communal living', c: '#6E9A7E', photo: '/photos/seek-communal.jpg', scene: 'Work and live together in the desert' },
-  { label: 'Permaculture & gardening', c: '#B7B470', photo: '/photos/seek-permaculture.jpg', scene: 'Gardens that feed a village' },
-  { label: 'Schooling', c: '#8C95C9', photo: '/photos/seek-schooling.jpg', scene: 'Little hands in the garden' },
-  { label: 'Festivals', c: '#E8BF8A', photo: '/photos/seek-festivals-beach.jpg', scene: 'Sunset on the beach, together' },
-  { label: "Women's retreats", c: '#E09AC4', photo: '/photos/seek-womens-tea.jpg', scene: 'Tea and laughter, together' },
-  { label: "Men's retreats", c: '#7FB3C2', photo: '/photos/seek-mens-water.jpg', scene: 'Brothers in the cold water' },
-  { label: 'Recovery programs', c: '#E6CDA6', photo: '/photos/seek-recovery.jpg', scene: 'Morning practice, together' },
-  { label: 'Rest & stillness', c: '#A58BD6', photo: '/photos/seek-rest-mug.jpg', scene: 'A warm cup by the water' },
+// What you're seeking: the same families and types as the app's "I'm looking for", so what someone picks here
+// carries straight into their matches. Each type has a photo that fills the screen on hover, and a caption.
+// A photo is either an Unsplash id or a file in public/photos (path starting with /, with a -1200 version for phones).
+const FAMILIES = [
+  { label: 'Move', c: '#E09AC4', types: [
+    { label: 'Yoga', photo: 'photo-1758797315487-b3b225dff7d8', scene: 'Practice on an open lawn' },
+    { label: 'Pilates & mobility', photo: 'photo-1747238415033-b74eec07eb59', scene: 'Strength, slow and steady' },
+    { label: 'Acro & aerial', photo: 'photo-1683172346949-129ba01bffa0', scene: 'Flying, held by a friend' },
+    { label: 'Ecstatic dance', photo: '/photos/seek-ecstatic-dance.jpg', scene: 'Barefoot at golden hour' },
+    { label: 'Dance & movement', photo: 'photo-1533736970669-7edc3f971be1', scene: 'Arms open to the sun' },
+    { label: 'Contact improv', photo: 'photo-1716632299418-fb7b0f95fbf3', scene: 'Two bodies, one conversation' },
+    { label: 'Martial arts', photo: 'photo-1759352856072-985a4ddab82d', scene: 'Capoeira in the roda' },
+    { label: 'Surf & ocean', photo: 'photo-1607429289259-456053385f53', scene: 'Your first green wave' },
+  ] },
+  { label: 'Still & heal', c: '#6FB7BF', types: [
+    { label: 'Meditation', photo: '/photos/seek-meditation.jpg', scene: 'Deep rest, eyes closed' },
+    { label: 'Breathwork', photo: 'photo-1600618528240-fb9fc964b853', scene: 'Breath at first light' },
+    { label: 'Sound healing', photo: 'photo-1760691313751-98262affa4f9', scene: 'A gong among the singing bowls' },
+    { label: 'Healing & bodywork', photo: 'photo-1600334129128-685c5582fd35', scene: 'Warm stones, unhurried hands' },
+    { label: 'Ice bath & sauna', photo: 'photo-1766246595813-98526a874f46', scene: 'Cold water, clear mind' },
+  ] },
+  { label: 'Inner work', c: '#B58BE0', types: [
+    { label: 'Shadow & inner child', photo: 'photo-1579017308347-e53e0d2fc5e9', scene: 'Writing to your younger self' },
+    { label: 'Family constellations', photo: 'photo-1704386651981-0729a60da579', scene: 'Hands joined, roots seen' },
+    { label: 'Somatic & embodied', photo: 'photo-1525296416200-59aaed194d0c', scene: 'Listening from the inside' },
+    { label: 'Tantra & relating', photo: 'photo-1611070674042-3957c8a7f700', scene: 'Held, at the edge of the field' },
+  ] },
+  { label: 'Gather', c: '#E8BF8A', types: [
+    { label: "Women's", photo: '/photos/seek-womens-tea.jpg', scene: 'Tea and laughter, together' },
+    { label: "Men's", photo: '/photos/seek-mens-water.jpg', scene: 'Brothers in the cold water' },
+    { label: 'Cacao & ceremony', photo: 'photo-1759523146335-0069847ceb16', scene: 'An altar laid for the circle' },
+    { label: 'Moon gatherings', photo: 'photo-1775406326089-63d6a636f861', scene: 'Moonlight on the water' },
+    { label: 'Music & jams', photo: 'photo-1523689119443-df96632084a1', scene: 'Drums until the stars come out' },
+    { label: 'Community gatherings', photo: '/photos/seek-communal.jpg', scene: 'Long tables, open doors' },
+    { label: 'Festivals & parties', photo: '/photos/seek-festivals-beach.jpg', scene: 'Sunset on the beach, together' },
+  ] },
+  { label: 'Create & learn', c: '#8F9BE6', types: [
+    { label: 'Art & creativity', photo: '/photos/seek-residencies.jpg', scene: 'Making art in the sun' },
+    { label: 'Writing', photo: 'photo-1633210155534-e43f00c1d627', scene: 'A notebook on the mountain' },
+    { label: 'Theater & improv', photo: 'photo-1769761341012-526493327ac7', scene: 'Yes, and…' },
+    { label: 'Workshops & trainings', photo: '/photos/work-training.jpg', scene: 'Practice in the open hall' },
+    { label: 'Retreats', photo: '/photos/seek-retreats.jpg', scene: 'A walk to the waterfall' },
+    { label: 'Spanish & languages', photo: 'photo-1769206089403-63e983a18c51', scene: '¡Hola! A new language, lived' },
+  ] },
+  { label: 'Family & nature', c: '#9DBB7A', types: [
+    { label: 'Kids & family', photo: '/photos/seek-schooling.jpg', scene: 'Little hands in the garden' },
+    { label: 'Nature & adventure', photo: 'photo-1519830103773-4bdc5166a0db', scene: 'Into the jungle, to the falls' },
+    { label: 'Permaculture & garden', photo: '/photos/seek-permaculture.jpg', scene: 'Gardens that feed a village' },
+    { label: 'Volunteering', photo: '/photos/work-volunteer.jpg', scene: 'Planting trees together' },
+  ] },
 ]
+const SEEKING = FAMILIES.flatMap((f) => f.types.map((t) => ({ ...t, c: f.c, family: f.label })))
 
 const LENGTHS = [
   { label: 'Less than 5 hours', size: 12 },
@@ -63,6 +92,7 @@ export default function DesignStay() {
   const { seeking, length, work, where } = useStay()
   const [hover, setHover] = useState(null)
   const [seekHover, setSeekHover] = useState(null)
+  const [openFam, setOpenFam] = useState(FAMILIES[0].label)
   const [workHover, setWorkHover] = useState(null)
   const [near, setNear] = useState(false) // start loading the photos just before they're needed
 
@@ -131,7 +161,7 @@ export default function DesignStay() {
             <img src={w.photo} srcSet={`${w.photo.replace('.jpg', '-1200.jpg')} 1200w, ${w.photo} 2400w`} sizes="100vw" alt="" loading="lazy" decoding="async" />
           </div>
         ))}
-        {near && SEEKING.map((x) => (
+        {near && SEEKING.filter((x) => x.family === openFam || seeking.includes(x.label)).map((x) => (
           <div key={x.label} className={`scene ${shownSeek === x ? 'is-on' : ''}`} style={{ '--c': x.c }}>
             {x.photo.startsWith('/') ? (
               <img
@@ -179,10 +209,21 @@ export default function DesignStay() {
           <div className={`stay-panel ${step === 0 ? 'is-on' : step > 0 ? 'is-past' : ''}`} aria-hidden={step !== 0}>
             <div>
               <h2 className="stay-q">{STEPS[0].q}</h2>
-              <p className="stay-hint">Choose as many as call to you.</p>
+              <p className="stay-hint">Open a family, then choose as many as call to you.</p>
             </div>
-            <div className="seeks" onPointerLeave={() => setSeekHover(null)}>
-              {SEEKING.map((x, i) => (
+            <div className="seeks seek-fams" role="tablist" aria-label="Families">
+              {FAMILIES.map((f) => {
+                const n = f.types.filter((t) => seeking.includes(t.label)).length
+                return (
+                  <button key={f.label} role="tab" aria-selected={openFam === f.label} className={`seek seek-fam ${openFam === f.label ? 'is-open' : ''} ${n ? 'has-picks' : ''}`} style={{ '--c': f.c }}
+                    onClick={() => setOpenFam(f.label)} tabIndex={step === 0 ? 0 : -1}>
+                    <i aria-hidden="true" />{f.label}{n ? <small>{n}</small> : null}
+                  </button>
+                )
+              })}
+            </div>
+            <div className="seeks" key={openFam} onPointerLeave={() => setSeekHover(null)}>
+              {SEEKING.filter((x) => x.family === openFam).map((x, i) => (
                 <button key={x.label} className={`seek ${seeking.includes(x.label) ? 'is-picked' : ''}`} style={{ '--c': x.c, '--i': i }}
                   onPointerEnter={() => setSeekHover(x.label)} onFocus={() => setSeekHover(x.label)} onBlur={() => setSeekHover(null)}
                   onClick={() => toggleSeeking(x.label)} aria-pressed={seeking.includes(x.label)} tabIndex={step === 0 ? 0 : -1}>
