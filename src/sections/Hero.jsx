@@ -37,6 +37,13 @@ export default function Hero() {
   loadedRef.current = loaded
   const markLoaded = (n) => setLoaded((cur) => (cur.has(n) ? cur : new Set(cur).add(n)))
 
+  // the next photo to fetch: the first one after the current that hasn't loaded yet
+  let nextToLoad = -1
+  for (let k = 0; k < MOMENTS.length; k++) {
+    const i = (photo + k) % MOMENTS.length
+    if (!loaded.has(i)) { nextToLoad = i; break }
+  }
+
   // the photos turn while they're visible, only ever onto a photo that has already loaded
   useEffect(() => {
     if (!photosOn) return
@@ -52,6 +59,12 @@ export default function Hero() {
 
   useEffect(() => {
     const t = setTimeout(() => setReady(true), 60)
+    return () => clearTimeout(t)
+  }, [])
+
+  // start fetching the photos shortly after the page settles, so the first ones are ready by the time you fall through
+  useEffect(() => {
+    const t = setTimeout(() => setLoadPhotos(true), 2500)
     return () => clearTimeout(t)
   }, [])
 
@@ -145,14 +158,14 @@ export default function Hero() {
 
         <div ref={photosRef} className="hero-photos" aria-hidden="true">
           {loadPhotos && MOMENTS.map((m, n) => {
-            // load a few ahead of the one showing; once a photo has loaded it stays in the page
-            const ahead = (n - photo + MOMENTS.length) % MOMENTS.length
-            const keep = loaded.has(n) || ahead <= 3 || n < 3
+            // photos load one at a time, in order (on slow connections the next one arrives sooner
+            // than if they all shared the bandwidth); once a photo has loaded it stays in the page
+            const keep = loaded.has(n) || n === photo || n === nextToLoad
             return (
               <div key={m.id} className={`hp ${n === photo && loaded.has(n) ? 'is-on' : ''} ${n % 2 ? 'drift-l' : 'drift-r'}`}>
                 {keep && (
-                  <img src={photoUrl(m.id, 1600)}
-                    srcSet={`${photoUrl(m.id, 900)} 900w, ${photoUrl(m.id, 1400)} 1400w, ${photoUrl(m.id, 1900)} 1900w`}
+                  <img src={photoUrl(m.id, 1500)}
+                    srcSet={`${photoUrl(m.id, 900)} 900w, ${photoUrl(m.id, 1500)} 1500w, ${photoUrl(m.id, 2000)} 2000w`}
                     sizes="100vw" alt="" decoding="async" fetchPriority={n === photo ? 'high' : 'low'}
                     onLoad={() => markLoaded(n)} ref={(el) => { if (el && el.complete && el.naturalWidth) markLoaded(n) }} />
                 )}
