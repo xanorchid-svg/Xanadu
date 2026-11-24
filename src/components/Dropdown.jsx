@@ -17,7 +17,7 @@ export default function Dropdown({ label, value, active = false, children, wide 
   }, [open])
   const close = () => setOpen(false)
   return (
-    <div className="dd" ref={box}>
+    <div className={`dd ${wide ? 'dd-wide' : ''}`} ref={box}>
       <button type="button" className={`dd-btn ${active ? 'is-active' : ''} ${open ? 'is-open' : ''}`} aria-expanded={open} aria-haspopup="true" onClick={() => setOpen((o) => !o)}>
         <span className="dd-label">{label}</span>
         <span className="dd-value">{value}</span>

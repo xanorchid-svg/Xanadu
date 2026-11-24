@@ -1440,7 +1440,9 @@ html.modal-open { overflow: hidden; }
 .cal-picked b { color: var(--ivory); font-weight: 600; }
 
 /* filter dropdowns */
-.cal-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.cal-controls { position: relative; z-index: 30; }
+.cal-bar { position: relative; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.dd-wide { position: static; }
 .dd { position: relative; }
 .dd-btn {
   display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 10px 16px; cursor: pointer;
@@ -1454,7 +1456,7 @@ html.modal-open { overflow: hidden; }
 .dd-caret { font-size: 11px; color: var(--gold-soft); }
 .dd-panel {
   position: absolute; top: calc(100% + 8px); left: 0; z-index: 60; min-width: 220px; max-height: min(70vh, 560px); overflow-y: auto;
-  padding: 10px; border-radius: 18px; background: rgba(16, 27, 44, .97); border: 1px solid rgba(246, 241, 232, .14);
+  padding: 10px; border-radius: 18px; background: #101B2C; border: 1px solid rgba(246, 241, 232, .14);
   box-shadow: 0 24px 60px rgba(0, 0, 0, .5); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
 }
 .dd-panel.is-wide { width: min(640px, calc(100vw - 2 * var(--gutter))); }
