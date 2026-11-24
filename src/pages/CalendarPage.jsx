@@ -3,7 +3,8 @@ import Shell from '../components/Shell'
 import Button from '../components/Button'
 import { Reveal, Rise, Shimmer } from '../components/Reveal'
 import { openJoin } from '../lib/joinModal'
-import { FAMILIES, addDays, categoriesOf, fmtDay, inFamily, iso, timeRange, useEvents } from '../lib/events'
+import Dropdown from '../components/Dropdown'
+import { FAMILIES, addDays, categoriesOf, fmtDay, iso, timeRange, useEvents } from '../lib/events'
 import { spotKey, spotOf } from '../lib/places'
 
 const EventMap = lazy(() => import('../components/EventMap'))
@@ -52,7 +53,8 @@ export default function CalendarPage() {
   const today = useMemo(() => iso(new Date()), [])
   const { events, loading, failed } = useEvents()
   const [when, setWhen] = useState('Coming up')
-  const [family, setFamily] = useState('')
+  const [types, setTypes] = useState([])
+  const [view, setView] = useState('List')
   const [q, setQ] = useState('')
   const [picked, setPicked] = useState(null)
 
@@ -62,11 +64,11 @@ export default function CalendarPage() {
     return events.filter((e) => {
       if (!e.start_date) return when === 'Coming up'
       if (e.start_date > b || (e.end_date || e.start_date) < a) return false
-      if (family && !inFamily(e, family)) return false
+      if (types.length) { const mine = categoriesOf(e); if (!types.some((t) => mine.has(t))) return false }
       if (words && !`${e.title} ${e.description} ${e.venue} ${e.town} ${(e.tags ?? []).join(' ')}`.toLowerCase().includes(words)) return false
       return true
     })
-  }, [events, when, family, q, today])
+  }, [events, when, types, q, today])
 
   // one pin per place; tapping a pin narrows the list to what's on there
   const pins = useMemo(() => {
@@ -110,16 +112,53 @@ export default function CalendarPage() {
         </header>
 
         <div className="cal-controls">
-          <div className="cal-row" role="group" aria-label="When">
-            {WHEN.map((w) => (
-              <button key={w} type="button" className={`cal-chip ${when === w ? 'is-on' : ''}`} aria-pressed={when === w} onClick={() => setWhen(w)}>{w}</button>
-            ))}
-          </div>
-          <div className="cal-row" role="group" aria-label="Type">
-            <button type="button" className={`cal-chip ${!family ? 'is-on' : ''}`} aria-pressed={!family} onClick={() => setFamily('')}>Everything</button>
-            {FAMILIES.map((f) => (
-              <button key={f.label} type="button" className={`cal-chip ${family === f.label ? 'is-on' : ''}`} aria-pressed={family === f.label} onClick={() => setFamily(family === f.label ? '' : f.label)}>{f.label}</button>
-            ))}
+          <div className="cal-bar">
+            <Dropdown label="When" value={when} active={when !== 'Coming up'}>
+              {(close) => (
+                <ul className="dd-list">
+                  {WHEN.map((w) => (
+                    <li key={w}><button type="button" className={`dd-item ${when === w ? 'is-on' : ''}`} onClick={() => { setWhen(w); close() }}>{w}</button></li>
+                  ))}
+                </ul>
+              )}
+            </Dropdown>
+            <Dropdown label="Type" value={!types.length ? 'Everything' : types.length === 1 ? types[0] : `${types.length} types`} active={types.length > 0} wide>
+              {(close) => (
+                <div className="dd-types">
+                  {FAMILIES.map((f) => {
+                    const all = f.types.every((t) => types.includes(t))
+                    return (
+                      <div key={f.label} className="dd-fam">
+                        <button type="button" className={`dd-fam-h ${all ? 'is-on' : ''}`} onClick={() => setTypes((cur) => all ? cur.filter((t) => !f.types.includes(t)) : [...new Set([...cur, ...f.types])])}>
+                          {f.label}<span>{all ? 'Clear' : 'All'}</span>
+                        </button>
+                        <ul className="dd-list">
+                          {f.types.map((t) => {
+                            const on = types.includes(t)
+                            return (
+                              <li key={t}>
+                                <button type="button" className={`dd-item dd-check ${on ? 'is-on' : ''}`} aria-pressed={on} onClick={() => setTypes((cur) => on ? cur.filter((x) => x !== t) : [...cur, t])}>
+                                  <i aria-hidden="true">{on ? '✓' : ''}</i>{t}
+                                </button>
+                              </li>
+                            )
+                          })}
+                        </ul>
+                      </div>
+                    )
+                  })}
+                  <div className="dd-foot">
+                    <button type="button" className="cal-chip" onClick={() => setTypes([])}>Clear all</button>
+                    <button type="button" className="cal-chip is-on" onClick={close}>Done</button>
+                  </div>
+                </div>
+              )}
+            </Dropdown>
+            <div className="cal-view" role="group" aria-label="View">
+              {['List', 'Map'].map((v) => (
+                <button key={v} type="button" className={view === v ? 'is-on' : ''} aria-pressed={view === v} onClick={() => { setView(v); if (v === 'List') setPicked(null) }}>{v}</button>
+              ))}
+            </div>
           </div>
           <label className="cal-search">
             <span className="sr-only">Search events</span>
@@ -127,17 +166,19 @@ export default function CalendarPage() {
           </label>
         </div>
 
-        <div className="cal-mapwrap">
-          <Suspense fallback={<div className="xmap" />}>
-            <EventMap pins={pins} picked={picked} onPick={setPicked} />
-          </Suspense>
-          {pin && (
-            <p className="cal-picked">
-              <span>Showing {pin.count === 1 ? 'the event' : `${pin.count} events`} at <b>{pin.spot.exact ? (pin.title.split(' · ').slice(1).join(' · ') || pin.spot.label) : pin.spot.label}</b></span>
-              <button type="button" className="cal-chip" onClick={() => setPicked(null)}>Show all</button>
-            </p>
-          )}
-        </div>
+        {view === 'Map' && (
+          <div className="cal-mapwrap">
+            <Suspense fallback={<div className="xmap" />}>
+              <EventMap pins={pins} picked={picked} onPick={setPicked} />
+            </Suspense>
+            {pin ? (
+              <p className="cal-picked">
+                <span>Showing {pin.count === 1 ? 'the event' : `${pin.count} events`} at <b>{pin.spot.exact ? (pin.title.split(' · ').slice(1).join(' · ') || pin.spot.label) : pin.spot.label}</b></span>
+                <button type="button" className="cal-chip" onClick={() => setPicked(null)}>Show all</button>
+              </p>
+            ) : <p className="cal-picked"><span>Tap a pin to see what’s on there.</span></p>}
+          </div>
+        )}
 
         <div className="cal-list" aria-live="polite">
           {loading && <p className="cal-empty">Loading what’s on…</p>}
@@ -145,7 +186,7 @@ export default function CalendarPage() {
           {!loading && !failed && count === 0 && (
             <div className="cal-empty">
               <p>Nothing matches yet.</p>
-              <button type="button" className="cal-chip" onClick={() => { setWhen('Coming up'); setFamily(''); setQ(''); setPicked(null) }}>Show everything coming up</button>
+              <button type="button" className="cal-chip" onClick={() => { setWhen('Coming up'); setTypes([]); setQ(''); setPicked(null) }}>Show everything coming up</button>
             </div>
           )}
           {days.map(([k, list]) => (
