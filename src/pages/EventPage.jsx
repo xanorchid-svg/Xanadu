@@ -35,7 +35,7 @@ export default function EventPage({ id }) {
         <article className="cal cal-pad center">
           <h1 className="display center">This one has passed or moved.</h1>
           <p className="lede center deep-lede">See everything that’s coming up instead.</p>
-          <div className="closing-actions"><Button href="/constellation">Open the constellation</Button></div>
+          <div className="closing-actions"><Button href="/rituals">See all rituals</Button></div>
         </article>
       </Shell>
     )
@@ -51,7 +51,7 @@ export default function EventPage({ id }) {
     <Shell>
       <article className="cal">
         <div className="ev">
-          <a href="/constellation" className="deep-back" data-cursor="hover">← The constellation</a>
+          <a href="/rituals" className="deep-back" data-cursor="hover">← All rituals</a>
           <div className="ev-grid">
             {e.photo_url && <div className="ev-poster"><img src={e.photo_url} alt={`Poster for ${e.title}`} /></div>}
             <div className="ev-info">

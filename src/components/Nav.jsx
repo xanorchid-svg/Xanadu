@@ -10,11 +10,11 @@ const ITEMS = [
   { label: 'The network', href: '#network' },
   { label: 'The Origin', href: '#origin' },
   { label: 'The app', href: '#app' },
-  { label: 'Constellation', href: '/constellation', page: true },
+  { label: 'Rituals', href: '/rituals', page: true },
 ]
 
-// the Constellation page and each gathering on it count as being there
-const here = (href) => href === '/constellation' && /^\/(constellation|events|calendar|event\/)/.test(window.location.pathname)
+// the Rituals page and each ritual on it count as being there
+const here = (href) => href === '/rituals' && /^\/(rituals|constellation|events|calendar|event\/)/.test(window.location.pathname)
 
 export default function Nav({ home = true }) {
   const [solid, setSolid] = useState(!home)
@@ -49,7 +49,7 @@ export default function Nav({ home = true }) {
           <a key={it.href} aria-current={it.page && here(it.href) ? 'page' : undefined} className={it.page && here(it.href) ? 'is-here' : undefined} href={it.page ? it.href : link(it.href)} onClick={it.page ? undefined : (e) => go(e, it.href)}>{it.label}</a>
         ))}
       </nav>
-      <a href="/constellation" className={`nav-cal ${here('/constellation') ? 'is-here' : ''}`} aria-current={here('/constellation') ? 'page' : undefined} data-cursor="hover">Constellation</a>
+      <a href="/rituals" className={`nav-cal ${here('/rituals') ? 'is-here' : ''}`} aria-current={here('/rituals') ? 'page' : undefined} data-cursor="hover">Rituals</a>
       <Button className="nav-cta" onClick={openJoin} aria-haspopup="dialog">Join Xanadu</Button>
       <div className="nav-progress"><div ref={barRef} className="nav-progress-bar" /></div>
     </header>

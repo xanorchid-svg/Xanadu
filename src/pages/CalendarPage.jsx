@@ -79,7 +79,7 @@ export default function CalendarPage() {
       const k = spotKey(s)
       const p = by.get(k) ?? { key: k, spot: s, count: 0, title: '' }
       p.count += 1
-      p.title = p.count > 1 ? `${p.count} gatherings · ${s.exact ? e.venue || s.label : s.label}` : `${e.title} · ${e.venue || s.label}`
+      p.title = p.count > 1 ? `${p.count} rituals · ${s.exact ? e.venue || s.label : s.label}` : `${e.title} · ${e.venue || s.label}`
       by.set(k, p)
     }
     return [...by.values()]
@@ -107,8 +107,8 @@ export default function CalendarPage() {
       <article className="cal">
         <header className="cal-hero">
           <p className="eyebrow center">Now in Nosara, Costa Rica</p>
-          <Reveal as="h1" className="display center"><Shimmer>Constellation</Shimmer></Reveal>
-          <Rise as="p" className="cal-sub center" delay={0.2}>weaving your xanadu one star at a time</Rise>
+          <Reveal as="h1" className="display center"><Shimmer>Rituals</Shimmer></Reveal>
+          <Rise as="p" className="cal-sub center" delay={0.2}>weaving your xanadu one ritual at a time</Rise>
         </header>
 
         <div className="cal-controls">
@@ -155,28 +155,28 @@ export default function CalendarPage() {
               )}
             </Dropdown>
             <div className="cal-view" role="group" aria-label="View">
-              {['List', 'Sky'].map((v) => (
+              {['List', 'Map'].map((v) => (
                 <button key={v} type="button" className={view === v ? 'is-on' : ''} aria-pressed={view === v} onClick={() => { setView(v); if (v === 'List') setPicked(null) }}>{v}</button>
               ))}
             </div>
           </div>
           <label className="cal-search">
-            <span className="sr-only">Search the constellation</span>
+            <span className="sr-only">Search rituals</span>
             <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search: cacao, ecstatic dance, Guiones…" />
           </label>
         </div>
 
-        {view === 'Sky' && (
+        {view === 'Map' && (
           <div className="cal-mapwrap">
             <Suspense fallback={<div className="xmap" />}>
               <EventMap pins={pins} picked={picked} onPick={setPicked} />
             </Suspense>
             {pin ? (
               <p className="cal-picked">
-                <span>Showing {pin.count === 1 ? 'what’s on' : `${pin.count} gatherings`} at <b>{pin.spot.exact ? (pin.title.split(' · ').slice(1).join(' · ') || pin.spot.label) : pin.spot.label}</b></span>
+                <span>Showing {pin.count === 1 ? 'what’s on' : `${pin.count} rituals`} at <b>{pin.spot.exact ? (pin.title.split(' · ').slice(1).join(' · ') || pin.spot.label) : pin.spot.label}</b></span>
                 <button type="button" className="cal-chip" onClick={() => setPicked(null)}>Show all</button>
               </p>
-            ) : <p className="cal-picked"><span>Tap a star to see what’s on there.</span></p>}
+            ) : <p className="cal-picked"><span>Tap a pin to see what’s on there.</span></p>}
           </div>
         )}
 

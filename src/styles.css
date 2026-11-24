@@ -1492,7 +1492,7 @@ html.modal-open { overflow: hidden; }
 .nav-links a.is-here, .nav-cal.is-here { color: var(--ivory); }
 .nav-links a.is-here::after { transform: scaleX(1); }
 .cal-hero { padding-top: clamp(150px, 22vh, 220px); }
-@media (max-width: 420px) { .nav-word { display: none; } }
+@media (max-width: 360px) { .nav-word { display: none; } }
 @media (max-width: 640px) {
   .cal-bar { display: grid; grid-template-columns: 1fr 1fr; }
   .cal-bar .dd-btn { width: 100%; justify-content: space-between; padding: 10px 12px; }
