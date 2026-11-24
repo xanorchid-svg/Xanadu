@@ -4,7 +4,7 @@ import Button from '../components/Button'
 import { Reveal, Rise, Shimmer } from '../components/Reveal'
 import { openJoin } from '../lib/joinModal'
 import Dropdown from '../components/Dropdown'
-import { FAMILIES, addDays, categoriesOf, fmtDay, iso, timeRange, useEvents } from '../lib/events'
+import { FAMILIES, addDays, categoriesOf, classesBetween, contactLink, fmtDay, iso, timeRange, useEvents, useStudioClasses } from '../lib/events'
 import { spotKey, spotOf } from '../lib/places'
 
 const EventMap = lazy(() => import('../components/EventMap'))
@@ -52,6 +52,7 @@ export function EventCard({ e }) {
 export default function CalendarPage() {
   const today = useMemo(() => iso(new Date()), [])
   const { events, loading, failed } = useEvents()
+  const studioClasses = useStudioClasses()
   const [when, setWhen] = useState('Coming up')
   const [types, setTypes] = useState([])
   const [view, setView] = useState('List')
@@ -86,6 +87,16 @@ export default function CalendarPage() {
   }, [shown])
   const pin = pins.find((p) => p.key === picked)
 
+  // daily studio classes join the list only when someone picks a type (Yoga, Pilates, Breathwork…) and it matches
+  const classes = useMemo(() => {
+    if (!types.length || picked) return []
+    const [a, b] = windowFor(when, today)
+    const words = q.trim().toLowerCase()
+    return classesBetween(studioClasses, a, b > addDays(today, 6) && when === 'Coming up' ? addDays(today, 6) : b)
+      .filter((c) => (c.tags ?? []).some((t) => types.includes(t)))
+      .filter((c) => !words || `${c.title} ${c.studio} ${c.teacher} ${c.venue}`.toLowerCase().includes(words))
+  }, [studioClasses, types, when, q, today, picked])
+
   const days = useMemo(() => {
     const [a] = windowFor(when, today)
     const list = pin ? shown.filter((e) => { const s = spotOf(e); return s && spotKey(s) === pin.key }) : shown
@@ -96,11 +107,14 @@ export default function CalendarPage() {
       if (!by.has(k)) by.set(k, [])
       by.get(k).push(e)
     }
-    return [...by.entries()].sort(([x], [y]) => x.localeCompare(y))
-  }, [shown, pin, when, today])
+    const byClass = new Map()
+    for (const c of classes) { if (!byClass.has(c.date)) byClass.set(c.date, []); byClass.get(c.date).push(c) }
+    for (const k of byClass.keys()) if (!by.has(k)) by.set(k, [])
+    return [...by.entries()].sort(([x], [y]) => x.localeCompare(y)).map(([k, l]) => [k, l, byClass.get(k) ?? []])
+  }, [shown, pin, when, today, classes])
 
   const label = (k) => k === 'tbc' ? 'Date to be confirmed' : k === today ? `Today · ${fmtDay(k, { month: 'long', day: 'numeric' })}` : k === addDays(today, 1) ? `Tomorrow · ${fmtDay(k, { month: 'long', day: 'numeric' })}` : fmtDay(k)
-  const count = days.reduce((n, [, l]) => n + l.length, 0)
+  const count = days.reduce((n, [, l, c]) => n + l.length + c.length, 0)
 
   return (
     <Shell>
@@ -189,10 +203,19 @@ export default function CalendarPage() {
               <button type="button" className="cal-chip" onClick={() => { setWhen('Coming up'); setTypes([]); setQ(''); setPicked(null) }}>Show everything coming up</button>
             </div>
           )}
-          {days.map(([k, list]) => (
+          {!types.length && !loading && (
+            <p className="cal-hint">Pick a type like Yoga or Pilates to see the studios’ daily classes too.</p>
+          )}
+          {days.map(([k, list, cls]) => (
             <section key={k} className="cal-day">
               <h2 className="cal-day-h">{label(k)}</h2>
-              <div className="cal-cards">{list.map((e) => <EventCard key={e.id} e={e} />)}</div>
+              {list.length > 0 && <div className="cal-cards">{list.map((e) => <EventCard key={e.id} e={e} />)}</div>}
+              {cls.length > 0 && (
+                <div className="cls">
+                  <p className="cls-h">Studio classes</p>
+                  <ul className="cls-list">{cls.map((c) => <ClassRow key={c.id + c.date} c={c} />)}</ul>
+                </div>
+              )}
             </section>
           ))}
         </div>
@@ -200,6 +223,34 @@ export default function CalendarPage() {
         <CalendarJoin />
       </article>
     </Shell>
+  )
+}
+
+/** One studio class: time, class, where, who, price, and how to reach the studio. */
+function ClassRow({ c }) {
+  const [open, setOpen] = useState(false)
+  const contact = contactLink(c.contact)
+  return (
+    <li className={`cls-row ${open ? 'is-open' : ''}`}>
+      <button type="button" className="cls-main" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        <span className="cls-time">{c.start_time}{c.end_time ? `–${c.end_time}` : ''}</span>
+        <span className="cls-title">{c.title}</span>
+        <span className="cls-where">{c.studio}{c.room && c.studio === 'Bodhi Tree' ? ` · ${c.room}` : ''}{c.teacher ? ` · ${c.teacher}` : ''}</span>
+      </button>
+      {open && (
+        <div className="cls-more">
+          <p><b>Price</b> {c.price_note || 'Ask the studio'}</p>
+          <p><b>Where</b> {[c.venue, c.town].filter(Boolean).join(', ')}</p>
+          {c.notes && <p>{c.notes}</p>}
+          <p className="cls-actions">
+            {contact && <a href={contact.href} target="_blank" rel="noopener">{contact.label.replace('the host', 'the studio')}</a>}
+            {!contact && c.contact && <span>{c.contact}</span>}
+            {c.link && <a href={c.link} target="_blank" rel="noopener">The studio’s schedule</a>}
+          </p>
+          <p className="cls-src">From {c.studio}’s own schedule, checked {fmtDay(c.checked_on, { month: 'short', day: 'numeric' })}. Times can change: check with the studio.</p>
+        </div>
+      )}
+    </li>
   )
 }
 

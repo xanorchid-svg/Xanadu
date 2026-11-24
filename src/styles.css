@@ -1500,3 +1500,25 @@ html.modal-open { overflow: hidden; }
   .cal-bar .dd-label { display: none; }
   .cal-view { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; }
 }
+
+/* studio classes under each day */
+.cal-hint { color: var(--ivory-dim); font-size: 14px; text-align: center; padding-top: 18px; }
+.cls { margin-top: 14px; }
+.cls-h { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-soft); margin-bottom: 6px; }
+.cls-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(246, 241, 232, .08); }
+.cls-row { border-bottom: 1px solid rgba(246, 241, 232, .08); }
+.cls-main { display: grid; grid-template-columns: 128px minmax(0, 1fr) minmax(0, 1.1fr); gap: 12px; align-items: baseline; width: 100%; text-align: left; padding: 12px 4px; cursor: pointer; }
+.cls-main:hover .cls-title { color: var(--ivory); }
+.cls-time { font-size: 13px; color: var(--gold-soft); white-space: nowrap; }
+.cls-title { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; color: var(--ivory); }
+.cls-where { font-size: 13.5px; color: var(--ivory-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cls-more { padding: 0 4px 14px 140px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--ivory-dim); line-height: 1.55; }
+.cls-more b { color: var(--ivory); font-weight: 600; margin-right: 6px; }
+.cls-actions { display: flex; flex-wrap: wrap; gap: 16px; }
+.cls-actions a { color: var(--gold-soft); text-decoration: underline; text-underline-offset: 3px; }
+.cls-src { font-size: 12px; opacity: .75; }
+@media (max-width: 640px) {
+  .cls-main { grid-template-columns: 1fr; gap: 2px; }
+  .cls-where { white-space: normal; }
+  .cls-more { padding-left: 4px; }
+}

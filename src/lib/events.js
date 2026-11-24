@@ -204,3 +204,33 @@ export function useEvent(id) {
   }, [id])
   return state
 }
+
+/* ---------- Studio classes: daily timetables from each studio's own schedule ---------- */
+const CLASS_COLS = 'id,studio,title,weekday,class_date,start_time,end_time,teacher,room,price_note,venue,town,contact,link,tags,notes,checked_on'
+
+/** Every active class slot (weekly ones and dated ones). */
+export function useStudioClasses() {
+  const [classes, setClasses] = useState([])
+  useEffect(() => {
+    let live = true
+    supabase.from('studio_classes').select(CLASS_COLS).eq('active', true).limit(1000)
+      .then(({ data }) => { if (live) setClasses(data ?? []) })
+    return () => { live = false }
+  }, [])
+  return classes
+}
+
+/** The classes on each date from a to b (at most 14 days), weekly slots placed on their weekdays. */
+export function classesBetween(classes, a, b) {
+  const out = []
+  let d = a
+  for (let i = 0; i < 14 && d <= b; i++, d = addDays(d, 1)) {
+    const wd = (at(d).getDay() + 6) % 7 // Monday = 0
+    // a studio with dated classes that day uses those; its weekly slots fill days it hasn't dated
+    const dated = new Set(classes.filter((c) => c.class_date === d).map((c) => c.studio))
+    for (const c of classes) {
+      if (c.class_date === d || (c.class_date == null && c.weekday === wd && !dated.has(c.studio))) out.push({ ...c, date: d })
+    }
+  }
+  return out.sort((x, y) => x.date.localeCompare(y.date) || minutes(x.start_time) - minutes(y.start_time))
+}
