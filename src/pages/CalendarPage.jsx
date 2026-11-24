@@ -106,7 +106,6 @@ export default function CalendarPage() {
     <Shell>
       <article className="cal">
         <header className="cal-hero">
-          <a href="/" className="deep-back" data-cursor="hover">← Back to Xanadu</a>
           <Reveal as="h1" className="display center"><Shimmer>Events</Shimmer></Reveal>
           <Rise as="p" className="cal-sub center" delay={0.2}>weaving your xanadu one event at a time</Rise>
         </header>

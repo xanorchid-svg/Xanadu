@@ -1489,3 +1489,6 @@ html.modal-open { overflow: hidden; }
   .dd-value { max-width: 110px; }
   .cal-view { margin-left: 0; }
 }
+.nav-links a.is-here, .nav-cal.is-here { color: var(--ivory); }
+.nav-links a.is-here::after { transform: scaleX(1); }
+.cal-hero { padding-top: clamp(150px, 22vh, 220px); }
