@@ -1442,7 +1442,7 @@ html.modal-open { overflow: hidden; }
 /* filter dropdowns */
 .cal-controls { position: relative; z-index: 30; }
 .cal-bar { position: relative; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-.dd-wide { position: static; }
+.dd.dd-wide { position: static; }
 .dd { position: relative; }
 .dd-btn {
   display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 10px 16px; cursor: pointer;
