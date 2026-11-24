@@ -29,6 +29,7 @@ const ROUTES = {
   '/apply/facilitator': () => <ApplyPage role="facilitator" />,
   '/calendar': CalendarPage,
   '/events': CalendarPage,
+  '/constellation': CalendarPage,
   '/privacy': Privacy,
   '/terms': Terms,
 }
@@ -39,7 +40,8 @@ if (eventId) ROUTES[path] = () => <EventPage id={eventId} />
 const Page = ROUTES[path] ?? App
 if (!ROUTES[path]) window.history.replaceState(null, '', '/' + window.location.hash)
 if (path === '/creation') window.history.replaceState(null, '', '/story')
-const titles = { '/apply/container': 'Apply as a Container', '/apply/facilitator': 'Apply as a Facilitator', '/privacy': 'Privacy Policy', '/terms': 'Terms of Service', '/path': 'How the match works', '/trust': 'How we verify', '/story': 'Our story', '/creation': 'Our story', '/living-network': 'The living network', '/origin': 'The Origin', '/calendar': 'Events', '/events': 'Events' }
+if (path === '/events' || path === '/calendar') window.history.replaceState(null, '', '/constellation' + window.location.search)
+const titles = { '/apply/container': 'Apply as a Container', '/apply/facilitator': 'Apply as a Facilitator', '/privacy': 'Privacy Policy', '/terms': 'Terms of Service', '/path': 'How the match works', '/trust': 'How we verify', '/story': 'Our story', '/creation': 'Our story', '/living-network': 'The living network', '/origin': 'The Origin', '/calendar': 'Constellation', '/events': 'Constellation', '/constellation': 'Constellation · Nosara' }
 if (titles[path]) document.title = `${titles[path]} — Xanadu`
 
 ReactDOM.createRoot(document.getElementById('root')).render(

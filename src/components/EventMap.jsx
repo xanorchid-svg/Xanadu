@@ -75,5 +75,5 @@ export default function EventMap({ pins, picked = null, onPick = () => {}, mini 
     if (p && map.current) map.current.panTo([p.spot.lat, p.spot.lng], { animate: true })
   }, [picked]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <div ref={box} className={`xmap ${mini ? 'xmap-mini' : ''} ${className}`} role="application" aria-label="Map of where events are held" />
+  return <div ref={box} className={`xmap ${mini ? 'xmap-mini' : ''} ${className}`} role="application" aria-label="Map of where gatherings are held" />
 }

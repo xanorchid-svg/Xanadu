@@ -33,9 +33,9 @@ export default function EventPage({ id }) {
     return (
       <Shell>
         <article className="cal cal-pad center">
-          <h1 className="display center">This event has passed or moved.</h1>
+          <h1 className="display center">This one has passed or moved.</h1>
           <p className="lede center deep-lede">See everything that’s coming up instead.</p>
-          <div className="closing-actions"><Button href="/events">See all events</Button></div>
+          <div className="closing-actions"><Button href="/constellation">Open the constellation</Button></div>
         </article>
       </Shell>
     )
@@ -51,7 +51,7 @@ export default function EventPage({ id }) {
     <Shell>
       <article className="cal">
         <div className="ev">
-          <a href="/events" className="deep-back" data-cursor="hover">← All events</a>
+          <a href="/constellation" className="deep-back" data-cursor="hover">← The constellation</a>
           <div className="ev-grid">
             {e.photo_url && <div className="ev-poster"><img src={e.photo_url} alt={`Poster for ${e.title}`} /></div>}
             <div className="ev-info">
@@ -76,7 +76,7 @@ export default function EventPage({ id }) {
               <div className="ev-actions">
                 <Button onClick={openJoin} aria-haspopup="dialog">I’m going</Button>
                 {contact && <Button href={contact.href} variant="ghost" target="_blank">{contact.label}</Button>}
-                {link && <Button href={link} variant="ghost" target="_blank">Event page</Button>}
+                {link && <Button href={link} variant="ghost" target="_blank">Host’s page</Button>}
                 <button type="button" className="cal-chip" onClick={share}>{copied ? 'Link copied' : 'Share'}</button>
               </div>
               <p className="ev-note">“I’m going” and who’s going are for members: joining is free. Booking and payment happen with the host.</p>
