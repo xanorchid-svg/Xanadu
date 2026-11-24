@@ -57,6 +57,7 @@ export default function EventPage({ id }) {
                 <div><dt>When</dt><dd>{whenText(e)}{timeRange(e) && <><br />{timeRange(e)}</>}</dd></div>
                 {(e.venue || e.town) && <div><dt>Where</dt><dd>{[e.venue, e.town].filter(Boolean).join(', ')}</dd></div>}
                 {e.price_note && <div><dt>Price</dt><dd>{e.price_note}</dd></div>}
+                {e.contact && !contact && <div><dt>Contact</dt><dd>{e.contact}</dd></div>}
               </dl>
               {types.length > 0 && <p className="cal-meta">{types.map((t) => <span key={t} className="cal-tag">{t}</span>)}</p>}
               {e.description && <p className="ev-desc">{e.description}</p>}
