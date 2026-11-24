@@ -9,7 +9,7 @@ export default function Footer() {
           <span className="footer-sub">A network for awakening places</span>
         </div>
         <div className="footer-col">
-          <a href="/calendar">What’s on in Nosara</a>
+          <a href="/events">Events</a>
           <a href="/path">How the match works</a>
           <a href="/trust">How we verify</a>
           <a href="/living-network">The living network</a>

@@ -1,9 +1,12 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import Shell from '../components/Shell'
 import Button from '../components/Button'
 import { openJoin } from '../lib/joinModal'
 import { categoriesOf, contactLink, safeLink, timeRange, useEvent, whenText } from '../lib/events'
 import { CalendarJoin } from './CalendarPage'
+import { spotKey, spotOf } from '../lib/places'
+
+const EventMap = lazy(() => import('../components/EventMap'))
 
 /** One event, open to everyone: what, when, where, price and how to reach the host. */
 export default function EventPage({ id }) {
@@ -32,7 +35,7 @@ export default function EventPage({ id }) {
         <article className="cal cal-pad center">
           <h1 className="display center">This event has passed or moved.</h1>
           <p className="lede center deep-lede">See everything that’s coming up instead.</p>
-          <div className="closing-actions"><Button href="/calendar">Open the calendar</Button></div>
+          <div className="closing-actions"><Button href="/events">See all events</Button></div>
         </article>
       </Shell>
     )
@@ -42,12 +45,13 @@ export default function EventPage({ id }) {
   const link = safeLink(e.link)
   const verified = !!(e.space_id || e.facilitator_id)
   const types = [...categoriesOf(e)]
+  const spot = spotOf(e)
 
   return (
     <Shell>
       <article className="cal">
         <div className="ev">
-          <a href="/calendar" className="deep-back" data-cursor="hover">← The calendar</a>
+          <a href="/events" className="deep-back" data-cursor="hover">← All events</a>
           <div className="ev-grid">
             {e.photo_url && <div className="ev-poster"><img src={e.photo_url} alt={`Poster for ${e.title}`} /></div>}
             <div className="ev-info">
@@ -61,6 +65,14 @@ export default function EventPage({ id }) {
               </dl>
               {types.length > 0 && <p className="cal-meta">{types.map((t) => <span key={t} className="cal-tag">{t}</span>)}</p>}
               {e.description && <p className="ev-desc">{e.description}</p>}
+              {spot && (
+                <div className="ev-map">
+                  <Suspense fallback={<div className="xmap xmap-mini" />}>
+                    <EventMap mini pins={[{ key: spotKey(spot), spot, count: 1, title: e.venue || spot.label }]} />
+                  </Suspense>
+                  <p className="ev-note">{spot.exact ? (e.venue || spot.label) : `${spot.label} · the exact spot comes from the host`}</p>
+                </div>
+              )}
               <div className="ev-actions">
                 <Button onClick={openJoin} aria-haspopup="dialog">I’m going</Button>
                 {contact && <Button href={contact.href} variant="ghost" target="_blank">{contact.label}</Button>}

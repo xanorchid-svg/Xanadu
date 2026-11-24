@@ -1,9 +1,12 @@
-import { useMemo, useState } from 'react'
+import { lazy, Suspense, useMemo, useState } from 'react'
 import Shell from '../components/Shell'
 import Button from '../components/Button'
 import { Reveal, Rise, Shimmer } from '../components/Reveal'
 import { openJoin } from '../lib/joinModal'
 import { FAMILIES, addDays, categoriesOf, fmtDay, inFamily, iso, timeRange, useEvents } from '../lib/events'
+import { spotKey, spotOf } from '../lib/places'
+
+const EventMap = lazy(() => import('../components/EventMap'))
 
 const WHEN = ['Coming up', 'Today', 'Tomorrow', 'This weekend', 'This week', 'This month']
 
@@ -51,26 +54,48 @@ export default function CalendarPage() {
   const [when, setWhen] = useState('Coming up')
   const [family, setFamily] = useState('')
   const [q, setQ] = useState('')
+  const [picked, setPicked] = useState(null)
 
-  const days = useMemo(() => {
+  const shown = useMemo(() => {
     const [a, b] = windowFor(when, today)
     const words = q.trim().toLowerCase()
-    const shown = events.filter((e) => {
+    return events.filter((e) => {
       if (!e.start_date) return when === 'Coming up'
       if (e.start_date > b || (e.end_date || e.start_date) < a) return false
       if (family && !inFamily(e, family)) return false
       if (words && !`${e.title} ${e.description} ${e.venue} ${e.town} ${(e.tags ?? []).join(' ')}`.toLowerCase().includes(words)) return false
       return true
     })
-    // each event sits under its own day, or the first day of the window if it began earlier (a retreat already running)
+  }, [events, when, family, q, today])
+
+  // one pin per place; tapping a pin narrows the list to what's on there
+  const pins = useMemo(() => {
     const by = new Map()
     for (const e of shown) {
+      const s = spotOf(e)
+      if (!s) continue
+      const k = spotKey(s)
+      const p = by.get(k) ?? { key: k, spot: s, count: 0, title: '' }
+      p.count += 1
+      p.title = p.count > 1 ? `${p.count} events · ${s.exact ? e.venue || s.label : s.label}` : `${e.title} · ${e.venue || s.label}`
+      by.set(k, p)
+    }
+    return [...by.values()]
+  }, [shown])
+  const pin = pins.find((p) => p.key === picked)
+
+  const days = useMemo(() => {
+    const [a] = windowFor(when, today)
+    const list = pin ? shown.filter((e) => { const s = spotOf(e); return s && spotKey(s) === pin.key }) : shown
+    // each event sits under its own day, or the first day of the window if it began earlier (a retreat already running)
+    const by = new Map()
+    for (const e of list) {
       const k = !e.start_date ? 'tbc' : e.start_date < a ? a : e.start_date
       if (!by.has(k)) by.set(k, [])
       by.get(k).push(e)
     }
     return [...by.entries()].sort(([x], [y]) => x.localeCompare(y))
-  }, [events, when, family, q, today])
+  }, [shown, pin, when, today])
 
   const label = (k) => k === 'tbc' ? 'Date to be confirmed' : k === today ? `Today · ${fmtDay(k, { month: 'long', day: 'numeric' })}` : k === addDays(today, 1) ? `Tomorrow · ${fmtDay(k, { month: 'long', day: 'numeric' })}` : fmtDay(k)
   const count = days.reduce((n, [, l]) => n + l.length, 0)
@@ -80,11 +105,8 @@ export default function CalendarPage() {
       <article className="cal">
         <header className="cal-hero">
           <a href="/" className="deep-back" data-cursor="hover">← Back to Xanadu</a>
-          <p className="eyebrow center">The Nosara calendar</p>
-          <Reveal as="h1" className="display center">What’s <Shimmer>on</Shimmer></Reveal>
-          <Rise as="p" className="lede center deep-lede" delay={0.2}>
-            Yoga, breathwork, sound, circles, dance and gatherings around Nosara, Costa Rica. Open to everyone. No account needed.
-          </Rise>
+          <Reveal as="h1" className="display center"><Shimmer>Events</Shimmer></Reveal>
+          <Rise as="p" className="cal-sub center" delay={0.2}>weaving your xanadu one event at a time</Rise>
         </header>
 
         <div className="cal-controls">
@@ -105,13 +127,25 @@ export default function CalendarPage() {
           </label>
         </div>
 
+        <div className="cal-mapwrap">
+          <Suspense fallback={<div className="xmap" />}>
+            <EventMap pins={pins} picked={picked} onPick={setPicked} />
+          </Suspense>
+          {pin && (
+            <p className="cal-picked">
+              <span>Showing {pin.count === 1 ? 'the event' : `${pin.count} events`} at <b>{pin.spot.exact ? (pin.title.split(' · ').slice(1).join(' · ') || pin.spot.label) : pin.spot.label}</b></span>
+              <button type="button" className="cal-chip" onClick={() => setPicked(null)}>Show all</button>
+            </p>
+          )}
+        </div>
+
         <div className="cal-list" aria-live="polite">
           {loading && <p className="cal-empty">Loading what’s on…</p>}
           {!loading && failed && <p className="cal-empty">The calendar didn’t load. Please refresh the page.</p>}
           {!loading && !failed && count === 0 && (
             <div className="cal-empty">
               <p>Nothing matches yet.</p>
-              <button type="button" className="cal-chip" onClick={() => { setWhen('Coming up'); setFamily(''); setQ('') }}>Show everything coming up</button>
+              <button type="button" className="cal-chip" onClick={() => { setWhen('Coming up'); setFamily(''); setQ(''); setPicked(null) }}>Show everything coming up</button>
             </div>
           )}
           {days.map(([k, list]) => (

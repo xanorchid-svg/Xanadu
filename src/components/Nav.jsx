@@ -10,7 +10,7 @@ const ITEMS = [
   { label: 'The network', href: '#network' },
   { label: 'The Origin', href: '#origin' },
   { label: 'The app', href: '#app' },
-  { label: 'What’s on', href: '/calendar', page: true },
+  { label: 'Events', href: '/events', page: true },
 ]
 
 export default function Nav({ home = true }) {
@@ -46,7 +46,7 @@ export default function Nav({ home = true }) {
           <a key={it.href} href={it.page ? it.href : link(it.href)} onClick={it.page ? undefined : (e) => go(e, it.href)}>{it.label}</a>
         ))}
       </nav>
-      <a href="/calendar" className="nav-cal" data-cursor="hover">What’s on</a>
+      <a href="/events" className="nav-cal" data-cursor="hover">Events</a>
       <Button className="nav-cta" onClick={openJoin} aria-haspopup="dialog">Join Xanadu</Button>
       <div className="nav-progress"><div ref={barRef} className="nav-progress-bar" /></div>
     </header>

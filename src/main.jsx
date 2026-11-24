@@ -39,7 +39,7 @@ if (eventId) ROUTES[path] = () => <EventPage id={eventId} />
 const Page = ROUTES[path] ?? App
 if (!ROUTES[path]) window.history.replaceState(null, '', '/' + window.location.hash)
 if (path === '/creation') window.history.replaceState(null, '', '/story')
-const titles = { '/apply/container': 'Apply as a Container', '/apply/facilitator': 'Apply as a Facilitator', '/privacy': 'Privacy Policy', '/terms': 'Terms of Service', '/path': 'How the match works', '/trust': 'How we verify', '/story': 'Our story', '/creation': 'Our story', '/living-network': 'The living network', '/origin': 'The Origin', '/calendar': 'What’s on in Nosara', '/events': 'What’s on in Nosara' }
+const titles = { '/apply/container': 'Apply as a Container', '/apply/facilitator': 'Apply as a Facilitator', '/privacy': 'Privacy Policy', '/terms': 'Terms of Service', '/path': 'How the match works', '/trust': 'How we verify', '/story': 'Our story', '/creation': 'Our story', '/living-network': 'The living network', '/origin': 'The Origin', '/calendar': 'Events', '/events': 'Events' }
 if (titles[path]) document.title = `${titles[path]} — Xanadu`
 
 ReactDOM.createRoot(document.getElementById('root')).render(
